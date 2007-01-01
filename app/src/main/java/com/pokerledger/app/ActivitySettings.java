@@ -432,7 +432,7 @@ public class ActivitySettings extends ActivityBase {
             if (outChannel != null)
                 outChannel.close();
         } catch (IOException e) {
-            //blah blah, thank you java
+            FlurryAgent.logEvent("Error_BackupDatabase");
         }
         Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_backup) + " " + backupName, Toast.LENGTH_LONG).show();
     }
@@ -467,7 +467,7 @@ public class ActivitySettings extends ActivityBase {
                     if (outChannel != null)
                         outChannel.close();
                 } catch (IOException e) {
-                    //blah blah, thank you java
+                    FlurryAgent.logEvent("Error_RestoreDatabase");
                 }
             }
             Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_restore), Toast.LENGTH_LONG).show();

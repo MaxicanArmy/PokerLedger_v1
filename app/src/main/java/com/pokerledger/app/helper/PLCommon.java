@@ -1,5 +1,7 @@
 package com.pokerledger.app.helper;
 
+import com.flurry.android.FlurryAgent;
+
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -16,7 +18,7 @@ public class PLCommon {
         try {
             time.setTime(sdf.parse(datetime));
         } catch (Exception e) {
-            //fucking parse exception needs to be handled
+            FlurryAgent.logEvent("Error_CalendarSetTime");
         }
 
         return time.getTimeInMillis();

@@ -137,7 +137,7 @@ public class ActivityHistory extends ActivityBase {
                 try {
                     cal.setTimeInMillis(s.getStart());
                 } catch (Exception e) {
-                    //fucking parse exception needed to be handled
+                    FlurryAgent.logEvent("Error_CalendarSetTimeInMillis");
                 }
                 year = Integer.toString(cal.get(Calendar.YEAR));
                 weekOfYear = "Week" + " " + cal.get(Calendar.WEEK_OF_YEAR) + " " + year;

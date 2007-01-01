@@ -1,14 +1,12 @@
 package com.pokerledger.app;
 
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,16 +19,11 @@ import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
 import com.pokerledger.app.helper.SessionSet;
-import com.pokerledger.app.model.Blinds;
-import com.pokerledger.app.model.Game;
-import com.pokerledger.app.model.GameFormat;
 import com.pokerledger.app.model.Session;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Catface Meowmers on 7/26/15.
@@ -204,7 +197,7 @@ public class ActivityMain extends ActivityBase {
                             Session.class.getDeclaredMethod("getStakes"),
                             Session.class.getDeclaredMethod("getGameName"))));
                 } catch (Exception e) {
-                    //java java java
+                    FlurryAgent.logEvent("Error_GetDeclaredMethod");
                 }
 
                 if (stats.getChildren().size() > 0) {
@@ -218,8 +211,8 @@ public class ActivityMain extends ActivityBase {
 
                 String game = "";
                 String location = "";
-                HashMap<String, SessionSet> byGames = new HashMap();
-                HashMap<String, SessionSet> byLocations = new HashMap();
+                HashMap<String, SessionSet> byGames = new HashMap<>();
+                HashMap<String, SessionSet> byLocations = new HashMap<>();
 
                 for (Session s : stats.getSessions()) {
                     game = s.getGame().getGame();
@@ -314,33 +307,6 @@ public class ActivityMain extends ActivityBase {
             welcome();
         }
     }
-    /*
-    public class LoadBreakdown extends AsyncTask<Void, Void, SessionSet> {
-
-        @Override
-        protected SessionSet doInBackground(Void... params) {
-            DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-            return new SessionSet(dbHelper.getSessions(0));
-        }
-
-        @Override
-        protected void onPostExecute(SessionSet stats) {
-            if (stats.getSessions().size() > 0) {
-                try {
-                    stats.createHierarchy(new ArrayList<>(Arrays.asList(
-                            Session.class.getDeclaredMethod("getStakes"),
-                            Session.class.getDeclaredMethod("getGameName"))));
-                } catch (Exception e) {
-                    //java java java
-                }
-
-                if (stats.getChildren().size() > 0) {
-                    ((LinearLayout) ActivityMain.this.findViewById(R.id.breakdown_content)).addView(createStatsLayer(stats));
-                }
-            }
-        }
-    }
-    */
 
     public LinearLayout createStatsLayer(SessionSet ss) {
         int padding = (int) getResources().getDimension(R.dimen.unit2);

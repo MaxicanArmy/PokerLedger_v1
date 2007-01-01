@@ -1,5 +1,6 @@
 package com.pokerledger.app.helper;
 
+import com.flurry.android.FlurryAgent;
 import com.jjoe64.graphview.series.DataPoint;
 import com.pokerledger.app.model.Session;
 
@@ -160,7 +161,7 @@ public class SessionSet {
                     children.put(key, new SessionSet(s));
                 }
             } catch (Exception e) {
-                //java blah blah
+                FlurryAgent.logEvent("Error_InvokeReflection");
             }
         }
 
