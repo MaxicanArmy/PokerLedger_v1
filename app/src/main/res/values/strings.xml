@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Poker Ledger</string>
+
+    <string name="more">More</string>
+
+    <string name="welcome_header">WELCOME</string>
+    <string name="welcome">Thanks for using Poker Ledger! To get started adding your first poker session, click the "+" in the Actionbar.</string>
+
+    <string name="active_session_activity_name">Active Session</string>
+    <string name="finish_session_activity_name">Finish Session</string>
+    <string name="graphs_activity_name">Graphs</string>
+    <string name="history_activity_name">History</string>
+    <string name="statistics_activity_name">Statistics</string>
+    <string name="settings_activity_name">Settings</string>
+    <string name="backup_activity_name">Backup &amp; Restore</string>
+    <string name="filter_activity_name">Filters</string>
+
+    <string name="locations_header">locations</string>
+    <string name="games_header">games</string>
+    <string name="game_format_header">game formats</string>
+    <string name="blinds_header">blinds</string>
+    <string name="backup_header">backup &amp; restore database</string>
+    <string name="timeframe_header">timeframe</string>
+    <string name="buy_in_header">buy in</string>
+    <string name="profit_header">buy in / cash out</string>
+    <string name="tournament_header">tournament info</string>
+    <string name="active_session_length_header">start time</string>
+    <string name="finished_session_length_header">start time / end time</string>
+    <string name="breaks_header">breaks</string>
+    <string name="notes_header">notes</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_add_session">Add Session</string>
+    <string name="action_view_graphs">Graphs</string>
+    <string name="action_view_history">History</string>
+    <string name="action_view_settings">Settings</string>
+    <string name="action_backup_restore">Backup &amp; Restore</string>
+    <string name="action_filter">Filters</string>
+    <string name="action_statistics">Statistics</string>
+
+    <string name="game_prompt">Select Game</string>
+    <string name="location_prompt">Select Location</string>
+    <string name="blinds_prompt">Select Blind</string>
+    <string name="game_format_prompt">Select Game Format</string>
+    <string name="date_format_prompt">Select Date Format</string>
+
+    <string name="tourney_radio_text">Tournament</string>
+    <string name="cash_radio_text">Cash Game</string>
+    <string name="twelve_hour_text">AM / PM</string>
+    <string name="twenty_four_hour_text">24 Hour</string>
+
+    <string name="buy_in_hint">Buy In</string>
+    <string name="cash_out_hint">Cash Out</string>
+    <string name="entrants_hint">Entrants</string>
+    <string name="placed_hint">Placed</string>
+    <string name="start_date_hint">Start Date</string>
+    <string name="end_date_hint">End Date</string>
+    <string name="start_time_hint">Start Time</string>
+    <string name="end_time_hint">End Time</string>
+    <string name="view_breaks_hint">View Breaks</string>
+    <string name="add_break_hint">Add Break</string>
+    <string name="notes_hint">Notes (300 char. max)</string>
+    <string name="backup_db_hint">Backup</string>
+    <string name="restore_db_hint">Restore</string>
+    <string name="save_hint">Save</string>
+    <string name="backup_hint">Backup</string>
+    <string name="restore_hint">Restore</string>
+
+    <string name="sb_hint">SB</string>
+    <string name="bb_hint">BB</string>
+    <string name="straddle_hint">Straddle</string>
+    <string name="bring_hint">Bring In</string>
+    <string name="ante_hint">Ante</string>
+    <string name="points_hint">\u0024/point</string>
+
+    <string name="close_hint">Close</string>
+    <string name="cancel_hint">Cancel</string>
+
+    <string name="overview_title">OVERVIEW</string>
+    <string name="summary_title">SUMMARY</string>
+    <string name="active_games_title">ACTIVE GAMES</string>
+    <string name="wage_game_title">HOURLY WAGE BY GAME</string>
+    <string name="wage_day_title">HOURLY WAGE BY DAY</string>
+    <string name="profit_vs_time_graph_title">PROFIT OVER TIME</string>
+
+    <string name="overview_profit">Profit</string>
+    <string name="overview_time">Time Played</string>
+    <string name="overview_hourly">Hourly Wage</string>
+
+    <string name="create_location_hint">Location Name</string>
+    <string name="create_game_hint">Game Name</string>
+    <string name="create_game_format_hint">Game Format Name</string>
+    <string name="create_button_hint">Create</string>
+
+    <string name="create_new_hint">+</string>
+    <string name="edit_hint">\?</string>
+    <string name="delete_hint">X</string>
+    <string name="set_default_hint">Default</string>
+
+    <string name="preferences_file_key">com.pokerledger.app.shared_prefs</string>
+
+    <string-array name="timeblocks_array">
+        <item>Weekly</item>
+        <item>Monthly</item>
+        <item>Yearly</item>
+        <item>All</item>
+    </string-array>
+
+    <string-array name="date_format_array">
+        <item>YYYY-MM-DD</item>
+        <item>DD-MM-YYYY</item>
+        <item>MM-DD-YYYY</item>
+    </string-array>
+</resources>

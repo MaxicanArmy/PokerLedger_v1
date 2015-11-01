@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Activity"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/welcome_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        style="@style/Wrapper"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/welcome_header"
+            android:text="@string/welcome_header"
+            style="@style/WrapperHeader"/>
+
+        <TextView
+            android:id="@+id/welcome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome"
+            android:padding="@dimen/standard_padding">
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/active_sessions_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        style="@style/Wrapper"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/active_sessions_header"
+            android:text="@string/active_games_title"
+            style="@style/WrapperHeader"/>
+
+        <ListView
+            android:id="@+id/active_sessions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </ListView>
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/overview_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/active_sessions_wrapper"
+        style="@style/Wrapper">
+
+        <TextView
+            android:id="@+id/overview_header"
+            android:text="@string/overview_title"
+            style="@style/WrapperHeader"
+            android:layout_marginBottom="@dimen/standard_padding" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/row1"
+            android:orientation="horizontal"
+            style="@style/Row">
+
+            <TextView
+                android:id="@+id/profit_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/overview_profit"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/profit"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:textColor="#4eb502"
+                android:textSize="16sp"  />
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/row2"
+            android:orientation="horizontal"
+            style="@style/Row">
+
+            <TextView
+                android:id="@+id/time_played_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/overview_time"
+                android:textSize="16sp"  />
+
+            <TextView
+                android:id="@+id/time_played"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:textSize="16sp"  />
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/row3"
+            android:orientation="horizontal"
+            style="@style/Row">
+
+            <TextView
+                android:id="@+id/hourly_wage_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/overview_hourly"
+                android:textSize="16sp"  />
+
+            <TextView
+                android:id="@+id/hourly_wage"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:textColor="#4eb502"
+                android:textSize="16sp"  />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    style="@style/Activity">
+
+    <LinearLayout
+        android:id="@+id/graph_wrapper"
+        android:orientation="vertical"
+        style="@style/Wrapper">
+
+        <TextView
+            android:id="@+id/profit_vs_time_graph_header"
+            android:text="@string/profit_vs_time_graph_title"
+            style="@style/WrapperHeader"
+            android:layout_marginBottom="@dimen/standard_padding" />
+
+        <com.jjoe64.graphview.GraphView
+            android:layout_width="match_parent"
+            android:layout_height="200dip"
+            android:id="@+id/graph" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#77000000"
+    android:padding="10dp">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/wrapper1"
+        android:orientation="horizontal"
+        style="@style/DialogWrap">
+
+        <Button
+            android:id="@+id/break_start_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:hint="@string/start_date_hint" />
+
+        <Button
+            android:id="@+id/break_start_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:hint="@string/start_time_hint" />
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/wrapper2"
+        android:orientation="horizontal"
+        android:layout_below="@id/wrapper1"
+        style="@style/DialogWrap">
+
+        <Button
+            android:id="@+id/break_end_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:hint="@string/end_date_hint" />
+
+        <Button
+            android:id="@+id/break_end_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:hint="@string/end_time_hint" />
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/wrapper3"
+        android:orientation="horizontal"
+        android:layout_below="@id/wrapper2"
+        android:layout_marginTop="10dp"
+        style="@style/DialogWrap">
+
+        <Button
+            android:id="@+id/add_break"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:hint="@string/add_break_hint" />
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:hint="@string/cancel_hint" />
+    </LinearLayout>
+</RelativeLayout>

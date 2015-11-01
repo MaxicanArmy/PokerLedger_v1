@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Activity">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="10dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/buy_in_wrapper"
+            android:orientation="vertical"
+            style="@style/Wrapper">
+
+            <TextView
+                android:id="@+id/profit_tiny_header"
+                android:text="@string/profit_header"
+                style="@style/TinyHeader" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/buy_in"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:hint="@string/buy_in_hint"
+                    android:inputType="number"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/cash_out"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:hint="@string/cash_out_hint"
+                    android:inputType="number"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/location_wrapper"
+            android:orientation="vertical"
+            style="@style/Wrapper">
+
+            <TextView
+                android:id="@+id/location_tiny_header"
+                android:text="@string/locations_header"
+                style="@style/TinyHeader" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/location"
+                    android:layout_width="0dp"
+                    android:layout_weight="9"
+                    android:layout_height="wrap_content"
+                    android:prompt="@string/location_prompt" />
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/new_location"
+                        android:drawableStart="@drawable/ic_add_black_18dp"
+                        android:drawableLeft="@drawable/ic_add_black_18dp"
+                        style="@style/buttonRowItem"
+                        android:onClick="showCreateLocationDialog" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/game_wrapper"
+            android:orientation="vertical"
+            style="@style/Wrapper">
+
+            <TextView
+                android:id="@+id/game_tiny_header"
+                android:text="@string/games_header"
+                style="@style/TinyHeader" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/game"
+                    android:layout_width="0dp"
+                    android:layout_weight="9"
+                    android:layout_height="wrap_content"
+                    android:prompt="@string/game_prompt" />
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/new_game"
+                        android:drawableStart="@drawable/ic_add_black_18dp"
+                        android:drawableLeft="@drawable/ic_add_black_18dp"
+                        style="@style/buttonRowItem"
+                        android:onClick="showCreateGameDialog" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/game_format_wrapper"
+            android:orientation="vertical"
+            style="@style/Wrapper">
+
+            <TextView
+                android:id="@+id/game_format_tiny_header"
+                android:text="@string/game_format_header"
+                style="@style/TinyHeader" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/game_format"
+                    android:layout_width="0dp"
+                    android:layout_weight="9"
+                    android:layout_height="wrap_content"
+                    android:prompt="@string/game_format_prompt" />
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/new_game_format"
+                        android:drawableStart="@drawable/ic_add_black_18dp"
+                        android:drawableLeft="@drawable/ic_add_black_18dp"
+                        style="@style/buttonRowItem"
+                        android:onClick="showCreateGameFormatDialog" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/cash_tournament_wrapper"
+            android:orientation="vertical"
+            style="@style/Wrapper">
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/cash_wrapper"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/blinds_tiny_header"
+                    android:text="@string/blinds_header"
+                    style="@style/TinyHeader" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Spinner
+                        android:id="@+id/blinds"
+                        android:layout_width="0dp"
+                        android:layout_weight="9"
+                        android:layout_height="wrap_content"
+                        android:prompt="@string/blinds_prompt" />
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/new_blind"
+                            android:drawableStart="@drawable/ic_add_black_18dp"
+                            android:drawableLeft="@drawable/ic_add_black_18dp"
+                            style="@style/buttonRowItem"
+                            android:onClick="showCreateBlindsDialog" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/tournament_wrapper"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tournament_tiny_header"
+                    android:text="@string/tournament_header"
+                    style="@style/TinyHeader" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/entrants"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".50"
+                        android:hint="@string/entrants_hint"
+                        android:inputType="number"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/placed"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".50"
+                        android:hint="@string/placed_hint"
+                        android:inputType="number"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/time_wrapper"
+            android:orientation="vertical"
+            style="@style/Wrapper">
+
+            <TextView
+                android:id="@+id/session_length_tiny_header"
+                android:text="@string/finished_session_length_header"
+                style="@style/TinyHeader" />
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/start_time_wrapper"
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/start_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:hint="@string/start_date_hint"
+                    android:onClick="showDatePickerDialog"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/start_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:hint="@string/start_time_hint"
+                    android:onClick="showTimePickerDialog"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/end_time_wrapper"
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/end_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:hint="@string/end_date_hint"
+                    android:onClick="showDatePickerDialog"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/end_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:hint="@string/end_time_hint"
+                    android:onClick="showTimePickerDialog"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/breaks_wrapper"
+            android:orientation="vertical"
+            style="@style/Wrapper">
+
+            <TextView
+                android:id="@+id/breaks_tiny_header"
+                android:text="@string/breaks_header"
+                style="@style/TinyHeader" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/view_breaks"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:hint="@string/view_breaks_hint"
+                    android:onClick="showBreaksDialog"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/add_break"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:hint="@string/add_break_hint"
+                    android:onClick="showCreateBreakDialog"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/notes_wrapper"
+            android:orientation="vertical"
+            style="@style/Wrapper">
+
+            <TextView
+                android:id="@+id/notes_tiny_header"
+                android:text="@string/notes_header"
+                style="@style/TinyHeader" />
+
+            <EditText
+                android:id="@+id/note"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/notes_hint"
+                android:maxLength="300"
+                android:textColor="#000"
+                android:inputType="textCapSentences"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/save_wrapper"
+            android:orientation="horizontal"
+            style="@style/Wrapper">
+
+            <Button
+                android:id="@+id/Save"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/save_hint"
+                android:onClick="saveFinishedSession"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

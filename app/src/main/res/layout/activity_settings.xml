@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Activity">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/location_wrapper"
+            android:orientation="vertical"
+            style="@style/Wrapper">
+
+            <TextView
+                android:id="@+id/location_tiny_header"
+                android:text="@string/locations_header"
+                style="@style/TinyHeader" />
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/location_row_wrapper"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/location"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:prompt="@string/location_prompt" />
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/location_settings_wrapper"
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4">
+
+                    <Button
+                        android:id="@+id/new_location"
+                        android:drawableStart="@drawable/ic_add_black_18dp"
+                        android:drawableLeft="@drawable/ic_add_black_18dp"
+                        android:onClick="showCreateLocationDialog"
+                        style="@style/buttonRowItem" />
+
+                    <Button
+                        android:id="@+id/edit_location"
+                        android:drawableStart="@drawable/ic_edit_black_18dp"
+                        android:drawableLeft="@drawable/ic_edit_black_18dp"
+                        android:onClick="showEditLocationDialog"
+                        style="@style/buttonRowItem" />
+
+                    <Button
+                        android:id="@+id/delete_location"
+                        android:drawableStart="@drawable/ic_delete_black_18dp"
+                        android:drawableLeft="@drawable/ic_delete_black_18dp"
+                        android:onClick="showDeleteLocationDialog"
+                        style="@style/buttonRowItem" />
+
+                    <Button
+                        android:id="@+id/set_default_location"
+                        android:drawableStart="@drawable/ic_star_black_18dp"
+                        android:drawableLeft="@drawable/ic_star_black_18dp"
+                        android:onClick="setDefaultLocation"
+                        style="@style/buttonRowItem" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/game_wrapper"
+            android:orientation="vertical"
+            style="@style/Wrapper">
+
+            <TextView
+                android:id="@+id/game_tiny_header"
+                android:text="@string/games_header"
+                style="@style/TinyHeader" />
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/game_row_wrapper"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/game"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:prompt="@string/game_prompt" />
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/game_settings_wrapper"
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4">
+
+                    <Button
+                        android:id="@+id/new_game"
+                        android:drawableStart="@drawable/ic_add_black_18dp"
+                        android:drawableLeft="@drawable/ic_add_black_18dp"
+                        android:onClick="showCreateGameDialog"
+                        style="@style/buttonRowItem" />
+
+                    <Button
+                        android:id="@+id/edit_game"
+                        android:drawableStart="@drawable/ic_edit_black_18dp"
+                        android:drawableLeft="@drawable/ic_edit_black_18dp"
+                        android:onClick="showEditGameDialog"
+                        style="@style/buttonRowItem" />
+
+                    <Button
+                        android:id="@+id/delete_game"
+                        android:drawableStart="@drawable/ic_delete_black_18dp"
+                        android:drawableLeft="@drawable/ic_delete_black_18dp"
+                        android:onClick="showDeleteGameDialog"
+                        style="@style/buttonRowItem" />
+
+                    <Button
+                        android:id="@+id/set_default_game"
+                        android:drawableStart="@drawable/ic_star_black_18dp"
+                        android:drawableLeft="@drawable/ic_star_black_18dp"
+                        android:onClick="setDefaultGame"
+                        style="@style/buttonRowItem" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/game_format_wrapper"
+            android:orientation="vertical"
+            style="@style/Wrapper">
+
+            <TextView
+                android:id="@+id/game_format_tiny_header"
+                android:text="@string/game_format_header"
+                style="@style/TinyHeader" />
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/game_format_row_wrapper"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/game_format"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:prompt="@string/game_format_prompt" />
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/game_format_settings_wrapper"
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4">
+
+                    <Button
+                        android:id="@+id/new_game_format"
+                        android:drawableStart="@drawable/ic_add_black_18dp"
+                        android:drawableLeft="@drawable/ic_add_black_18dp"
+                        android:onClick="showCreateGameFormatDialog"
+                        style="@style/buttonRowItem" />
+
+                    <Button
+                        android:id="@+id/edit_game_format"
+                        android:drawableStart="@drawable/ic_edit_black_18dp"
+                        android:drawableLeft="@drawable/ic_edit_black_18dp"
+                        android:onClick="showEditGameFormatDialog"
+                        style="@style/buttonRowItem" />
+
+                    <Button
+                        android:id="@+id/delete_game_format"
+                        android:drawableStart="@drawable/ic_delete_black_18dp"
+                        android:drawableLeft="@drawable/ic_delete_black_18dp"
+                        android:onClick="showDeleteGameFormatDialog"
+                        style="@style/buttonRowItem" />
+
+                    <Button
+                        android:id="@+id/set_default_game_format"
+                        android:drawableStart="@drawable/ic_star_black_18dp"
+                        android:drawableLeft="@drawable/ic_star_black_18dp"
+                        android:onClick="setDefaultGameFormat"
+                        style="@style/buttonRowItem" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/blinds_wrapper"
+            android:orientation="vertical"
+            style="@style/Wrapper">
+
+            <TextView
+                android:id="@+id/blinds_tiny_header"
+                android:text="@string/blinds_header"
+                style="@style/TinyHeader" />
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/blinds_row_wrapper"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/blinds"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:prompt="@string/blinds_prompt" />
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/blinds_settings_wrapper"
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4">
+
+                    <Button
+                        android:id="@+id/new_blinds"
+                        android:drawableStart="@drawable/ic_add_black_18dp"
+                        android:drawableLeft="@drawable/ic_add_black_18dp"
+                        android:onClick="showCreateBlindsDialog"
+                        style="@style/buttonRowItem" />
+
+                    <Button
+                        android:id="@+id/edit_blinds"
+                        android:drawableStart="@drawable/ic_edit_black_18dp"
+                        android:drawableLeft="@drawable/ic_edit_black_18dp"
+                        android:onClick="showEditBlindsDialog"
+                        style="@style/buttonRowItem" />
+
+                    <Button
+                        android:id="@+id/delete_blinds"
+                        android:drawableStart="@drawable/ic_delete_black_18dp"
+                        android:drawableLeft="@drawable/ic_delete_black_18dp"
+                        android:onClick="showDeleteBlindsDialog"
+                        style="@style/buttonRowItem" />
+
+                    <Button
+                        android:id="@+id/set_default_blinds"
+                        android:drawableStart="@drawable/ic_star_black_18dp"
+                        android:drawableLeft="@drawable/ic_star_black_18dp"
+                        android:onClick="setDefaultBlinds"
+                        style="@style/buttonRowItem" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/backup_wrapper"
+            android:orientation="vertical"
+            style="@style/Wrapper">
+
+            <TextView
+                android:id="@+id/backup_tiny_header"
+                android:text="@string/backup_header"
+                style="@style/TinyHeader" />
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/backup_row_wrapper"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/backup_db"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:hint="@string/backup_hint"
+                    android:onClick="backupDatabase"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/restore_db"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:hint="@string/restore_hint"
+                    android:onClick="restoreDatabase"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+        <!--
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/date_format_wrapper"
+            android:orientation="horizontal"
+            style="@style/Wrapper">
+
+            <Spinner
+                android:id="@+id/date_format"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".80"
+                android:prompt="@string/date_format_prompt"
+                android:textSize="10dp" />
+
+            <Button
+                android:id="@+id/save_date_format"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".20"
+                android:hint="@string/save_hint"
+                android:onClick="saveDateFormat" />
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/time_format_wrapper"
+            android:orientation="horizontal"
+            style="@style/Wrapper">
+
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/time_format"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".80"
+                android:orientation="horizontal">
+
+                <RadioButton android:id="@+id/twelve_hour"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:text="@string/twelve_hour_text"/>
+
+                <RadioButton android:id="@+id/twenty_four_hour"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:text="@string/twenty_four_hour_text"
+                    android:checked="true"/>
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/save_time_format"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".20"
+                android:hint="@string/save_hint"
+                android:onClick="saveTimeFormat" />
+        </LinearLayout>
+        -->
+    </LinearLayout>
+</ScrollView>
