@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
@@ -54,6 +55,7 @@ public class ActivityHistory extends ActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+        FlurryAgent.logEvent("Activity_History");
 
         if (savedInstanceState != null) {
             this.tbSpinnerPos = savedInstanceState.getInt("tbSpinnerPos");

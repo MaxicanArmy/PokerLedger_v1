@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 import com.pokerledger.app.model.Blinds;
 import com.pokerledger.app.model.Game;
@@ -26,6 +27,7 @@ public class ActivityActiveSession extends ActivitySession {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_session);
+        FlurryAgent.logEvent("Activity_Active_Session");
 
         Calendar calender = Calendar.getInstance();
         ((Button) findViewById(R.id.start_date)).setHint(String.format("%04d-%02d-%02d", calender.get(Calendar.YEAR), calender.get(Calendar.MONTH)+1, calender.get(Calendar.DAY_OF_MONTH)));

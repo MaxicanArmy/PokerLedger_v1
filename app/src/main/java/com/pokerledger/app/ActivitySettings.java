@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
@@ -37,6 +38,7 @@ public class ActivitySettings extends ActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        FlurryAgent.logEvent("Activity_Settings");
 
         final Spinner locationSpinner = (Spinner) this.findViewById(R.id.location);
         locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

@@ -7,6 +7,7 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.flurry.android.FlurryAgent;
 import com.pokerledger.app.model.Blinds;
 import com.pokerledger.app.model.Break;
 import com.pokerledger.app.model.Game;
@@ -696,6 +697,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         c.close();
 
         db.close();
+
+        if (s.getState() == 0) {
+            FlurryAgent.logEvent("Log_Finished_Session");
+        } else if (s.getState() == 1) {
+            FlurryAgent.logEvent("Log_Active_Session");
+        }
     }
 
     public void editSession(Session s) {

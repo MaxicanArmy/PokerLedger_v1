@@ -24,4 +24,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.jjoe64:graphview:4.0.1'
     compile files('libs/gson-2.3.1.jar')
+    compile files('libs/FlurryAnalytics-6.1.0.jar')
 }

@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
@@ -39,6 +40,7 @@ public class ActivityMain extends ActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FlurryAgent.logEvent("Activity_Main");
 
         activeSessionsWrapper = (LinearLayout) findViewById(R.id.active_sessions_wrapper);
         list = (ListView)findViewById(R.id.active_sessions);

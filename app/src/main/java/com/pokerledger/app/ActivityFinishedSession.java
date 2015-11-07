@@ -5,6 +5,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.model.Blinds;
@@ -25,6 +26,7 @@ public class ActivityFinishedSession extends ActivitySession  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finished_session);
+        FlurryAgent.logEvent("Activity_Finished_Session");
 
         String json = getIntent().getStringExtra("SESSION_JSON");
         if (json != null) { //active session being finished or finished session being edited
