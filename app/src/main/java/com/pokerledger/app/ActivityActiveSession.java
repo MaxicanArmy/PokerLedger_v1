@@ -48,12 +48,6 @@ public class ActivityActiveSession extends ActivitySession {
         outState.putString("ACTIVE_SESSION_JSON", gson.toJson(activeSession));
         outState.putString("START_DATE_HINT", ((Button) this.findViewById(R.id.start_date)).getHint().toString());
         outState.putString("START_TIME_HINT", ((Button) this.findViewById(R.id.start_time)).getHint().toString());
-        /*
-        outState.putInt("LOCATION", ((Spinner) this.findViewById(R.id.location)).getSelectedItemPosition());
-        outState.putInt("GAME", ((Spinner) this.findViewById(R.id.game)).getSelectedItemPosition());
-        outState.putInt("GAME_FORMAT", ((Spinner) this.findViewById(R.id.game_format)).getSelectedItemPosition());
-        outState.putInt("BLINDS", ((Spinner) this.findViewById(R.id.blinds)).getSelectedItemPosition());
-        */
     }
 
     @Override
@@ -64,12 +58,6 @@ public class ActivityActiveSession extends ActivitySession {
         activeSession = gson.fromJson(savedInstanceState.getString("ACTIVE_SESSION_JSON"), Session.class);
         ((Button) this.findViewById(R.id.start_date)).setHint(savedInstanceState.getString("START_DATE_HINT"));
         ((Button) this.findViewById(R.id.start_time)).setHint(savedInstanceState.getString("START_TIME_HINT"));
-        /*
-        ((Spinner) this.findViewById(R.id.location)).setSelection(savedInstanceState.getInt("LOCATION"));
-        ((Spinner) this.findViewById(R.id.game)).setSelection(savedInstanceState.getInt("GAME"));
-        ((Spinner) this.findViewById(R.id.game_format)).setSelection(savedInstanceState.getInt("GAME_FORMAT"));
-        ((Spinner) this.findViewById(R.id.blinds)).setSelection(savedInstanceState.getInt("BLINDS"));
-        */
     }
 
     public void saveActiveSession(View v) {
@@ -148,6 +136,7 @@ public class ActivityActiveSession extends ActivitySession {
         }
 
         this.activeSession.setState(1);
+        FlurryAgent.logEvent("Session_Create_Active");
         new AddSession().execute(this.activeSession);
         setResult(RESULT_OK);
         finish();

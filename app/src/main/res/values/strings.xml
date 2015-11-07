@@ -9,6 +9,7 @@
 
     <string name="active_session_activity_name">Active Session</string>
     <string name="finish_session_activity_name">Finish Session</string>
+    <string name="edit_session_activity_name">Edit Session</string>
     <string name="graphs_activity_name">Graphs</string>
     <string name="history_activity_name">History</string>
     <string name="statistics_activity_name">Statistics</string>

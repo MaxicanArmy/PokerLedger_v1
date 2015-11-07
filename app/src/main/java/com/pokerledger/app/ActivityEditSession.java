@@ -20,15 +20,15 @@ import java.text.DecimalFormat;
 import java.util.Calendar;
 
 /**
- * Created by Catface Meowmers on 7/26/15.
+ * Created by max on 11/7/15.
  */
-public class ActivityFinishedSession extends ActivitySession  {
+public class ActivityEditSession extends ActivitySession  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finished_session);
-        FlurryAgent.logEvent("Activity_Finished_Session");
+        FlurryAgent.logEvent("Activity_Edit_Session");
 
         String json = getIntent().getStringExtra("SESSION_JSON");
         if (json != null) {
@@ -228,13 +228,8 @@ public class ActivityFinishedSession extends ActivitySession  {
 
         this.activeSession.setState(0);
 
-        if (this.activeSession.getId() == 0) {
-            FlurryAgent.logEvent("Session_Create_Finished");
-            new AddSession().execute(this.activeSession);
-        } else {
-            FlurryAgent.logEvent("Session_Active_Finished");
-            new EditSession().execute(this.activeSession);
-        }
+        FlurryAgent.logEvent("Session_Edit_Finished");
+        new EditSession().execute(this.activeSession);
 
         setResult(RESULT_OK);
         finish();

@@ -697,12 +697,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         c.close();
 
         db.close();
-
-        if (s.getState() == 0) {
-            FlurryAgent.logEvent("Log_Finished_Session");
-        } else if (s.getState() == 1) {
-            FlurryAgent.logEvent("Log_Active_Session");
-        }
     }
 
     public void editSession(Session s) {

@@ -61,7 +61,7 @@ public class FragmentEditFinishedSession extends DialogFragment implements Adapt
         dismiss();
 
         if (position == 0) {
-            Intent intent = new Intent(this.activity, ActivityFinishedSession.class);
+            Intent intent = new Intent(this.activity, ActivityEditSession.class);
             intent.putExtra("SESSION_JSON", getArguments().getString("SESSION_JSON"));
             this.activity.startActivityForResult(intent, 2);
         }

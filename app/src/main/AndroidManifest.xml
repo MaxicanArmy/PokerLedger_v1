@@ -43,6 +43,14 @@
                 android:value=".ActivityMain" />
         </activity>
         <activity
+            android:name=".ActivityEditSession"
+            android:label="@string/edit_session_activity_name"
+            android:parentActivityName=".ActivityMain" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ActivityMain" />
+        </activity>
+        <activity
             android:name=".ActivityHistory"
             android:label="@string/history_activity_name"
             android:parentActivityName=".ActivityMain" >
