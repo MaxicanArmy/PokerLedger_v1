@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
@@ -86,6 +87,7 @@ public class FragmentEditActiveSession extends DialogFragment implements Adapter
                 public void onClick(DialogInterface dialog, int whichButton) {
                     int value = Integer.parseInt(input.getText().toString());
                     new RebuyAddon().execute(value);
+                    FlurryAgent.logEvent("Action_Rebuy");
                 }
             });
 
@@ -111,6 +113,7 @@ public class FragmentEditActiveSession extends DialogFragment implements Adapter
             adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int buttonId) {
                     new DeleteActive().execute();
+                    FlurryAgent.logEvent("Action_Delete_Active");
                 }
             });
             adb.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {

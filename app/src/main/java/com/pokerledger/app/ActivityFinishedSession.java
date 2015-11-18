@@ -232,7 +232,7 @@ public class ActivityFinishedSession extends ActivitySession  {
             FlurryAgent.logEvent("Session_Create_Finished");
             new AddSession().execute(this.activeSession);
         } else {
-            FlurryAgent.logEvent("Session_Active_Finished");
+            FlurryAgent.logEvent("Session_Finish_Active");
             new EditSession().execute(this.activeSession);
         }
 

@@ -266,7 +266,7 @@
                 android:text="@string/backup_header"
                 style="@style/TinyHeader" />
 
-
+<!--
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/backup_row_wrapper"
                 android:layout_width="fill_parent"
@@ -291,6 +291,7 @@
                     android:onClick="restoreDatabase"
                     android:textSize="16sp" />
             </LinearLayout>
+            -->
         </LinearLayout>
         <!--
 

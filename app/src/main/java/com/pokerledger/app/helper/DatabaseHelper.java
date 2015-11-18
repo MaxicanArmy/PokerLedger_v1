@@ -790,6 +790,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String setBreakEndQuery = "UPDATE " + TABLE_BREAK + " SET " + KEY_END_DATE + "='" + currentDate + "', " + KEY_END_TIME + "='" + currentTime +
                     "' WHERE " + KEY_BREAK_ID + "=" + s.getBreaks().get(s.getBreaks().size() - 1).getId() + ";";
             db.execSQL(setBreakEndQuery);
+            FlurryAgent.logEvent("Action_Resume");
         } else {
             ContentValues breakValues = new ContentValues();
             breakValues.put(KEY_SESSION_ID, s.getId());
@@ -797,6 +798,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             breakValues.put(KEY_START_TIME, currentTime);
 
             db.insert(TABLE_BREAK, null, breakValues);
+            FlurryAgent.logEvent("Action_Pause");
         }
     }
 

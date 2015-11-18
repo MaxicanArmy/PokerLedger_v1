@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
@@ -73,6 +74,7 @@ public class FragmentEditFinishedSession extends DialogFragment implements Adapt
             adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int buttonId) {
                     new DeleteFinished().execute();
+                    FlurryAgent.logEvent("Action_Delete_Finished");
                 }
             });
             adb.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
