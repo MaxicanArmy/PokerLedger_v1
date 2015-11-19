@@ -22,7 +22,7 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/location_row_wrapper"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
@@ -83,7 +83,7 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/game_row_wrapper"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
@@ -145,7 +145,7 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/game_format_row_wrapper"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
@@ -207,7 +207,7 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/blinds_row_wrapper"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
@@ -255,45 +255,43 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/backup_wrapper"
-            android:orientation="vertical"
-            style="@style/Wrapper">
-
-            <TextView
-                android:id="@+id/backup_tiny_header"
-                android:text="@string/backup_header"
-                style="@style/TinyHeader" />
-
-<!--
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/backup_row_wrapper"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/backup_db"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".50"
-                    android:hint="@string/backup_hint"
-                    android:onClick="backupDatabase"
-                    android:textSize="16sp" />
-
-                <Button
-                    android:id="@+id/restore_db"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".50"
-                    android:hint="@string/restore_hint"
-                    android:onClick="restoreDatabase"
-                    android:textSize="16sp" />
-            </LinearLayout>
-            -->
-        </LinearLayout>
         <!--
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/backup_wrapper"
+                    android:orientation="vertical"
+                    style="@style/Wrapper">
+
+                    <TextView
+                        android:id="@+id/backup_tiny_header"
+                        android:text="@string/backup_header"
+                        style="@style/TinyHeader" />
+
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/backup_row_wrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/backup_db"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".50"
+                            android:hint="@string/backup_hint"
+                            android:onClick="backupDatabase"
+                            android:textSize="16sp" />
+
+                        <Button
+                            android:id="@+id/restore_db"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".50"
+                            android:hint="@string/restore_hint"
+                            android:onClick="restoreDatabase"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+        </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/date_format_wrapper"

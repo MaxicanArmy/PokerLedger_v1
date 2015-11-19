@@ -74,7 +74,7 @@
 
             <TextView
                 android:id="@+id/profit"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:textColor="#4eb502"
@@ -95,7 +95,7 @@
 
             <TextView
                 android:id="@+id/time_played"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:textSize="16sp"  />
@@ -115,7 +115,7 @@
 
             <TextView
                 android:id="@+id/hourly_wage"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:textColor="#4eb502"

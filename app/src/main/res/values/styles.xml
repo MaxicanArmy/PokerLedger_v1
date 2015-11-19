@@ -6,14 +6,14 @@
     </style>
 
     <style name="Wrapper" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/half_standard_padding</item>
         <item name="android:background">@drawable/wrapper</item>
     </style>
 
     <style name="DialogWrap" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">#ffffffff</item>
     </style>
@@ -28,7 +28,7 @@
     </style>
 
     <style name="WrapperHeader" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:textStyle">bold</item>
@@ -47,7 +47,7 @@
     </style>
 
     <style name="Row" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingBottom">@dimen/standard_padding</item>
         <item name="android:paddingRight">@dimen/standard_padding</item>
