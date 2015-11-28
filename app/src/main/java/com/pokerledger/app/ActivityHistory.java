@@ -17,6 +17,7 @@ import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
+import com.pokerledger.app.helper.PLCommon;
 import com.pokerledger.app.helper.SessionSet;
 import com.pokerledger.app.model.Session;
 
@@ -24,7 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -115,7 +115,6 @@ public class ActivityHistory extends ActivityBase {
 
         @Override
         protected void onPostExecute(ArrayList<Session> result) {
-            String startDate;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             String weekOfYear;
             String month;
@@ -138,10 +137,9 @@ public class ActivityHistory extends ActivityBase {
 
             //for each session get session start time
             for (Session s : result) {
-                startDate = s.getStartDate() + " " + s.getStartTime();
                 Calendar cal = Calendar.getInstance();
                 try {
-                    cal.setTime(sdf.parse(startDate));
+                    cal.setTimeInMillis(s.getStart());
                 } catch (Exception e) {
                     //fucking parse exception needed to be handled
                 }
@@ -281,7 +279,7 @@ public class ActivityHistory extends ActivityBase {
             }
 
             profit.setText(stats.profitFormatted());
-            time.setText(stats.timeFormatted());
+            time.setText(stats.lengthFormatted());
             hourly.setText(stats.wageFormatted());
         }
 

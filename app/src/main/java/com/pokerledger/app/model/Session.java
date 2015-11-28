@@ -10,7 +10,8 @@ import java.util.Calendar;
  */
 public class Session {
     private int id, entrants, placed, buyIn, cashOut, state = 0;
-    private String startDate, startTime, endDate, endTime, note = "";
+    private String note = "";
+    private Long start, end = 0L;
     private Location location = new Location();
     private Game game = new Game();
     private GameFormat gameFormat = new GameFormat();
@@ -20,16 +21,14 @@ public class Session {
     //constructors
     public Session() {}
 
-    public Session(String sd, String st, String ed, String et, int bi, int co, Game game, GameFormat gf, Location loc, int state) {
-        this(0, sd, st, ed, et, bi, co, game, gf, loc, state);
+    public Session(Long s, Long e, int bi, int co, Game game, GameFormat gf, Location loc, int state) {
+        this(0, s, e, bi, co, game, gf, loc, state);
     }
 
-    public Session(int id, String sd, String st, String ed, String et, int bi, int co, Game game, GameFormat gf, Location loc, int state) {
+    public Session(int id, Long s, Long e, int bi, int co, Game game, GameFormat gf, Location loc, int state) {
         this.id = id;
-        this.startDate = sd;
-        this.startTime = st;
-        this.endDate = ed;
-        this.endTime = et;
+        this.start = s;
+        this.end = e;
         this.buyIn = bi;
         this.cashOut = co;
         this.game = game;
@@ -40,7 +39,7 @@ public class Session {
 
     @Override
     public String toString() {
-        return Integer.toString(this.id) + " " + this.startDate + " " + this.startTime + " " + this.location.getLocation();
+        return Integer.toString(this.id) + " " + this.start + " " + this.start + " " + this.location.getLocation();
     }
 
     //setters
@@ -48,20 +47,12 @@ public class Session {
         this.id = i;
     }
 
-    public void setStartDate(String s) {
-        this.startDate = s;
+    public void setStart(Long l) {
+        this.start = l;
     }
 
-    public void setStartTime(String s) {
-        this.startTime = s;
-    }
-
-    public void setEndDate(String s) {
-        this.endDate = s;
-    }
-
-    public void setEndTime(String s) {
-        this.endTime = s;
+    public void setEnd(Long l) {
+        this.end = l;
     }
 
     public void setBuyIn(int i) {
@@ -113,20 +104,12 @@ public class Session {
         return this.id;
     }
 
-    public String getStartDate() {
-        return this.startDate;
+    public Long getStart() {
+        return this.start;
     }
 
-    public String getStartTime() {
-        return this.startTime;
-    }
-
-    public String getEndDate() {
-        return this.endDate;
-    }
-
-    public String getEndTime() {
-        return this.endTime;
+    public Long getEnd() {
+        return this.end;
     }
 
     public int getBuyIn() {
@@ -178,7 +161,7 @@ public class Session {
         boolean flag = false;
         if (this.breaks.size() > 0) {
             Break current = this.breaks.get(this.breaks.size() - 1);
-            if (current.getEndDate() == null || current.getEndDate().equals("")) {
+            if (current.getEnd() == null || current.getEnd() == 0L) {
                 flag = true;
             }
         }
@@ -191,8 +174,78 @@ public class Session {
         DecimalFormat df = new DecimalFormat("00");
         int position = this.breaks.size() - 1;
 
-        this.breaks.get(position).setEndDate(cal.get(Calendar.YEAR) + "-" + df.format(cal.get(Calendar.MONTH) + 1) + "-" + df.format(cal.get(Calendar.DAY_OF_MONTH)));
-        this.breaks.get(position).setEndTime(df.format(cal.get(Calendar.HOUR_OF_DAY)) + ":" + df.format(cal.get(Calendar.MINUTE)));
+        this.breaks.get(position).setEnd(cal.getTimeInMillis());
+    }
+
+    public Long lengthMillis() {
+        Calendar cal = Calendar.getInstance();
+        Long endTime;
+
+        if (end == 0L) {
+            endTime = cal.getTimeInMillis();
+        }
+        else {
+            endTime = end;
+        }
+
+        Long breakTotal = 0L;
+
+        for (Break b : this.breaks) {
+            breakTotal += b.lengthMillis();
+        }
+
+        return endTime - this.start - breakTotal;
+    }
+
+    public String lengthFormatted() {
+        Long length = lengthMillis();
+        Long seconds = (length / 1000) % 60;
+        Long minutes = (length / (1000 * 60)) % 60;
+        Long hours = length / (1000 * 60 * 60);
+
+        String timePlayed = "";
+
+        if (hours > 0) {
+            timePlayed += Long.toString(hours) + "h ";
+        }
+
+        if (hours > 0 || minutes > 0) {
+            timePlayed += minutes + "m ";
+        }
+
+        timePlayed += seconds + "s";
+
+        return timePlayed;
+    }
+
+    /*
+    public Long sessionTimeMillis() {
+        long totalTime;
+
+        Calendar startTime = Calendar.getInstance();
+        Calendar endTime = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            startTime.setTime(sdf.parse(this.startDate + " " + this.startTime));
+
+            if (!this.endDate.equals("")) {
+                endTime.setTime(sdf.parse(this.endDate + " " + this.endTime));
+            }
+        } catch (Exception e) {
+            //fucking parse exception needs to be handled
+        }
+
+        totalTime = endTime.getTimeInMillis() - startTime.getTimeInMillis();
+
+        if (this.breaks != null) {
+            if (!this.breaks.isEmpty()) {
+                for (Break b : this.breaks) {
+                    totalTime -= b.breakTimeMillis();
+                }
+            }
+        }
+
+        return totalTime;
     }
 
     public int minutesPlayed() {
@@ -231,13 +284,14 @@ public class Session {
 
         return minutes;
     }
+    */
 
     public double getProfit() {
         return this.cashOut - this.buyIn;
     }
 
     public String displayFormat() {
-        String output = "";
+        String output;
 
         if (this.getGameFormat().getBaseFormatId() == 1) {
             output = this.getBlinds().toString() + " " + this.getGame().getGame();

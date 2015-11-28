@@ -36,7 +36,7 @@ public class FragmentEditLocation extends DialogFragment {
                 String locationName = ((EditText) getView().findViewById(R.id.location_name)).getText().toString();
 
                 if (locationName.equals("")) {
-                    Toast.makeText(getActivity(), "You must enter a location name or press cancel.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.error_no_location_name, Toast.LENGTH_SHORT).show();
                 } else {
                     loc.setLocation(locationName);
                     ((ActivitySettings) getActivity()).notifyEditLocation(loc);

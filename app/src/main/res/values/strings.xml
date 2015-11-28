@@ -2,6 +2,50 @@
 <resources>
     <string name="app_name">Poker Ledger</string>
 
+    <string name="error_enter_buy_in">You must enter a buy in amount.</string>
+    <string name="error_enter_cash_out">You must enter a cash out amount.</string>
+    <string name="error_enter_location">You must select a location.</string>
+    <string name="error_enter_game">You must select a game.</string>
+    <string name="error_enter_format">You must select a format.</string>
+    <string name="error_enter_blinds">You must select the blinds.</string>
+    <string name="error_enter_entrants">You must enter the number of entrants.</string>
+    <string name="error_enter_placed">You must enter what position you placed.</string>
+    <string name="error_enter_start_date">Select a start date for this session.</string>
+    <string name="error_enter_start_time">Select a start time for this session.</string>
+    <string name="error_enter_end_date">Select a end date for this session.</string>
+    <string name="error_enter_end_time">Select a end time for this session.</string>
+    <string name="error_enter_break_start_date">Select a start date for this break.</string>
+    <string name="error_enter_break_start_time">Select a start time for this break.</string>
+    <string name="error_enter_break_end_date">Select a end date for this break.</string>
+    <string name="error_enter_break_end_time">Select a end time for this break.</string>
+    <string name="error_negative_length">Session end time must be after start time.</string>
+    <string name="error_negative_break_length">End date/time must be after start date/time.</string>
+    <string name="error_break_start_early">The break can\'t start before the session\'s start date/time.</string>
+    <string name="error_break_end_late">The break can\'t end after the session\'s end date/time.</string>
+    <string name="error_break_overlap">The break cannot overlap with another break in this session.</string>
+    <string name="error_enter_break">Set start/end date/time before adding breaks.</string>
+    <string name="error_single_blind">Blinds not added. If there is only one blind enter it in SB.</string>
+    <string name="error_points_plus">Blinds not added. You cannot enter other blinds when using points.</string>
+    <string name="error_straddle_no_blinds">Blinds not added. You must enter a SB and BB to enter a straddle.</string>
+    <string name="error_no_game_name">You must enter a game name or press cancel.</string>
+    <string name="error_no_game_format_name">You must enter a game format name or press cancel.</string>
+    <string name="error_no_location_name">You must enter a location name or press cancel.</string>
+
+    <string name="info_set_default_blinds"> is now your default blinds.</string>
+    <string name="info_remove_default_blinds"> is no longer your default blinds.</string>
+    <string name="info_set_default_game"> is now your default game.</string>
+    <string name="info_remove_default_game"> is no longer your default game.</string>
+    <string name="info_set_default_game_format"> is now your default game format.</string>
+    <string name="info_remove_default_game_format"> is no longer your default game format.</string>
+    <string name="info_set_default_location"> is now your default location.</string>
+    <string name="info_remove_default_location"> is no longer your default location.</string>
+    <string name="info_delete_blinds">Blind set deleted.</string>
+    <string name="info_delete_game">Game deleted.</string>
+    <string name="info_delete_game_format">Game format deleted.</string>
+    <string name="info_delete_location">Location deleted.</string>
+
+    <string name="info_no_breaks">There are no breaks associated with this session.</string>
+
     <string name="more">More</string>
 
     <string name="welcome_header">WELCOME</string>
@@ -36,7 +80,6 @@
     <string name="action_view_graphs">Graphs</string>
     <string name="action_view_history">History</string>
     <string name="action_view_settings">Settings</string>
-    <string name="action_backup_restore">Backup &amp; Restore</string>
     <string name="action_filter">Filters</string>
     <string name="action_statistics">Statistics</string>
 

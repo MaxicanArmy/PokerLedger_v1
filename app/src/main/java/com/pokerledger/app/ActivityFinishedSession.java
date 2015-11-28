@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
+import com.pokerledger.app.helper.PLCommon;
 import com.pokerledger.app.model.Blinds;
 import com.pokerledger.app.model.Game;
 import com.pokerledger.app.model.GameFormat;
@@ -41,8 +42,8 @@ public class ActivityFinishedSession extends ActivitySession  {
                 ((EditText) findViewById(R.id.entrants)).setText(Integer.toString(this.activeSession.getEntrants()));
             }
 
-            ((Button) findViewById(R.id.start_date)).setHint(this.activeSession.getStartDate());
-            ((Button) findViewById(R.id.start_time)).setHint(this.activeSession.getStartTime());
+            ((Button) findViewById(R.id.start_date)).setHint(PLCommon.timestampToDate(this.activeSession.getStart()));
+            ((Button) findViewById(R.id.start_time)).setHint(PLCommon.timestampToTime(this.activeSession.getStart()));
 
             if (this.activeSession.onBreak()) {
                 this.activeSession.breakEnd();
@@ -52,17 +53,18 @@ public class ActivityFinishedSession extends ActivitySession  {
                 ((EditText) findViewById(R.id.note)).setText(this.activeSession.getNote());
             }
 
-            if (this.activeSession.getState() == 0) {
+            if (this.activeSession.getState() == 0) { //deprecated block, will always be 1 now
                 ((EditText) findViewById(R.id.cash_out)).setText(Integer.toString(this.activeSession.getCashOut()));
 
                 if (this.activeSession.getGameFormat().getBaseFormatId() == 2) {
                     ((EditText) findViewById(R.id.placed)).setText(Integer.toString(this.activeSession.getPlaced()));
                 }
 
-                ((Button) findViewById(R.id.end_date)).setHint(this.activeSession.getEndDate());
-                ((Button) findViewById(R.id.end_time)).setHint(this.activeSession.getEndTime());
+                ((Button) findViewById(R.id.end_date)).setHint(PLCommon.timestampToDate(this.activeSession.getEnd()));
+                ((Button) findViewById(R.id.end_time)).setHint(PLCommon.timestampToTime(this.activeSession.getEnd()));
             } else {
                 Calendar cal = Calendar.getInstance();
+                this.activeSession.setEnd(cal.getTimeInMillis());
                 DecimalFormat df = new DecimalFormat("00");
                 ((Button) findViewById(R.id.end_date)).setHint(cal.get(Calendar.YEAR) + "-" + df.format(cal.get(Calendar.MONTH) + 1) + "-" + df.format(cal.get(Calendar.DAY_OF_MONTH)));
                 ((Button) findViewById(R.id.end_time)).setHint(df.format(cal.get(Calendar.HOUR_OF_DAY)) + ":" + df.format(cal.get(Calendar.MINUTE)));
@@ -102,7 +104,7 @@ public class ActivityFinishedSession extends ActivitySession  {
         String buyinText = ((EditText) findViewById(R.id.buy_in)).getText().toString();
 
         if (buyinText.equals("")) {
-            Toast.makeText(this, "You must enter a buy in amount.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_enter_buy_in, Toast.LENGTH_SHORT).show();
             findViewById(R.id.buy_in).requestFocus();
             return;
         }
@@ -113,7 +115,7 @@ public class ActivityFinishedSession extends ActivitySession  {
         String cashOutText = ((EditText) findViewById(R.id.cash_out)).getText().toString();
 
         if (cashOutText.equals("")) {
-            Toast.makeText(this, "You must enter a cash out amount.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_enter_cash_out, Toast.LENGTH_SHORT).show();
             findViewById(R.id.cash_out).requestFocus();
             return;
         }
@@ -126,7 +128,7 @@ public class ActivityFinishedSession extends ActivitySession  {
         if (locationSpinner.getSelectedItem() != null) {
             this.activeSession.setLocation((Location) locationSpinner.getSelectedItem());
         } else {
-            Toast.makeText(this, "You must enter the location.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_enter_location, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -135,7 +137,7 @@ public class ActivityFinishedSession extends ActivitySession  {
         if (gameSpinner.getSelectedItem() != null) {
             this.activeSession.setGame((Game) gameSpinner.getSelectedItem());
         } else {
-            Toast.makeText(this, "You must enter the game.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_enter_game, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -148,7 +150,7 @@ public class ActivityFinishedSession extends ActivitySession  {
                 String entrantsText = ((EditText) findViewById(R.id.entrants)).getText().toString();
 
                 if (entrantsText.equals("")) {
-                    Toast.makeText(this, "You must enter the number of entrants.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.error_enter_entrants, Toast.LENGTH_SHORT).show();
                     findViewById(R.id.entrants).requestFocus();
                     return;
                 }
@@ -159,7 +161,7 @@ public class ActivityFinishedSession extends ActivitySession  {
                 String placedText = ((EditText) findViewById(R.id.placed)).getText().toString();
 
                 if (placedText.equals("")) {
-                    Toast.makeText(this, "You must enter what position you placed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.error_enter_placed, Toast.LENGTH_SHORT).show();
                     findViewById(R.id.placed).requestFocus();
                     return;
                 }
@@ -173,50 +175,58 @@ public class ActivityFinishedSession extends ActivitySession  {
                 if (blinds.getSelectedItem() != null) {
                     this.activeSession.setBlinds((Blinds) blinds.getSelectedItem());
                 } else {
-                    Toast.makeText(this, "You must enter the blinds.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.error_enter_blinds, Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
         } else {
-            Toast.makeText(this, "You must select a format.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_enter_format, Toast.LENGTH_SHORT).show();
             return;
         }
 
         String startDate = ((Button) findViewById(R.id.start_date)).getHint().toString();
 
         if (startDate.equals("Start Date")) {
-            Toast.makeText(this, "Select a start date for this session.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_enter_start_date, Toast.LENGTH_SHORT).show();
             return;
         }
 
         String startTime = ((Button) findViewById(R.id.start_time)).getHint().toString();
 
         if (startTime.equals("Start Time")) {
-            Toast.makeText(this, "Select a start time for this session.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_enter_start_time, Toast.LENGTH_SHORT).show();
             return;
         }
 
         String endDate = ((Button) findViewById(R.id.end_date)).getHint().toString();
 
         if (endDate.equals("End Date")) {
-            Toast.makeText(this, "Select an end date for this session.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_enter_end_date, Toast.LENGTH_SHORT).show();
             return;
         }
 
         String endTime = ((Button) findViewById(R.id.end_time)).getHint().toString();
 
         if (endTime.equals("End Time")) {
-            Toast.makeText(this, "Select an end time for this session.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_enter_end_time, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        this.activeSession.setStartDate(startDate);
-        this.activeSession.setStartTime(startTime);
-        this.activeSession.setEndDate(endDate);
-        this.activeSession.setEndTime(endTime);
+        Long start = PLCommon.datetimeToTimestamp(startDate + " " + startTime);
+        Long end = PLCommon.datetimeToTimestamp(endDate + " " + endTime);
 
-        if ((this.activeSession.getEndDate() + this.activeSession.getEndTime()).compareTo(this.activeSession.getStartDate() + this.activeSession.getStartTime()) <= 0) {
-            Toast.makeText(this, "Session end time must be after start time.", Toast.LENGTH_SHORT).show();
+        //decide if start time has been changed
+        if (this.activeSession.getStart() / 60000 != start / 60000) {
+            this.activeSession.setStart(start);
+        }
+
+        //decide if end time has been changed
+        if (this.activeSession.getEnd() / 60000 != end / 60000) {
+            this.activeSession.setEnd(end);
+        }
+
+        if (this.activeSession.lengthMillis() < 0) {
+            Toast.makeText(this, R.string.error_negative_length, Toast.LENGTH_SHORT).show();
             return;
         }
 

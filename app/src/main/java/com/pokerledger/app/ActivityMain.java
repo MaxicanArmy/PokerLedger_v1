@@ -1,12 +1,12 @@
 package com.pokerledger.app;
 
 import android.app.FragmentManager;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -31,10 +31,19 @@ public class ActivityMain extends ActivityBase {
     TextView hourlyWage;
     LinearLayout activeSessionsWrapper;
     ListView list;
-    private static final int ACTIVE_RESULT = 1;
+    SessionListAdapter adapter;
+    //private static final int ACTIVE_RESULT = 1;
     private static final int FINISHED_RESULT = 2;
-    private ProgressDialog pdia;
 
+
+    final Handler timerHandler = new Handler();
+    Runnable timerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            adapter.notifyDataSetChanged();
+            timerHandler.postDelayed(this, 1000); // run every second
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,10 +116,6 @@ public class ActivityMain extends ActivityBase {
     @Override
     public void onPause() {
         super.onPause();
-
-        if ((pdia != null) && pdia.isShowing())
-            pdia.dismiss();
-        pdia = null;
     }
 
     @Override
@@ -144,14 +149,16 @@ public class ActivityMain extends ActivityBase {
 
         @Override
         protected void onPostExecute(Void result) {
-            SessionListAdapter adapter = new SessionListAdapter(ActivityMain.this, sessions);
+            adapter = new SessionListAdapter(ActivityMain.this, sessions);
+            list.setAdapter(adapter);
+
             if (sessions.size() > 0) {
                 activeSessionsWrapper.setVisibility(View.VISIBLE);
+                timerHandler.postDelayed(timerRunnable, 500);
             } else {
                 activeSessionsWrapper.setVisibility(View.GONE);
+                timerHandler.removeCallbacks(timerRunnable);
             }
-
-            list.setAdapter(adapter);
         }
     }
 
@@ -179,7 +186,7 @@ public class ActivityMain extends ActivityBase {
                 }
 
                 ActivityMain.this.profit.setText(stats.profitFormatted());
-                ActivityMain.this.timePlayed.setText(stats.timeFormatted());
+                ActivityMain.this.timePlayed.setText(stats.lengthFormatted());
                 ActivityMain.this.hourlyWage.setText(stats.wageFormatted());
 
             }

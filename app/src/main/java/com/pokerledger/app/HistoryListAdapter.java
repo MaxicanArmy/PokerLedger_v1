@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.pokerledger.app.helper.SessionSet;
 import com.pokerledger.app.model.Break;
 import com.pokerledger.app.model.Session;
+import com.pokerledger.app.helper.PLCommon;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class HistoryListAdapter extends ArrayAdapter<Session> {
         SessionSet stats = new SessionSet(active.get(position));
 
         txtGame.setText(current.displayFormat());
-        txtDate.setText(current.getStartDate());
+        txtDate.setText(PLCommon.timestampToDate(current.getStart()));
 
         txtGameFormat.setText(current.getGameFormat().getBaseFormat());
 
@@ -55,7 +56,7 @@ public class HistoryListAdapter extends ArrayAdapter<Session> {
         txtProfit.setText(stats.profitFormatted());
 
         txtLocation.setText(current.getLocation().getLocation());
-        txtTimePlayed.setText(stats.timeFormatted());
+        txtTimePlayed.setText(stats.lengthFormatted());
 
         return rowView;
     }

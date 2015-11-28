@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import com.pokerledger.app.helper.DatabaseHelper;
@@ -18,7 +19,10 @@ import com.pokerledger.app.model.GameFormat;
 import com.pokerledger.app.model.Location;
 import com.pokerledger.app.model.Session;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Catface Meowmers on 7/26/15.
@@ -72,6 +76,35 @@ public class ActivityBase extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    /*
+    public Long datetimeToTimestamp(String datetime) {
+        Calendar time = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            time.setTime(sdf.parse(datetime));
+        } catch (Exception e) {
+            //fucking parse exception needs to be handled
+        }
+
+        return time.getTimeInMillis();
+    }
+
+    public String timestampToDate(Long timestamp) {
+        Calendar cal = Calendar.getInstance();
+        DecimalFormat df = new DecimalFormat("00");
+        cal.setTimeInMillis(timestamp);
+
+        return cal.get(Calendar.YEAR) + "-" + df.format(cal.get(Calendar.MONTH) + 1) + "-" + df.format(cal.get(Calendar.DAY_OF_MONTH));
+    }
+
+    public String timestampToTime(Long timestamp) {
+        Calendar cal = Calendar.getInstance();
+        DecimalFormat df = new DecimalFormat("00");
+        cal.setTimeInMillis(timestamp);
+
+        return df.format(cal.get(Calendar.HOUR_OF_DAY)) + ":" + df.format(cal.get(Calendar.MINUTE));
+    }
+    */
 
     protected void notifyCreateLocation(String value) {
         //this method is necessary because i cant get fragments to call async tasks

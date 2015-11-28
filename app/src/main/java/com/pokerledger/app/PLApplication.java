@@ -16,6 +16,7 @@ public class PLApplication extends Application {
         FlurryAgent.setLogEnabled(false);
 
         // init Flurry
-        FlurryAgent.init(this, "TQJ7WDN533GGW3T5YFFJ");
+        //FlurryAgent.init(this, "DSJZGZP3JBKS25Q483M2"); //Live Key: DSJZGZP3JBKS25Q483M2
+        FlurryAgent.init(this, "TQJ7WDN533GGW3T5YFFJ"); //Test Key: TQJ7WDN533GGW3T5YFFJ
     }
 }

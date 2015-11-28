@@ -24,7 +24,7 @@ public class FragmentCreateGame extends DialogFragment {
                 String gameName = ((EditText) getView().findViewById(R.id.game_name)).getText().toString();
 
                 if (gameName.equals("")) {
-                    Toast.makeText(getActivity(), "You must enter a game name or press cancel.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.error_no_game_name, Toast.LENGTH_SHORT).show();
                 } else {
                     ((ActivityBase) getActivity()).notifyCreateGame(gameName);
                     dismiss();

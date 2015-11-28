@@ -3,26 +3,21 @@ package com.pokerledger.app;
 import android.app.DatePickerDialog;
 import android.app.FragmentManager;
 import android.app.TimePickerDialog;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
-import com.pokerledger.app.model.Blinds;
-import com.pokerledger.app.model.Game;
+import com.pokerledger.app.helper.PLCommon;
 import com.pokerledger.app.model.GameFormat;
-import com.pokerledger.app.model.Location;
 import com.pokerledger.app.model.Session;
 
 import java.util.Calendar;
@@ -113,6 +108,11 @@ public class ActivitySession extends ActivityBase {
             Button b = (Button) activeView;
             b.setHint(String.format("%04d-%02d-%02d", year, month+1, day));
 
+            Button endDate = (Button) findViewById(R.id.end_date);
+
+            if (endDate != null && endDate.getHint().toString().matches("[A-Za-z]* Date$")) {
+                endDate.setHint(String.format("%04d-%02d-%02d", year, month+1, day));
+            }
         }
     };
 
@@ -158,7 +158,7 @@ public class ActivitySession extends ActivityBase {
 
     public void showBreaksDialog(View v) {
         if (activeSession.getBreaks().size() == 0) {
-            Toast.makeText(this, "There are no breaks associated with this session.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.info_no_breaks, Toast.LENGTH_LONG).show();
         }
         else {
             FragmentManager manager = getFragmentManager();
@@ -180,13 +180,11 @@ public class ActivitySession extends ActivityBase {
         String endTime = ((Button) this.findViewById(R.id.end_time)).getHint().toString();
 
         if (startDate.equals("Start Date") || startTime.equals("Start Time") || endDate.equals("End Date") || endTime.equals("End Time")) {
-            Toast.makeText(this, "Set start/end date/time before adding breaks.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_enter_break, Toast.LENGTH_SHORT).show();
         }
         else {
-            this.activeSession.setStartDate(startDate);
-            this.activeSession.setStartTime(startTime);
-            this.activeSession.setEndDate(endDate);
-            this.activeSession.setEndTime(endTime);
+            this.activeSession.setStart(PLCommon.datetimeToTimestamp(startDate + " " + startTime));
+            this.activeSession.setEnd(PLCommon.datetimeToTimestamp(endDate + " " + endTime));
             FragmentManager manager = getFragmentManager();
             FragmentAddBreak dialog = new FragmentAddBreak();
             dialog.show(manager, "AddBreak");

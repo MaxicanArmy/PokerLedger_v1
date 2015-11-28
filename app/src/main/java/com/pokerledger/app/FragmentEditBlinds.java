@@ -62,17 +62,17 @@ public class FragmentEditBlinds extends DialogFragment {
                 String ppText = ((EditText) getView().findViewById(R.id.points)).getText().toString();
 
                 if (!bbText.equals("") && sbText.equals("")) {
-                    Toast.makeText(getActivity(), "Blinds not added. If there is only one blind enter it in SB.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.error_single_blind, Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 if (!ppText.equals("") && (!sbText.equals("") || !bbText.equals("") || !strText.equals("") || !biText.equals("") || !anteText.equals(""))) {
-                    Toast.makeText(getActivity(), "Blinds not added. You cannot enter other blinds when using points.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.error_points_plus, Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 if (!strText.equals("") && (sbText.equals("") || bbText.equals(""))) {
-                    Toast.makeText(getActivity(), "Blinds not added. You must enter a SB and BB to enter a straddle.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.error_straddle_no_blinds, Toast.LENGTH_LONG).show();
                     return;
                 }
 

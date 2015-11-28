@@ -51,7 +51,7 @@ public class FragmentEditGameFormat extends DialogFragment {
                 }
 
                 if (gameFormatName.equals("")) {
-                    Toast.makeText(getActivity(), "You must enter a game format name or press cancel.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.error_no_game_format_name, Toast.LENGTH_SHORT).show();
                 } else {
                     gameFormat.setGameFormat(gameFormatName);
                     gameFormat.setBaseFormatId(baseFormatId);

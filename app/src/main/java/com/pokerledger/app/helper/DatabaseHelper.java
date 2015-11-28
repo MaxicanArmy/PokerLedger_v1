@@ -15,10 +15,8 @@ import com.pokerledger.app.model.GameFormat;
 import com.pokerledger.app.model.Location;
 import com.pokerledger.app.model.Session;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 
 /**
  * Created by Catface Meowmers on 7/25/15.
@@ -29,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "sessionManager";
 
     //database version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     //table names
     private static final String TABLE_SESSION = "sessions";
@@ -45,10 +43,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //common column names
     private static final String KEY_SESSION_ID = "session_id";
-    private static final String KEY_START_DATE = "start_date";
-    private static final String KEY_START_TIME = "start_time";
-    private static final String KEY_END_DATE = "end_date";
-    private static final String KEY_END_TIME = "end_time";
+    private static final String KEY_START = "start";
+    private static final String KEY_END = "end";
+    private static final String KEY_START_DATE = "start_date"; //deprecated, but needed for onUpgrade
+    private static final String KEY_START_TIME = "start_time"; //deprecated, but needed for onUpgrade
+    private static final String KEY_END_DATE = "end_date"; //deprecated, but needed for onUpgrade
+    private static final String KEY_END_TIME = "end_time"; //deprecated, but needed for onUpgrade
     private static final String KEY_GAME = "game";
     private static final String KEY_LOCATION = "location";
     private static final String KEY_FILTERED = "filtered";
@@ -98,9 +98,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //SESSIONS
     private static final String CREATE_TABLE_SESSIONS = "CREATE TABLE " + TABLE_SESSION + " (" + KEY_SESSION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            KEY_START_DATE + " DATE, " + KEY_START_TIME + " TIME, " + KEY_END_DATE + " DATE, " + KEY_END_TIME + " TIME, " + KEY_BUY_IN + " INTEGER, " +
-            KEY_CASH_OUT + " INTEGER, " + KEY_GAME + " INTEGER, " + KEY_GAME_FORMAT + " INTEGER, " + KEY_LOCATION + " INTEGER, " +
-            KEY_STATE + " INTEGER, " + KEY_FILTERED + " INTEGER);";
+            KEY_START + " INTEGER, " + KEY_END + " INTEGER, " + KEY_BUY_IN + " INTEGER, " + KEY_CASH_OUT + " INTEGER, " + KEY_GAME + " INTEGER, " +
+            KEY_GAME_FORMAT + " INTEGER, " + KEY_LOCATION + " INTEGER, " + KEY_STATE + " INTEGER, " + KEY_FILTERED + " INTEGER);";
 
     //GAMES
     private static final String CREATE_TABLE_GAMES = "CREATE TABLE " + TABLE_GAME + " (" + KEY_GAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -121,7 +120,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //BREAKS
     private static final String CREATE_TABLE_BREAKS = "CREATE TABLE " + TABLE_BREAK + " (" + KEY_BREAK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            KEY_SESSION_ID + " INTEGER, " + KEY_START_DATE + " DATE, " + KEY_START_TIME + " TIME, " + KEY_END_DATE + " DATE, " + KEY_END_TIME + " TIME);";
+            KEY_SESSION_ID + " INTEGER, " + KEY_START + " INTEGER, " + KEY_END + " INTEGER);";
 
     //NOTES
     private static final String CREATE_TABLE_NOTES = "CREATE TABLE " + TABLE_NOTE + " (" + KEY_SESSION_ID + " INTEGER, " + KEY_NOTE + " TEXT);";
@@ -204,12 +203,87 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        for (int i = oldVersion; i < newVersion; i++)
-        {
-            switch(i)
-            {
+        if (oldVersion < 2) {
+            db.beginTransaction();
+            try {
+                //1. Add columns start, end to tables sessions and breaks
+                db.execSQL("ALTER TABLE " + TABLE_SESSION + " ADD COLUMN " + KEY_START + " INTEGER");
+                db.execSQL("ALTER TABLE " + TABLE_SESSION + " ADD COLUMN " + KEY_END + " INTEGER");
+                db.execSQL("ALTER TABLE " + TABLE_BREAK + " ADD COLUMN " + KEY_START + " INTEGER");
+                db.execSQL("ALTER TABLE " + TABLE_BREAK + " ADD COLUMN " + KEY_END + " INTEGER");
 
+                //2. Select all rows from table breaks
+                Cursor c = db.rawQuery("SELECT * FROM " + TABLE_BREAK, null);
+
+                //3. process date/times
+                //4. insert timestamps
+                if (c.moveToFirst()) {
+                    do {
+                        db.execSQL("UPDATE " + TABLE_BREAK + " SET " + KEY_START + "=" + PLCommon.datetimeToTimestamp(c.getString(c.getColumnIndex(KEY_START_DATE)) + " " +
+                                c.getString(c.getColumnIndex(KEY_START_TIME))) + ", " + KEY_END + "=" + PLCommon.datetimeToTimestamp(c.getString(c.getColumnIndex(KEY_END_DATE)) + " " +
+                                c.getString(c.getColumnIndex(KEY_END_TIME))) + " WHERE " + KEY_BREAK_ID + "=" + c.getInt(c.getColumnIndex(KEY_BREAK_ID)));
+
+                    } while (c.moveToNext());
+                }
+                c.close();
+
+                //5. select all rows from table sessions
+                c = db.rawQuery("SELECT * FROM " + TABLE_SESSION, null);
+
+                //6. process date/times
+                //7. insert timestamps
+                if (c.moveToFirst()) {
+                    do {
+                        db.execSQL("UPDATE " + TABLE_SESSION + " SET " + KEY_START + "=" + PLCommon.datetimeToTimestamp(c.getString(c.getColumnIndex(KEY_START_DATE)) + " " +
+                                c.getString(c.getColumnIndex(KEY_START_TIME))) + ", " + KEY_END + "=" + PLCommon.datetimeToTimestamp(c.getString(c.getColumnIndex(KEY_END_DATE)) + " " +
+                                c.getString(c.getColumnIndex(KEY_END_TIME))) + " WHERE " + KEY_SESSION_ID + "=" + c.getInt(c.getColumnIndex(KEY_SESSION_ID)));
+                    } while (c.moveToNext());
+                }
+                c.close();
+
+                //8. create temp_session table that leaves off old columns
+                db.execSQL("CREATE TABLE temp_sessions (" + KEY_SESSION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_START + " INTEGER, " + KEY_END + " INTEGER, " +
+                        KEY_BUY_IN + " INTEGER, " + KEY_CASH_OUT + " INTEGER, " + KEY_GAME + " INTEGER, " + KEY_GAME_FORMAT + " INTEGER, " + KEY_LOCATION + " INTEGER, " +
+                        KEY_STATE + " INTEGER, " + KEY_FILTERED + " INTEGER);");
+
+                //9. copy session to temp_session
+                db.execSQL("INSERT INTO temp_sessions (" + KEY_SESSION_ID + ", " + KEY_START + ", " + KEY_END + ", " +
+                        KEY_BUY_IN + ", " + KEY_CASH_OUT + ", " + KEY_GAME + ", " + KEY_GAME_FORMAT + ", " + KEY_LOCATION + ", " + KEY_STATE + ", " +
+                        KEY_FILTERED + ") SELECT " + KEY_SESSION_ID + ", " + KEY_START + ", " + KEY_END + ", " + KEY_BUY_IN + ", " + KEY_CASH_OUT + ", " + KEY_GAME + ", " +
+                        KEY_GAME_FORMAT + ", " + KEY_LOCATION + ", " + KEY_STATE + ", " + KEY_FILTERED + " FROM sessions;");
+
+                //10. delete session table
+                db.execSQL("DROP TABLE " + TABLE_SESSION);
+
+                //11. rename temp_tables to sessions
+                db.execSQL("ALTER TABLE temp_sessions RENAME TO " + TABLE_SESSION);
+
+                //12. create temp_break that leaves off old columns
+                db.execSQL("CREATE TABLE temp_breaks (" + KEY_BREAK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        KEY_SESSION_ID + " INTEGER, " + KEY_START + " INTEGER, " + KEY_END + " INTEGER);");
+
+                //13. copy breaks to temp_break
+                db.execSQL("INSERT INTO temp_breaks (" + KEY_BREAK_ID + ", " + KEY_SESSION_ID + ", " + KEY_START + ", " + KEY_END + ") SELECT " +
+                        KEY_BREAK_ID + ", " + KEY_SESSION_ID + ", " + KEY_START + ", " + KEY_END + " FROM breaks;");
+
+                //14. delete breaks table
+                db.execSQL("DROP TABLE " + TABLE_BREAK);
+
+                //15. rename temp_break to breaks
+                db.execSQL("ALTER TABLE temp_breaks RENAME TO " + TABLE_BREAK);
+
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
             }
+        }
+        if (oldVersion < 3) {
+            /*
+            1. create temp_table that buyin and cashout types set to double/float w/e
+            2. copy sessions to temp_table (will this do conversion?)
+            3. delete sessions
+            4. rename temp_table
+             */
         }
     }
 
@@ -583,7 +657,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Session> sessions = new ArrayList<>();
 
-        String query = "SELECT " + TABLE_SESSION + "." + KEY_SESSION_ID + ", " + KEY_START_DATE + ", " + KEY_START_TIME + ", " + KEY_END_DATE + ", " + KEY_END_TIME + ", " +
+        String query = "SELECT " + TABLE_SESSION + "." + KEY_SESSION_ID + ", " + KEY_START + ", " + KEY_END + ", " +
                 KEY_BUY_IN + ", " + KEY_CASH_OUT + ", " + KEY_GAME_FORMAT_ID + ", " + TABLE_GAME_FORMAT + "." + KEY_GAME_FORMAT + ", " +
                 KEY_BASE_FORMAT_ID + ", " + TABLE_BASE_FORMAT + "." + KEY_BASE_FORMAT + ", " + KEY_STATE + ", " + KEY_GAME_ID + ", " + TABLE_GAME + "." + KEY_GAME + ", " +
                 KEY_LOCATION_ID + ", " + TABLE_LOCATION + "." + KEY_LOCATION + ", " + TABLE_BLINDS + "." + KEY_BLIND_ID + ", " +
@@ -597,7 +671,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_TOURNAMENT + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_CASH +
                 " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_CASH + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_BLINDS +
                 " ON " + TABLE_CASH + "." + KEY_BLINDS + "=" + TABLE_BLINDS + "." + KEY_BLIND_ID + " WHERE " + KEY_STATE + "=" + state +
-                " AND " + TABLE_SESSION + "." + KEY_FILTERED + "=0 ORDER BY " + KEY_START_DATE + " " + chrono + ", " + KEY_START_TIME + " " + chrono + ";";
+                " AND " + TABLE_SESSION + "." + KEY_FILTERED + "=0 ORDER BY " + KEY_START + " " + chrono + ";";
 
         Cursor c = db.rawQuery(query, null);
 
@@ -606,10 +680,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 Session s = new Session();
                 s.setId(c.getInt(c.getColumnIndex(KEY_SESSION_ID)));
-                s.setStartDate(c.getString(c.getColumnIndex(KEY_START_DATE)));
-                s.setStartTime(c.getString(c.getColumnIndex(KEY_START_TIME)));
-                s.setEndDate(c.getString(c.getColumnIndex(KEY_END_DATE)));
-                s.setEndTime(c.getString(c.getColumnIndex(KEY_END_TIME)));
+                s.setStart(c.getLong(c.getColumnIndex(KEY_START)));
+                s.setEnd(c.getLong(c.getColumnIndex(KEY_END)));
                 s.setBuyIn(c.getInt(c.getColumnIndex(KEY_BUY_IN)));
                 s.setCashOut(c.getInt(c.getColumnIndex(KEY_CASH_OUT)));
                 s.setGame(new Game(c.getInt(c.getColumnIndex(KEY_GAME_ID)), c.getString(c.getColumnIndex(KEY_GAME))));
@@ -638,13 +710,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
 
                 SQLiteDatabase db2 = this.getReadableDatabase();
-                Cursor b = db2.rawQuery("SELECT * FROM "+ TABLE_BREAK +" WHERE " + KEY_SESSION_ID + "=" + s.getId() + " ORDER BY " + KEY_BREAK_ID + " ASC", null);
+                Cursor b = db2.rawQuery("SELECT * FROM " + TABLE_BREAK + " WHERE " + KEY_SESSION_ID + "=" + s.getId() + " ORDER BY " + KEY_BREAK_ID + " ASC", null);
 
                 if (b.moveToFirst()) {
                     ArrayList<Break> breaks = new ArrayList<>();
                     do {
-                        breaks.add(new Break(b.getInt(b.getColumnIndex(KEY_BREAK_ID)), b.getString(b.getColumnIndex(KEY_START_DATE)), b.getString(b.getColumnIndex(KEY_START_TIME)),
-                                b.getString(b.getColumnIndex(KEY_END_DATE)), b.getString(b.getColumnIndex(KEY_END_TIME))));
+                        breaks.add(new Break(b.getInt(b.getColumnIndex(KEY_BREAK_ID)), b.getLong(b.getColumnIndex(KEY_START)), b.getLong(b.getColumnIndex(KEY_END))));
                     } while (b.moveToNext());
 
                     s.setBreaks(breaks);
@@ -661,9 +732,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void addSession(Session s) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String query = "INSERT INTO " + TABLE_SESSION + " (" + KEY_START_DATE + ", " + KEY_START_TIME + ", " + KEY_END_DATE + ", " + KEY_END_TIME + ", " +
+        String query = "INSERT INTO " + TABLE_SESSION + " (" + KEY_START + ", " + KEY_END + ", " +
                 KEY_BUY_IN + ", " + KEY_CASH_OUT + ", " + KEY_GAME + ", " + KEY_GAME_FORMAT + ", " + KEY_LOCATION + ", " + KEY_STATE + ", " +
-                KEY_FILTERED + ") VALUES ('" + s.getStartDate() + "', '" + s.getStartTime() + "', '" + s.getEndDate() + "', '" + s.getEndTime() + "', " + s.getBuyIn() + ", " +
+                KEY_FILTERED + ") VALUES (" + s.getStart() + ", " + s.getEnd() + ", " + s.getBuyIn() + ", " +
                 s.getCashOut() + ", " + s.getGame().getId() + ", " + s.getGameFormat().getId() + ", " + s.getLocation().getId() + ", " +
                 s.getState() + ", 0);";
 
@@ -683,9 +754,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             ArrayList<Break> breaks = s.getBreaks();
             for (int i = 0; i < breaks.size(); i++) {
-                db.execSQL("INSERT INTO " + TABLE_BREAK + " (" + KEY_SESSION_ID + ", " + KEY_START_DATE + ", " + KEY_START_TIME + ", " + KEY_END_DATE +
-                        ", " + KEY_END_TIME + ") VALUES (" + sessionId + ", '" + breaks.get(i).getStartDate() + "', '" + breaks.get(i).getStartTime() +
-                        "', '" + breaks.get(i).getEndDate() + "', '" + breaks.get(i).getEndTime() + "');");
+                db.execSQL("INSERT INTO " + TABLE_BREAK + " (" + KEY_SESSION_ID + ", " + KEY_START + ", " + KEY_END + ") VALUES (" + sessionId + ", " +
+                        breaks.get(i).getStart() + ", " + breaks.get(i).getEnd() + ");");
             }
 
             if (!s.getNote().equals("")) {
@@ -702,8 +772,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void editSession(Session s) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String query = "UPDATE " + TABLE_SESSION + " SET " + KEY_START_DATE + "='" + s.getStartDate() + "', " + KEY_START_TIME + "='" + s.getStartTime() + "', " +
-                KEY_END_DATE + "='" + s.getEndDate() + "', " + KEY_END_TIME + "='" + s.getEndTime() + "', " + KEY_BUY_IN + "=" +
+        String query = "UPDATE " + TABLE_SESSION + " SET " + KEY_START + "=" + s.getStart() + ", " + KEY_END + "=" + s.getEnd() + ", " + KEY_BUY_IN + "=" +
                 s.getBuyIn() + ", " + KEY_CASH_OUT + "=" + s.getCashOut() + ", " + KEY_GAME +
                 "=" + s.getGame().getId() + ", " + KEY_GAME_FORMAT + "=" + s.getGameFormat().getId() + ", " + KEY_LOCATION + "=" + s.getLocation().getId() + ", " +
                 KEY_STATE + "=" + s.getState() + ", " + KEY_FILTERED + "=0 WHERE " + KEY_SESSION_ID + "=" + s.getId() + ";";
@@ -733,9 +802,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (s.getBreaks().size() > 0) {
             ArrayList<Break> breaks = s.getBreaks();
             for (int i = 0; i < breaks.size(); i++) {
-                db.execSQL("INSERT INTO " + TABLE_BREAK + " (" + KEY_SESSION_ID + ", " + KEY_START_DATE + ", " + KEY_START_TIME + ", " + KEY_END_DATE + ", " + KEY_END_TIME +
-                        ") VALUES (" + s.getId() + ", '" + breaks.get(i).getStartDate() + "', '" + breaks.get(i).getStartTime() + "', '" + breaks.get(i).getEndDate() +
-                        "', '" + breaks.get(i).getEndTime() + "');");
+                db.execSQL("INSERT INTO " + TABLE_BREAK + " (" + KEY_SESSION_ID + ", " + KEY_START + ", " + KEY_END + ") VALUES (" +
+                        s.getId() + ", " + breaks.get(i).getStart() + ", " + breaks.get(i).getEnd() + ");");
             }
         }
 
@@ -782,20 +850,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Calendar cal = Calendar.getInstance();
-        DecimalFormat df = new DecimalFormat("00");
-        String currentDate = cal.get(Calendar.YEAR) + "-" + df.format(cal.get(Calendar.MONTH) + 1) + "-" + df.format(cal.get(Calendar.DAY_OF_MONTH));
-        String currentTime = df.format(cal.get(Calendar.HOUR_OF_DAY)) + ":" + df.format(cal.get(Calendar.MINUTE));
+        Long time = cal.getTimeInMillis();
 
         if (s.onBreak()) {
-            String setBreakEndQuery = "UPDATE " + TABLE_BREAK + " SET " + KEY_END_DATE + "='" + currentDate + "', " + KEY_END_TIME + "='" + currentTime +
-                    "' WHERE " + KEY_BREAK_ID + "=" + s.getBreaks().get(s.getBreaks().size() - 1).getId() + ";";
+            String setBreakEndQuery = "UPDATE " + TABLE_BREAK + " SET " + KEY_END + "=" + time +
+                    " WHERE " + KEY_BREAK_ID + "=" + s.getBreaks().get(s.getBreaks().size() - 1).getId() + ";";
             db.execSQL(setBreakEndQuery);
             FlurryAgent.logEvent("Action_Resume");
         } else {
             ContentValues breakValues = new ContentValues();
             breakValues.put(KEY_SESSION_ID, s.getId());
-            breakValues.put(KEY_START_DATE, currentDate);
-            breakValues.put(KEY_START_TIME, currentTime);
+            breakValues.put(KEY_START, time);
 
             db.insert(TABLE_BREAK, null, breakValues);
             FlurryAgent.logEvent("Action_Pause");

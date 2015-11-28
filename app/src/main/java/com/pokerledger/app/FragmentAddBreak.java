@@ -1,8 +1,5 @@
 package com.pokerledger.app;
 
-/**
- * Created by Catface Meowmers on 7/27/15.
- */
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,11 +12,12 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.pokerledger.app.model.Break;
 import com.pokerledger.app.model.Session;
+import com.pokerledger.app.helper.PLCommon;
 
 import java.util.ArrayList;
 
 /**
- * Created by Max on 9/26/14.
+ * Created by Catface Meowmers on 7/27/15.
  */
 public class FragmentAddBreak extends DialogFragment {
     View view;
@@ -86,35 +84,54 @@ public class FragmentAddBreak extends DialogFragment {
                 String startTime = ((Button) getView().findViewById(R.id.break_start_time)).getHint().toString();
                 String endTime = ((Button) getView().findViewById(R.id.break_end_time)).getHint().toString();
 
-                String start = startDate + " " + startTime;
-                String end = endDate + " " + endTime;
+                if (startDate.equals("Start Date")) {
+                    Toast.makeText(getActivity(), R.string.error_enter_break_start_date, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (startTime.equals("Start Time")) {
+                    Toast.makeText(getActivity(), R.string.error_enter_break_start_time, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (endDate.equals("End Date")) {
+                    Toast.makeText(getActivity(), R.string.error_enter_break_end_date, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (endTime.equals("End Time")) {
+                    Toast.makeText(getActivity(), R.string.error_enter_break_end_time, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Long start = PLCommon.datetimeToTimestamp(startDate + " " + startTime);
+                Long end = PLCommon.datetimeToTimestamp(endDate + " " + endTime);
 
                 //error conditions
-                //add error condition for if nothing has been entered in one of the buttons
                 //1. Break end datetime is before break start datetime
-                if (end.compareTo(start) <= 0) {
-                    Toast.makeText(a, "End date/time must be after start date/time.", Toast.LENGTH_SHORT).show();
+                if (end < start) {
+                    Toast.makeText(a, R.string.error_negative_break_length, Toast.LENGTH_SHORT).show();
                 }
                 //2. Break starts before session start datetime
-                else if (start.compareTo(a.activeSession.getStartDate() + " " + a.activeSession.getStartTime()) < 0) {
-                    Toast.makeText(a, "The break can't start before the session's start date/time.", Toast.LENGTH_SHORT).show();
+                else if (start < a.activeSession.getStart()) {
+                    Toast.makeText(a, R.string.error_break_start_early, Toast.LENGTH_SHORT).show();
                 }
                 //3. Break ends after session end datetime
-                else if (end.compareTo(a.activeSession.getEndDate() + " " + a.activeSession.getEndTime()) > 0) {
-                    Toast.makeText(a, "The break can't end after the session's end date/time.", Toast.LENGTH_SHORT).show();
+                else if (end > a.activeSession.getEnd()) {
+                    Toast.makeText(a, R.string.error_break_end_late, Toast.LENGTH_SHORT).show();
                 }
                 //4. Any part of the break overlaps with another break
                 else {
                     ArrayList<Break> ba = a.activeSession.getBreaks();
                     if (!ba.isEmpty()) {
                         for (Break b : ba) {
-                            if ((start.compareTo(b.getEndDate() + " " + b.getEndTime()) < 0) && (end.compareTo(b.getStartDate() + " " + b.getEndTime()) > 0)) {
-                                Toast.makeText(a, "The break cannot overlap with another break in this session.", Toast.LENGTH_SHORT).show();
+                            if ((start < b.getEnd()) && (end > b.getStart())) {
+                                Toast.makeText(a, R.string.error_break_overlap, Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         }
                     }
-                    ba.add(new Break(startDate, startTime, endDate, endTime));
+                    ba.add(new Break(start, end));
                     a.activeSession.setBreaks(ba);
                     dismiss();
                 }

@@ -1,30 +1,32 @@
 package com.pokerledger.app.model;
 
+import com.pokerledger.app.helper.PLCommon;
+
+import java.util.Calendar;
+
 /**
  * Created by Catface Meowmers on 7/25/15.
  */
 public class Break {
     private int id = 0;
-    private String startDate, startTime, endDate, endTime = "";
+    private Long start, end = 0L;
 
     //constructors
     public Break() {}
 
-    public Break(String sd, String st, String ed, String et) {
-        this(0, sd, st, ed, et);
+    public Break(Long s, Long e) {
+        this(0, s, e);
     }
 
-    public Break(int i, String sd, String st, String ed, String et) {
+    public Break(int i, Long s, Long e) {
         this.id = i;
-        this.startDate = sd;
-        this.startTime = st;
-        this.endDate = ed;
-        this.endTime = et;
+        this.start = s;
+        this.end = e;
     }
 
     @Override
     public String toString() {
-        return "start: " + this.startDate + " " + this.startTime + "\n  end: " + this.endDate + " " + this.endTime;
+        return "start: " + PLCommon.timestampToDatetime(this.start) + "\n  end: " + PLCommon.timestampToDatetime(this.end);
     }
 
     //setters
@@ -32,20 +34,12 @@ public class Break {
         this.id = i;
     }
 
-    public void setStartDate(String s) {
-        this.startDate = s;
+    public void setStart(Long l) {
+        this.start = l;
     }
 
-    public void setStartTime(String s) {
-        this.startTime = s;
-    }
-
-    public void setEndDate(String s) {
-        this.endDate = s;
-    }
-
-    public void setEndTime(String s) {
-        this.endTime = s;
+    public void setEnd(Long l) {
+        this.end = l;
     }
 
     //getters
@@ -53,19 +47,65 @@ public class Break {
         return this.id;
     }
 
-    public String getStartDate() {
-        return this.startDate;
+    public Long getStart() {
+        return this.start;
     }
 
-    public String getStartTime() {
-        return this.startTime;
+    public Long getEnd() {
+        return this.end;
     }
 
-    public String getEndDate() {
-        return this.endDate;
+    public Long lengthMillis() {
+        Calendar cal = Calendar.getInstance();
+        Long endTime;
+
+        if (end == 0L) {
+            endTime = cal.getTimeInMillis();
+        }
+        else {
+            endTime = end;
+        }
+
+        return endTime - this.start;
     }
 
-    public String getEndTime() {
-        return this.endTime;
+    public String lengthFormatted() {
+        Long length = lengthMillis();
+        Long seconds = (length / 1000) % 60;
+        Long minutes = (length / (1000 * 60)) % 60;
+        Long hours = length / (1000 * 60 * 60);
+
+        String timePlayed = "";
+
+        if (hours > 0) {
+            timePlayed += Long.toString(hours) + "h ";
+        }
+
+        if (hours > 0 || minutes > 0) {
+            timePlayed += minutes + "m ";
+        }
+
+        timePlayed += seconds + "s";
+
+        return timePlayed;
     }
+
+    /*
+    public Long breakTimeMillis() {
+        Calendar startTime = Calendar.getInstance();
+        Calendar endTime = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            startTime.setTime(sdf.parse(this.startDate + " " + this.startTime));
+
+            if (!this.endDate.equals("")) {
+                endTime.setTime(sdf.parse(this.endDate + " " + this.endTime));
+            }
+        } catch (Exception e) {
+            //fucking parse exception needs to be handled
+        }
+
+        return endTime.getTimeInMillis() - startTime.getTimeInMillis();
+    }
+    */
 }

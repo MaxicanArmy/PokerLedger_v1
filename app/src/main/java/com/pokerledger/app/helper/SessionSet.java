@@ -1,21 +1,18 @@
 package com.pokerledger.app.helper;
 
-import android.provider.ContactsContract;
-
 import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 import com.pokerledger.app.model.Session;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Created by Catface Meowmers on 7/25/15.
  */
 public class SessionSet {
     private ArrayList<Session> sessions = new ArrayList<Session>();
-    int profit = 0, minutesPlayed = 0, minY = 0, maxY = 0;
+    int profit = 0, minY = 0, maxY = 0;
+    Long lengthMillis = 0L;
     ArrayList<DataPoint> dataPoints = new ArrayList<>();
 
     public SessionSet() {}
@@ -35,11 +32,16 @@ public class SessionSet {
         return this.sessions;
     }
 
-    public double getMinutesPlayed() {
-        return this.minutesPlayed;
+    public Long getLengthMillis() {
+        return this.lengthMillis;
+    }
+
+    public Long getLengthMinutes() {
+        return this.lengthMillis / (1000 * 60);
     }
 
     public double getHoursPlayed() {
+        int minutesPlayed = this.getLengthMinutes().intValue();
         int hours = minutesPlayed / 60;
         double minutes = minutesPlayed % 60;
 
@@ -70,7 +72,7 @@ public class SessionSet {
     //other
     public void addSession(Session s) {
         this.sessions.add(s);
-        this.minutesPlayed += s.minutesPlayed();
+        this.lengthMillis += s.lengthMillis();
         this.profit += s.getProfit();
         this.dataPoints.add(new DataPoint(this.getHoursPlayed(), this.profit));
         if (this.profit > maxY) {
@@ -93,6 +95,7 @@ public class SessionSet {
         return profitText;
     }
 
+    /*
     public String timeFormatted() {
         int hours = minutesPlayed / 60;
         int minutes = minutesPlayed % 60;
@@ -106,8 +109,31 @@ public class SessionSet {
 
         return timePlayed;
     }
+    */
+
+    public String lengthFormatted() {
+        Long length = lengthMillis;
+        Long seconds = (length / 1000) % 60;
+        Long minutes = (length / (1000 * 60)) % 60;
+        Long hours = length / (1000 * 60 * 60);
+
+        String timePlayed = "";
+
+        if (hours > 0) {
+            timePlayed += Long.toString(hours) + "h ";
+        }
+
+        if (hours > 0 || minutes > 0) {
+            timePlayed += minutes + "m ";
+        }
+
+        timePlayed += seconds + "s";
+
+        return timePlayed;
+    }
 
     public String wageFormatted() {
+        int minutesPlayed = getLengthMinutes().intValue();
         double hourly;
         String hourlyWage;
 

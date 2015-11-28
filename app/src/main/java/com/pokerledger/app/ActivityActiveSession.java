@@ -2,7 +2,6 @@ package com.pokerledger.app;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -10,6 +9,7 @@ import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
+import com.pokerledger.app.helper.PLCommon;
 import com.pokerledger.app.model.Blinds;
 import com.pokerledger.app.model.Game;
 import com.pokerledger.app.model.GameFormat;
@@ -30,6 +30,7 @@ public class ActivityActiveSession extends ActivitySession {
         FlurryAgent.logEvent("Activity_Active_Session");
 
         Calendar calender = Calendar.getInstance();
+        activeSession.setStart(calender.getTimeInMillis());
         ((Button) findViewById(R.id.start_date)).setHint(String.format("%04d-%02d-%02d", calender.get(Calendar.YEAR), calender.get(Calendar.MONTH)+1, calender.get(Calendar.DAY_OF_MONTH)));
         ((Button) findViewById(R.id.start_time)).setHint(String.format("%02d:%02d", calender.get(Calendar.HOUR_OF_DAY), calender.get(Calendar.MINUTE)));
     }
@@ -66,7 +67,7 @@ public class ActivityActiveSession extends ActivitySession {
         String buyinText = ((EditText) findViewById(R.id.buy_in)).getText().toString();
 
         if (buyinText.equals("")) {
-            Toast.makeText(this, "You must enter a buy in amount.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_enter_buy_in, Toast.LENGTH_SHORT).show();
             findViewById(R.id.buy_in).requestFocus();
             return;
         }
@@ -92,31 +93,35 @@ public class ActivityActiveSession extends ActivitySession {
                 if (blinds.getSelectedItem() != null) {
                     this.activeSession.setBlinds((Blinds) blinds.getSelectedItem());
                 } else {
-                    Toast.makeText(this, "You must enter the blinds.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.error_enter_blinds, Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
         } else {
-            Toast.makeText(this, "You must select a format.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_enter_format, Toast.LENGTH_SHORT).show();
             return;
         }
 
         String startDate = ((Button) findViewById(R.id.start_date)).getHint().toString();
 
         if (startDate.equals("Start Date")) {
-            Toast.makeText(this, "Select a start date for this session.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_enter_start_date, Toast.LENGTH_SHORT).show();
             return;
         }
 
         String startTime = ((Button) findViewById(R.id.start_time)).getHint().toString();
 
         if (startTime.equals("Start Time")) {
-            Toast.makeText(this, "Select a start time for this session.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_enter_start_time, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        this.activeSession.setStartDate(startDate);
-        this.activeSession.setStartTime(startTime);
+        Long start = PLCommon.datetimeToTimestamp(startDate + " " + startTime);
+
+        //decide if time has been changed
+        if (this.activeSession.getStart() / 60000 != start / 60000) {
+            this.activeSession.setStart(start);
+        }
 
         String note = ((EditText) findViewById(R.id.note)).getText().toString();
 
@@ -124,14 +129,22 @@ public class ActivityActiveSession extends ActivitySession {
             this.activeSession.setNote(note);
         }
 
-        this.activeSession.setGame((Game) ((Spinner) findViewById(R.id.game)).getSelectedItem());
+
+        Spinner gameSpinner = (Spinner) findViewById(R.id.game);
+
+        if (gameSpinner.getSelectedItem() != null) {
+            this.activeSession.setGame((Game) gameSpinner.getSelectedItem());
+        } else {
+            Toast.makeText(this, R.string.error_enter_game, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Spinner location = (Spinner) findViewById(R.id.location);
 
         if (location.getSelectedItem() != null) {
             this.activeSession.setLocation((Location) location.getSelectedItem());
         } else {
-            Toast.makeText(this, "You must enter the location.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_enter_location, Toast.LENGTH_SHORT).show();
             return;
         }
 
