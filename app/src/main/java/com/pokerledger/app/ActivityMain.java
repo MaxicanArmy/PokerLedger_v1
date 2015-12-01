@@ -159,6 +159,8 @@ public class ActivityMain extends ActivityBase {
                 activeSessionsWrapper.setVisibility(View.GONE);
                 timerHandler.removeCallbacks(timerRunnable);
             }
+
+            welcome();
         }
     }
 
@@ -174,7 +176,6 @@ public class ActivityMain extends ActivityBase {
         protected void onPostExecute(SessionSet stats) {
             if (stats.getSessions().size() < 1) {
                 ActivityMain.this.findViewById(R.id.overview_wrapper).setVisibility(LinearLayout.GONE);
-                ActivityMain.this.welcome();
             } else {
                 ActivityMain.this.findViewById(R.id.overview_wrapper).setVisibility(LinearLayout.VISIBLE);
                 if (stats.getProfit() < 0 ) {
@@ -190,14 +191,16 @@ public class ActivityMain extends ActivityBase {
                 ActivityMain.this.hourlyWage.setText(stats.wageFormatted());
 
             }
+
+            welcome();
         }
     }
 
     public void welcome() {
-        if (list.getAdapter().getCount() < 1) {
+        LinearLayout ovw = (LinearLayout) ActivityMain.this.findViewById(R.id.overview_wrapper);
+        if (activeSessionsWrapper.getVisibility() == View.GONE && ovw.getVisibility() == View.GONE) {
             findViewById(R.id.welcome_wrapper).setVisibility(LinearLayout.VISIBLE);
-        }
-        else {
+        } else {
             findViewById(R.id.welcome_wrapper).setVisibility(LinearLayout.GONE);
         }
     }

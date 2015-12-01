@@ -36,7 +36,7 @@ public class FragmentEditGame extends DialogFragment {
                 String gameName = ((EditText) getView().findViewById(R.id.game_name)).getText().toString();
 
                 if (gameName.equals("")) {
-                    Toast.makeText(getActivity(), R.string.error_no_game_name, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_no_game_name), Toast.LENGTH_SHORT).show();
                 } else {
                     game.setGame(gameName);
                     ((ActivitySettings) getActivity()).notifyEditGame(game);

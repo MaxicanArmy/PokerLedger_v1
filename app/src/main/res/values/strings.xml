@@ -43,6 +43,7 @@
     <string name="info_delete_game">Game deleted.</string>
     <string name="info_delete_game_format">Game format deleted.</string>
     <string name="info_delete_location">Location deleted.</string>
+    <string name="info_db_backup">Database saved to downloads folder as </string>
 
     <string name="info_no_breaks">There are no breaks associated with this session.</string>
 

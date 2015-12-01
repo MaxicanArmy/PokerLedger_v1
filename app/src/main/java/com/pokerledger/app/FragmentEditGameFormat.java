@@ -11,7 +11,6 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.pokerledger.app.model.Game;
 import com.pokerledger.app.model.GameFormat;
 
 /**
@@ -51,7 +50,7 @@ public class FragmentEditGameFormat extends DialogFragment {
                 }
 
                 if (gameFormatName.equals("")) {
-                    Toast.makeText(getActivity(), R.string.error_no_game_format_name, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_no_game_format_name), Toast.LENGTH_SHORT).show();
                 } else {
                     gameFormat.setGameFormat(gameFormatName);
                     gameFormat.setBaseFormatId(baseFormatId);

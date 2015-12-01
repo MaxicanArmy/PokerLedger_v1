@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class SessionSet {
     private ArrayList<Session> sessions = new ArrayList<Session>();
-    int profit = 0, minY = 0, maxY = 0;
+    double profit = 0, minY = 0, maxY = 0;
     Long lengthMillis = 0L;
     ArrayList<DataPoint> dataPoints = new ArrayList<>();
 
@@ -45,12 +45,12 @@ public class SessionSet {
         int hours = minutesPlayed / 60;
         double minutes = minutesPlayed % 60;
 
-        double time = hours + (Math.round((minutes / 60.00) *100.0) / 100.0);
+        double time = hours + (Math.round((minutes / 60.00) * 100.0) / 100.0);
 
         return time;
     }
 
-    public int getProfit() {
+    public double getProfit() {
         return this.profit;
     }
 
@@ -61,11 +61,11 @@ public class SessionSet {
         return result.toArray(new DataPoint[result.size()]);
     }
 
-    public int getMinY() {
+    public double getMinY() {
         return this.minY;
     }
 
-    public int getMaxY() {
+    public double getMaxY() {
         return this.maxY;
     }
 
@@ -83,33 +83,16 @@ public class SessionSet {
         }
     }
 
-
     public String profitFormatted() {
         String profitText;
         if (profit < 0 ) {
-            profitText = "($" + Integer.toString(Math.abs(profit)) + ")";
+            profitText = "($" + Double.toString(Math.abs(profit)) + ")";
         } else {
-            profitText = "$" + Integer.toString(profit);
+            profitText = "$" + Double.toString(profit);
         }
 
         return profitText;
     }
-
-    /*
-    public String timeFormatted() {
-        int hours = minutesPlayed / 60;
-        int minutes = minutesPlayed % 60;
-        String timePlayed = "";
-
-        if (hours > 0) {
-            timePlayed += Integer.toString(hours) + "h ";
-        }
-
-        timePlayed += minutes + "m";
-
-        return timePlayed;
-    }
-    */
 
     public String lengthFormatted() {
         Long length = lengthMillis;
@@ -133,15 +116,15 @@ public class SessionSet {
     }
 
     public String wageFormatted() {
-        int minutesPlayed = getLengthMinutes().intValue();
+        double time = getHoursPlayed();
         double hourly;
         String hourlyWage;
 
-        if (minutesPlayed == 0) {
+        if (time == 0) {
             hourly = 0;
         }
         else {
-            hourly = profit / ((double) minutesPlayed / 60);
+            hourly = this.profit / time;
         }
 
         DecimalFormat df = new DecimalFormat("0.00");

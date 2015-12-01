@@ -8,14 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.pokerledger.app.helper.SessionSet;
-import com.pokerledger.app.model.Break;
 import com.pokerledger.app.model.Session;
 import com.pokerledger.app.helper.PLCommon;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * Created by Catface Meowmers on 7/28/15.
@@ -43,22 +39,20 @@ public class HistoryListAdapter extends ArrayAdapter<Session> {
         TextView txtTimePlayed = (TextView) rowView.findViewById(R.id.time_played);
 
         Session current = active.get(position);
-        SessionSet stats = new SessionSet(active.get(position));
 
         txtGame.setText(current.displayFormat());
         txtDate.setText(PLCommon.timestampToDate(current.getStart()));
 
         txtGameFormat.setText(current.getGameFormat().getBaseFormat());
 
-        if (stats.getProfit() < 0 ) {
+        if (current.getProfit() < 0 ) {
             txtProfit.setTextColor(Color.parseColor("#ff0000"));
         }
-        txtProfit.setText(stats.profitFormatted());
+        txtProfit.setText(current.profitFormatted());
 
         txtLocation.setText(current.getLocation().getLocation());
-        txtTimePlayed.setText(stats.lengthFormatted());
+        txtTimePlayed.setText(current.lengthFormatted());
 
         return rowView;
     }
-
 }

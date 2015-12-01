@@ -27,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "sessionManager";
 
     //database version
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     //table names
     private static final String TABLE_SESSION = "sessions";
@@ -98,7 +98,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //SESSIONS
     private static final String CREATE_TABLE_SESSIONS = "CREATE TABLE " + TABLE_SESSION + " (" + KEY_SESSION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            KEY_START + " INTEGER, " + KEY_END + " INTEGER, " + KEY_BUY_IN + " INTEGER, " + KEY_CASH_OUT + " INTEGER, " + KEY_GAME + " INTEGER, " +
+            KEY_START + " INTEGER, " + KEY_END + " INTEGER, " + KEY_BUY_IN + " REAL, " + KEY_CASH_OUT + " REAL, " + KEY_GAME + " INTEGER, " +
             KEY_GAME_FORMAT + " INTEGER, " + KEY_LOCATION + " INTEGER, " + KEY_STATE + " INTEGER, " + KEY_FILTERED + " INTEGER);";
 
     //GAMES
@@ -115,8 +115,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //BLINDS
     private static final String CREATE_TABLE_BLINDS = "CREATE TABLE " + TABLE_BLINDS + " (" + KEY_BLIND_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            KEY_SMALL_BLIND + " INTEGER, " + KEY_BIG_BLIND + " INTEGER, " + KEY_STRADDLE + " INTEGER, " + KEY_BRING_IN + " INTEGER, " +
-            KEY_ANTE + " INTEGER, " + KEY_PER_POINT + " INTEGER, " + KEY_FILTERED + " INTEGER)";
+            KEY_SMALL_BLIND + " REAL, " + KEY_BIG_BLIND + " REAL, " + KEY_STRADDLE + " REAL, " + KEY_BRING_IN + " REAL, " +
+            KEY_ANTE + " REAL, " + KEY_PER_POINT + " REAL, " + KEY_FILTERED + " INTEGER)";
 
     //BREAKS
     private static final String CREATE_TABLE_BREAKS = "CREATE TABLE " + TABLE_BREAK + " (" + KEY_BREAK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -278,12 +278,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         }
         if (oldVersion < 3) {
-            /*
-            1. create temp_table that buyin and cashout types set to double/float w/e
-            2. copy sessions to temp_table (will this do conversion?)
-            3. delete sessions
-            4. rename temp_table
-             */
+            //1. create temp_tables with column values REAL
+            db.execSQL("CREATE TABLE temp_sessions (" + KEY_SESSION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    KEY_START + " INTEGER, " + KEY_END + " INTEGER, " + KEY_BUY_IN + " REAL, " + KEY_CASH_OUT + " REAL, " + KEY_GAME + " INTEGER, " +
+                    KEY_GAME_FORMAT + " INTEGER, " + KEY_LOCATION + " INTEGER, " + KEY_STATE + " INTEGER, " + KEY_FILTERED + " INTEGER);");
+
+            db.execSQL("CREATE TABLE temp_blinds (" + KEY_BLIND_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    KEY_SMALL_BLIND + " REAL, " + KEY_BIG_BLIND + " REAL, " + KEY_STRADDLE + " REAL, " + KEY_BRING_IN + " REAL, " +
+                    KEY_ANTE + " REAL, " + KEY_PER_POINT + " REAL, " + KEY_FILTERED + " INTEGER)");
+
+            //2. copy data to temp_tables
+            db.execSQL("INSERT INTO temp_sessions (" + KEY_SESSION_ID + ", " + KEY_START + ", " + KEY_END + ", " +
+                    KEY_BUY_IN + ", " + KEY_CASH_OUT + ", " + KEY_GAME + ", " + KEY_GAME_FORMAT + ", " + KEY_LOCATION + ", " + KEY_STATE + ", " +
+                    KEY_FILTERED + ") SELECT " + KEY_SESSION_ID + ", " + KEY_START + ", " + KEY_END + ", " + KEY_BUY_IN + ", " + KEY_CASH_OUT + ", " + KEY_GAME + ", " +
+                    KEY_GAME_FORMAT + ", " + KEY_LOCATION + ", " + KEY_STATE + ", " + KEY_FILTERED + " FROM sessions;");
+
+            db.execSQL("INSERT INTO temp_blinds (" + KEY_BLIND_ID + ", " + KEY_SMALL_BLIND + ", " + KEY_BIG_BLIND + ", " + KEY_STRADDLE + ", " + KEY_BRING_IN + ", " +
+                    KEY_ANTE + ", " + KEY_PER_POINT + ", " + KEY_FILTERED + ") SELECT " + KEY_BLIND_ID + ", " + KEY_SMALL_BLIND + ", " + KEY_BIG_BLIND + ", " + KEY_STRADDLE + ", " + KEY_BRING_IN + ", " +
+                    KEY_ANTE + ", " + KEY_PER_POINT + ", " + KEY_FILTERED + " FROM blinds;");
+
+            //3. delete originals
+            db.execSQL("DROP TABLE " + TABLE_SESSION);
+            db.execSQL("DROP TABLE " + TABLE_BLINDS);
+
+            //4. rename temp_tables
+            db.execSQL("ALTER TABLE temp_sessions RENAME TO " + TABLE_SESSION);
+            db.execSQL("ALTER TABLE temp_blinds RENAME TO " + TABLE_BLINDS);
+
         }
     }
 
@@ -415,12 +436,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 Blinds b = new Blinds();
                 b.setId(c.getInt(c.getColumnIndex(KEY_BLIND_ID)));
-                b.setSB(c.getInt(c.getColumnIndex(KEY_SMALL_BLIND)));
-                b.setBB(c.getInt(c.getColumnIndex(KEY_BIG_BLIND)));
-                b.setStraddle(c.getInt(c.getColumnIndex(KEY_STRADDLE)));
-                b.setBringIn(c.getInt(c.getColumnIndex(KEY_BRING_IN)));
-                b.setAnte(c.getInt(c.getColumnIndex(KEY_ANTE)));
-                b.setPerPoint(c.getInt(c.getColumnIndex(KEY_PER_POINT)));
+                b.setSB(c.getDouble(c.getColumnIndex(KEY_SMALL_BLIND)));
+                b.setBB(c.getDouble(c.getColumnIndex(KEY_BIG_BLIND)));
+                b.setStraddle(c.getDouble(c.getColumnIndex(KEY_STRADDLE)));
+                b.setBringIn(c.getDouble(c.getColumnIndex(KEY_BRING_IN)));
+                b.setAnte(c.getDouble(c.getColumnIndex(KEY_ANTE)));
+                b.setPerPoint(c.getDouble(c.getColumnIndex(KEY_PER_POINT)));
                 b.setFiltered(c.getInt(c.getColumnIndex(KEY_FILTERED)));
 
                 blinds.add(b);
@@ -507,9 +528,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor c = db.query(TABLE_BLINDS, null, KEY_SMALL_BLIND + "=? AND " + KEY_BIG_BLIND + "=? AND " + KEY_STRADDLE + "=? AND " + KEY_BRING_IN + "=? AND " +
-                KEY_ANTE + "=? AND " + KEY_PER_POINT + "=?", new String[] {Integer.toString(blindSet.getSB()), Integer.toString(blindSet.getBB()),
-                Integer.toString(blindSet.getStraddle()), Integer.toString(blindSet.getBringIn()), Integer.toString(blindSet.getAnte()),
-                Integer.toString(blindSet.getPerPoint())}, null, null, null);
+                KEY_ANTE + "=? AND " + KEY_PER_POINT + "=?", new String[] {Double.toString(blindSet.getSB()), Double.toString(blindSet.getBB()),
+                Double.toString(blindSet.getStraddle()), Double.toString(blindSet.getBringIn()), Double.toString(blindSet.getAnte()),
+                Double.toString(blindSet.getPerPoint())}, null, null, null);
 
         if (c.moveToFirst()) {
             blindSet.setId(c.getInt(c.getColumnIndex(KEY_BLIND_ID)));
@@ -682,8 +703,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 s.setId(c.getInt(c.getColumnIndex(KEY_SESSION_ID)));
                 s.setStart(c.getLong(c.getColumnIndex(KEY_START)));
                 s.setEnd(c.getLong(c.getColumnIndex(KEY_END)));
-                s.setBuyIn(c.getInt(c.getColumnIndex(KEY_BUY_IN)));
-                s.setCashOut(c.getInt(c.getColumnIndex(KEY_CASH_OUT)));
+                s.setBuyIn(c.getDouble(c.getColumnIndex(KEY_BUY_IN)));
+                s.setCashOut(c.getDouble(c.getColumnIndex(KEY_CASH_OUT)));
                 s.setGame(new Game(c.getInt(c.getColumnIndex(KEY_GAME_ID)), c.getString(c.getColumnIndex(KEY_GAME))));
                 s.setGameFormat(new GameFormat(c.getInt(c.getColumnIndex(KEY_GAME_FORMAT_ID)), c.getString(c.getColumnIndex(KEY_GAME_FORMAT)),
                         c.getInt(c.getColumnIndex(KEY_BASE_FORMAT_ID)), c.getString(c.getColumnIndex(KEY_BASE_FORMAT))));
@@ -691,9 +712,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 s.setState(c.getInt(c.getColumnIndex(KEY_STATE)));
 
                 if (s.getGameFormat().getBaseFormatId() == 1) {
-                    s.setBlinds(new Blinds(c.getInt(c.getColumnIndex(KEY_BLIND_ID)), c.getInt(c.getColumnIndex(KEY_SMALL_BLIND)), c.getInt(c.getColumnIndex(KEY_BIG_BLIND)),
-                            c.getInt(c.getColumnIndex(KEY_STRADDLE)), c.getInt(c.getColumnIndex(KEY_BRING_IN)), c.getInt(c.getColumnIndex(KEY_ANTE)),
-                            c.getInt(c.getColumnIndex(KEY_PER_POINT)), 0));
+                    s.setBlinds(new Blinds(c.getInt(c.getColumnIndex(KEY_BLIND_ID)), c.getDouble(c.getColumnIndex(KEY_SMALL_BLIND)), c.getDouble(c.getColumnIndex(KEY_BIG_BLIND)),
+                            c.getDouble(c.getColumnIndex(KEY_STRADDLE)), c.getDouble(c.getColumnIndex(KEY_BRING_IN)), c.getDouble(c.getColumnIndex(KEY_ANTE)),
+                            c.getDouble(c.getColumnIndex(KEY_PER_POINT)), 0));
 
                 } else {
                     if (!c.isNull(c.getColumnIndex(KEY_ENTRANTS))) {
@@ -816,36 +837,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-/*
-    public boolean runQuery(String s) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL(s);
-        return true;
-    }
-    public HashMap<String, String> getFilterDates() {
-        HashMap<String, String> result = new HashMap<String, String>();
-        result.put("start", "Start Date");
-        result.put("end", "End Date");
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_DATE_FILTER + " WHERE " + KEY_FILTER_ID + "=1;";
-        Cursor c;
-        String startDate = "";
-        String endDate = "";
-        c = db.rawQuery(query, null);
-        if (c.moveToFirst()) {
-            if (!c.getString(c.getColumnIndex(KEY_START_DATE)).equals("0000-00-00")) {
-                startDate = c.getString(c.getColumnIndex(KEY_START_DATE));
-                result.put("start", startDate);
-            }
-            if (!c.getString(c.getColumnIndex(KEY_END_DATE)).equals("0000-00-00")) {
-                endDate = c.getString(c.getColumnIndex(KEY_END_DATE));
-                result.put("end", endDate);
-            }
-        }
-        return result;
-    }
-*/
-
     public void toggleBreak(Session s) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -875,7 +866,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void rebuyAddon(int id, int amount) {
+    public void rebuyAddon(int id, double amount) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         String query = "UPDATE " + TABLE_SESSION + " SET " + KEY_BUY_IN + "=" + KEY_BUY_IN + "+" + amount + " WHERE " + KEY_SESSION_ID + "=" + id + ";";

@@ -24,7 +24,7 @@ public class FragmentCreateLocation extends DialogFragment {
                 String locationName = ((EditText) getView().findViewById(R.id.location_name)).getText().toString();
 
                 if (locationName.equals("")) {
-                    Toast.makeText(getActivity(), R.string.error_no_location_name, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_no_location_name), Toast.LENGTH_SHORT).show();
                 } else {
                     ((ActivityBase) getActivity()).notifyCreateLocation(locationName);
                     dismiss();

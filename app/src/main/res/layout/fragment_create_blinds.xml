@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".33"
             android:hint="@string/sb_hint"
-            android:inputType="number" />
+            android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/big_blind"
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".33"
             android:hint="@string/bb_hint"
-            android:inputType="number" />
+            android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/straddle"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".33"
             android:hint="@string/straddle_hint"
-            android:inputType="number" />
+            android:inputType="numberDecimal" />
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".33"
             android:hint="@string/bring_hint"
-            android:inputType="number" />
+            android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/ante"
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".33"
             android:hint="@string/ante_hint"
-            android:inputType="number" />
+            android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/points"
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".33"
             android:hint="@string/points_hint"
-            android:inputType="number" />
+            android:inputType="numberDecimal" />
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

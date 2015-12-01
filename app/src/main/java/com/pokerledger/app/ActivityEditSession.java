@@ -17,9 +17,6 @@ import com.pokerledger.app.model.GameFormat;
 import com.pokerledger.app.model.Location;
 import com.pokerledger.app.model.Session;
 
-import java.text.DecimalFormat;
-import java.util.Calendar;
-
 /**
  * Created by max on 11/7/15.
  */
@@ -36,7 +33,7 @@ public class ActivityEditSession extends ActivitySession  {
             Gson gson = new Gson();
             this.activeSession = gson.fromJson(json, Session.class);
 
-            ((EditText) findViewById(R.id.buy_in)).setText(Integer.toString(this.activeSession.getBuyIn()));
+            ((EditText) findViewById(R.id.buy_in)).setText(Double.toString(this.activeSession.getBuyIn()));
 
             if (this.activeSession.getEntrants() != 0) {
                 ((EditText) findViewById(R.id.entrants)).setText(Integer.toString(this.activeSession.getEntrants()));
@@ -53,21 +50,14 @@ public class ActivityEditSession extends ActivitySession  {
                 ((EditText) findViewById(R.id.note)).setText(this.activeSession.getNote());
             }
 
-            if (this.activeSession.getState() == 0) { //deprecated block, will always be 0 now
-                ((EditText) findViewById(R.id.cash_out)).setText(Integer.toString(this.activeSession.getCashOut()));
+            ((EditText) findViewById(R.id.cash_out)).setText(Double.toString(this.activeSession.getCashOut()));
 
-                if (this.activeSession.getGameFormat().getBaseFormatId() == 2) {
-                    ((EditText) findViewById(R.id.placed)).setText(Integer.toString(this.activeSession.getPlaced()));
-                }
-
-                ((Button) findViewById(R.id.end_date)).setHint(PLCommon.timestampToDate(this.activeSession.getEnd()));
-                ((Button) findViewById(R.id.end_time)).setHint(PLCommon.timestampToTime(this.activeSession.getEnd()));
-            } else {
-                Calendar cal = Calendar.getInstance();
-                DecimalFormat df = new DecimalFormat("00");
-                ((Button) findViewById(R.id.end_date)).setHint(cal.get(Calendar.YEAR) + "-" + df.format(cal.get(Calendar.MONTH) + 1) + "-" + df.format(cal.get(Calendar.DAY_OF_MONTH)));
-                ((Button) findViewById(R.id.end_time)).setHint(df.format(cal.get(Calendar.HOUR_OF_DAY)) + ":" + df.format(cal.get(Calendar.MINUTE)));
+            if (this.activeSession.getGameFormat().getBaseFormatId() == 2) {
+                ((EditText) findViewById(R.id.placed)).setText(Integer.toString(this.activeSession.getPlaced()));
             }
+
+            ((Button) findViewById(R.id.end_date)).setHint(PLCommon.timestampToDate(this.activeSession.getEnd()));
+            ((Button) findViewById(R.id.end_time)).setHint(PLCommon.timestampToTime(this.activeSession.getEnd()));
         }
     }
 
@@ -103,7 +93,7 @@ public class ActivityEditSession extends ActivitySession  {
         String buyinText = ((EditText) findViewById(R.id.buy_in)).getText().toString();
 
         if (buyinText.equals("")) {
-            Toast.makeText(this, R.string.error_enter_buy_in, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_buy_in), Toast.LENGTH_SHORT).show();
             findViewById(R.id.buy_in).requestFocus();
             return;
         }
@@ -114,7 +104,7 @@ public class ActivityEditSession extends ActivitySession  {
         String cashOutText = ((EditText) findViewById(R.id.cash_out)).getText().toString();
 
         if (cashOutText.equals("")) {
-            Toast.makeText(this, R.string.error_enter_cash_out, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_cash_out), Toast.LENGTH_SHORT).show();
             findViewById(R.id.cash_out).requestFocus();
             return;
         }
@@ -127,7 +117,7 @@ public class ActivityEditSession extends ActivitySession  {
         if (locationSpinner.getSelectedItem() != null) {
             this.activeSession.setLocation((Location) locationSpinner.getSelectedItem());
         } else {
-            Toast.makeText(this, R.string.error_enter_location, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_location), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -136,7 +126,7 @@ public class ActivityEditSession extends ActivitySession  {
         if (gameSpinner.getSelectedItem() != null) {
             this.activeSession.setGame((Game) gameSpinner.getSelectedItem());
         } else {
-            Toast.makeText(this, R.string.error_enter_game, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_game), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -149,7 +139,7 @@ public class ActivityEditSession extends ActivitySession  {
                 String entrantsText = ((EditText) findViewById(R.id.entrants)).getText().toString();
 
                 if (entrantsText.equals("")) {
-                    Toast.makeText(this, R.string.error_enter_entrants, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getResources().getString(R.string.error_enter_entrants), Toast.LENGTH_SHORT).show();
                     findViewById(R.id.entrants).requestFocus();
                     return;
                 }
@@ -160,7 +150,7 @@ public class ActivityEditSession extends ActivitySession  {
                 String placedText = ((EditText) findViewById(R.id.placed)).getText().toString();
 
                 if (placedText.equals("")) {
-                    Toast.makeText(this, R.string.error_enter_placed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getResources().getString(R.string.error_enter_placed), Toast.LENGTH_SHORT).show();
                     findViewById(R.id.placed).requestFocus();
                     return;
                 }
@@ -174,40 +164,40 @@ public class ActivityEditSession extends ActivitySession  {
                 if (blinds.getSelectedItem() != null) {
                     this.activeSession.setBlinds((Blinds) blinds.getSelectedItem());
                 } else {
-                    Toast.makeText(this, R.string.error_enter_blinds, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getResources().getString(R.string.error_enter_blinds), Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
         } else {
-            Toast.makeText(this, R.string.error_enter_format, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_format), Toast.LENGTH_SHORT).show();
             return;
         }
 
         String startDate = ((Button) findViewById(R.id.start_date)).getHint().toString();
 
         if (startDate.equals("Start Date")) {
-            Toast.makeText(this, R.string.error_enter_start_date, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_start_date), Toast.LENGTH_SHORT).show();
             return;
         }
 
         String startTime = ((Button) findViewById(R.id.start_time)).getHint().toString();
 
         if (startTime.equals("Start Time")) {
-            Toast.makeText(this, R.string.error_enter_start_time, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_start_time), Toast.LENGTH_SHORT).show();
             return;
         }
 
         String endDate = ((Button) findViewById(R.id.end_date)).getHint().toString();
 
         if (endDate.equals("End Date")) {
-            Toast.makeText(this, R.string.error_enter_end_date, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_end_date), Toast.LENGTH_SHORT).show();
             return;
         }
 
         String endTime = ((Button) findViewById(R.id.end_time)).getHint().toString();
 
         if (endTime.equals("End Time")) {
-            Toast.makeText(this, R.string.error_enter_end_time, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_end_time), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -225,7 +215,7 @@ public class ActivityEditSession extends ActivitySession  {
         }
 
         if (this.activeSession.lengthMillis() <= 0) {
-            Toast.makeText(this, R.string.error_negative_length, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_negative_length), Toast.LENGTH_SHORT).show();
             return;
         }
 

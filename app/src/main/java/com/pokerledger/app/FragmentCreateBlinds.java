@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.pokerledger.app.model.Blinds;
-
 /**
  * Created by Catface Meowmers on 8/16/15.
  */
@@ -30,40 +28,40 @@ public class FragmentCreateBlinds extends DialogFragment {
                 String anteText = ((EditText) getView().getRootView().findViewById(R.id.ante)).getText().toString();
                 String ppText = ((EditText) getView().getRootView().findViewById(R.id.points)).getText().toString();
 
-                int sb = 0, bb = 0, straddle = 0, bringIn = 0, ante = 0, perPoint = 0;
+                double sb = 0, bb = 0, straddle = 0, bringIn = 0, ante = 0, perPoint = 0;
 
                 if (!bbText.equals("") && sbText.equals("")) {
-                    Toast.makeText(getActivity(), R.string.error_single_blind, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_single_blind), Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 if (!ppText.equals("") && (!sbText.equals("") || !bbText.equals("") || !strText.equals("") || !biText.equals("") || !anteText.equals(""))) {
-                    Toast.makeText(getActivity(), R.string.error_points_plus, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_points_plus), Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 if (!strText.equals("") && (sbText.equals("") || bbText.equals(""))) {
-                    Toast.makeText(getActivity(), R.string.error_straddle_no_blinds, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_straddle_no_blinds), Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 if (!sbText.equals("")) {
-                    sb = Integer.parseInt(sbText);
+                    sb = Double.parseDouble(sbText);
                 }
                 if (!bbText.equals("")) {
-                    bb = Integer.parseInt(bbText);
+                    bb = Double.parseDouble(bbText);
                 }
                 if (!strText.equals("")) {
-                    straddle = Integer.parseInt(strText);
+                    straddle = Double.parseDouble(strText);
                 }
                 if (!biText.equals("")) {
-                    bringIn = Integer.parseInt(biText);
+                    bringIn = Double.parseDouble(biText);
                 }
                 if (!anteText.equals("")) {
-                    ante = Integer.parseInt(anteText);
+                    ante = Double.parseDouble(anteText);
                 }
                 if (!ppText.equals("")) {
-                    perPoint = Integer.parseInt(ppText);
+                    perPoint = Double.parseDouble(ppText);
                 }
 
                 ((ActivityBase) getActivity()).notifyCreateBlinds(sb, bb, straddle, bringIn, ante, perPoint);

@@ -1,7 +1,6 @@
 package com.pokerledger.app.model;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -9,7 +8,8 @@ import java.util.Calendar;
  * Created by Catface Meowmers on 7/25/15.
  */
 public class Session {
-    private int id, entrants, placed, buyIn, cashOut, state = 0;
+    private int id, entrants, placed, state = 0;
+    private double buyIn, cashOut = 0.00;
     private String note = "";
     private Long start, end = 0L;
     private Location location = new Location();
@@ -21,11 +21,11 @@ public class Session {
     //constructors
     public Session() {}
 
-    public Session(Long s, Long e, int bi, int co, Game game, GameFormat gf, Location loc, int state) {
+    public Session(Long s, Long e, double bi, double co, Game game, GameFormat gf, Location loc, int state) {
         this(0, s, e, bi, co, game, gf, loc, state);
     }
 
-    public Session(int id, Long s, Long e, int bi, int co, Game game, GameFormat gf, Location loc, int state) {
+    public Session(int id, Long s, Long e, double bi, double co, Game game, GameFormat gf, Location loc, int state) {
         this.id = id;
         this.start = s;
         this.end = e;
@@ -55,11 +55,11 @@ public class Session {
         this.end = l;
     }
 
-    public void setBuyIn(int i) {
+    public void setBuyIn(double i) {
         this.buyIn = i;
     }
 
-    public void setCashOut(int i) {
+    public void setCashOut(double i) {
         this.cashOut = i;
     }
 
@@ -112,11 +112,11 @@ public class Session {
         return this.end;
     }
 
-    public int getBuyIn() {
+    public double getBuyIn() {
         return this.buyIn;
     }
 
-    public int getCashOut() {
+    public double getCashOut() {
         return this.cashOut;
     }
 
@@ -218,73 +218,17 @@ public class Session {
         return timePlayed;
     }
 
-    /*
-    public Long sessionTimeMillis() {
-        long totalTime;
-
-        Calendar startTime = Calendar.getInstance();
-        Calendar endTime = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        try {
-            startTime.setTime(sdf.parse(this.startDate + " " + this.startTime));
-
-            if (!this.endDate.equals("")) {
-                endTime.setTime(sdf.parse(this.endDate + " " + this.endTime));
-            }
-        } catch (Exception e) {
-            //fucking parse exception needs to be handled
+    public String profitFormatted() {
+        String profitText;
+        double profit = this.getProfit();
+        if (profit < 0 ) {
+            profitText = "($" + Double.toString(Math.abs(profit)) + ")";
+        } else {
+            profitText = "$" + Double.toString(profit);
         }
 
-        totalTime = endTime.getTimeInMillis() - startTime.getTimeInMillis();
-
-        if (this.breaks != null) {
-            if (!this.breaks.isEmpty()) {
-                for (Break b : this.breaks) {
-                    totalTime -= b.breakTimeMillis();
-                }
-            }
-        }
-
-        return totalTime;
+        return profitText;
     }
-
-    public int minutesPlayed() {
-        Calendar t1 = Calendar.getInstance();
-        Calendar t2 = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        try {
-            t1.setTime(sdf.parse(this.startDate + " " + this.startTime));
-            t2.setTime(sdf.parse(this.endDate + " " + this.endTime));
-        } catch (Exception e) {
-            //fucking parse exception needs to be handled
-        }
-
-        int minutes = (int) (t2.getTimeInMillis() - t1.getTimeInMillis())/60000;
-
-        //start break time code
-        if (this.breaks != null) {
-            if (!this.breaks.isEmpty()) {
-                int breakMinutes = 0;
-                Calendar bs = Calendar.getInstance();
-                Calendar be = Calendar.getInstance();
-                for (Break b : this.breaks) {
-                    try {
-                        bs.setTime(sdf.parse(b.getStartDate() + " " + b.getStartTime()));
-                        be.setTime(sdf.parse(b.getEndDate() + " " + b.getEndTime()));
-                    } catch (Exception e) {
-                        //make an alert message here i guess
-                    }
-
-                    breakMinutes += (int) (be.getTimeInMillis() - bs.getTimeInMillis()) / 60000;
-                }
-                minutes -= breakMinutes;
-            }
-        }
-        //end break time code
-
-        return minutes;
-    }
-    */
 
     public double getProfit() {
         return this.cashOut - this.buyIn;

@@ -80,12 +80,12 @@ public class FragmentEditActiveSession extends DialogFragment implements Adapter
             //Set an EditText view to get user input
             final EditText input = new EditText(getActivity());
             input.setHint("Amount");
-            input.setInputType(InputType.TYPE_CLASS_NUMBER);
+            input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
             adb.setView(input);
 
             adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                    int value = Integer.parseInt(input.getText().toString());
+                    double value = Double.parseDouble(input.getText().toString());
                     new RebuyAddon().execute(value);
                     FlurryAgent.logEvent("Action_Rebuy");
                 }
@@ -156,9 +156,9 @@ public class FragmentEditActiveSession extends DialogFragment implements Adapter
         }
     }
 
-    public class RebuyAddon extends AsyncTask<Integer, Void, Void> {
+    public class RebuyAddon extends AsyncTask<Double, Void, Void> {
         @Override
-        protected Void doInBackground(Integer... amount) {
+        protected Void doInBackground(Double... amount) {
             DatabaseHelper db = new DatabaseHelper(FragmentEditActiveSession.this.activity);
             db.rebuyAddon(FragmentEditActiveSession.this.current.getId(), amount[0]);
 

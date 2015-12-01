@@ -67,12 +67,12 @@ public class ActivityActiveSession extends ActivitySession {
         String buyinText = ((EditText) findViewById(R.id.buy_in)).getText().toString();
 
         if (buyinText.equals("")) {
-            Toast.makeText(this, R.string.error_enter_buy_in, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_buy_in), Toast.LENGTH_SHORT).show();
             findViewById(R.id.buy_in).requestFocus();
             return;
         }
         else {
-            this.activeSession.setBuyIn(Integer.parseInt(buyinText));
+            this.activeSession.setBuyIn(Double.parseDouble(buyinText));
         }
 
         Spinner formatSpinner = (Spinner) findViewById(R.id.game_format);
@@ -93,26 +93,26 @@ public class ActivityActiveSession extends ActivitySession {
                 if (blinds.getSelectedItem() != null) {
                     this.activeSession.setBlinds((Blinds) blinds.getSelectedItem());
                 } else {
-                    Toast.makeText(this, R.string.error_enter_blinds, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getResources().getString(R.string.error_enter_blinds), Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
         } else {
-            Toast.makeText(this, R.string.error_enter_format, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_format), Toast.LENGTH_SHORT).show();
             return;
         }
 
         String startDate = ((Button) findViewById(R.id.start_date)).getHint().toString();
 
         if (startDate.equals("Start Date")) {
-            Toast.makeText(this, R.string.error_enter_start_date, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_start_date), Toast.LENGTH_SHORT).show();
             return;
         }
 
         String startTime = ((Button) findViewById(R.id.start_time)).getHint().toString();
 
         if (startTime.equals("Start Time")) {
-            Toast.makeText(this, R.string.error_enter_start_time, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_start_time), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -135,7 +135,7 @@ public class ActivityActiveSession extends ActivitySession {
         if (gameSpinner.getSelectedItem() != null) {
             this.activeSession.setGame((Game) gameSpinner.getSelectedItem());
         } else {
-            Toast.makeText(this, R.string.error_enter_game, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_game), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -144,7 +144,7 @@ public class ActivityActiveSession extends ActivitySession {
         if (location.getSelectedItem() != null) {
             this.activeSession.setLocation((Location) location.getSelectedItem());
         } else {
-            Toast.makeText(this, R.string.error_enter_location, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_location), Toast.LENGTH_SHORT).show();
             return;
         }
 

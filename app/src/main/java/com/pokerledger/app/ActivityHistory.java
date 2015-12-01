@@ -17,11 +17,9 @@ import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
-import com.pokerledger.app.helper.PLCommon;
 import com.pokerledger.app.helper.SessionSet;
 import com.pokerledger.app.model.Session;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -33,7 +31,6 @@ import java.util.Locale;
 public class ActivityHistory extends ActivityBase {
     protected int tbSpinnerPos = 1;
     protected int tfSpinnerPos = 0;
-    //protected boolean init = true;
 
     //these populate the timeframes spinner and the Strings are the keys of the corresponding HashMaps
     protected ArrayList<String> weeklyList;
@@ -115,7 +112,6 @@ public class ActivityHistory extends ActivityBase {
 
         @Override
         protected void onPostExecute(ArrayList<Session> result) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             String weekOfYear;
             String month;
             String year;
@@ -232,9 +228,11 @@ public class ActivityHistory extends ActivityBase {
 
             if (result.size() < 1) {
                 ActivityHistory.this.findViewById(R.id.welcome_wrapper).setVisibility(LinearLayout.VISIBLE);
+                ActivityHistory.this.findViewById(R.id.timeframe_wrapper).setVisibility(LinearLayout.GONE);
             }
             else {
                 ActivityHistory.this.findViewById(R.id.welcome_wrapper).setVisibility(LinearLayout.GONE);
+                ActivityHistory.this.findViewById(R.id.timeframe_wrapper).setVisibility(LinearLayout.VISIBLE);
             }
         }
     }

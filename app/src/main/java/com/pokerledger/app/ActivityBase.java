@@ -76,35 +76,6 @@ public class ActivityBase extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    /*
-    public Long datetimeToTimestamp(String datetime) {
-        Calendar time = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        try {
-            time.setTime(sdf.parse(datetime));
-        } catch (Exception e) {
-            //fucking parse exception needs to be handled
-        }
-
-        return time.getTimeInMillis();
-    }
-
-    public String timestampToDate(Long timestamp) {
-        Calendar cal = Calendar.getInstance();
-        DecimalFormat df = new DecimalFormat("00");
-        cal.setTimeInMillis(timestamp);
-
-        return cal.get(Calendar.YEAR) + "-" + df.format(cal.get(Calendar.MONTH) + 1) + "-" + df.format(cal.get(Calendar.DAY_OF_MONTH));
-    }
-
-    public String timestampToTime(Long timestamp) {
-        Calendar cal = Calendar.getInstance();
-        DecimalFormat df = new DecimalFormat("00");
-        cal.setTimeInMillis(timestamp);
-
-        return df.format(cal.get(Calendar.HOUR_OF_DAY)) + ":" + df.format(cal.get(Calendar.MINUTE));
-    }
-    */
 
     protected void notifyCreateLocation(String value) {
         //this method is necessary because i cant get fragments to call async tasks
@@ -121,7 +92,7 @@ public class ActivityBase extends AppCompatActivity {
         new CreateGameFormat().execute(new GameFormat(0, gameFormat, bfId, baseFormat));
     }
 
-    protected void notifyCreateBlinds(int sb, int bb, int straddle, int bringIn, int ante, int perPoint) {
+    protected void notifyCreateBlinds(double sb, double bb, double straddle, double bringIn, double ante, double perPoint) {
         //this method is necessary because i cant get fragments to call async tasks
         new CreateBlinds().execute(new Blinds(sb, bb, straddle, bringIn, ante, perPoint, 0));
     }

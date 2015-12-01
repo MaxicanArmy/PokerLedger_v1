@@ -56,7 +56,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight=".50"
                         android:hint="@string/buy_in_hint"
-                        android:inputType="number"
+                        android:inputType="numberDecimal"
                         android:textSize="16sp" />
 
                     <EditText
@@ -65,7 +65,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight=".50"
                         android:hint="@string/cash_out_hint"
-                        android:inputType="number"
+                        android:inputType="numberDecimal"
                         android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>

@@ -1,5 +1,6 @@
 package com.pokerledger.app;
 
+import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.app.FragmentManager;
@@ -230,7 +231,7 @@ public class ActivitySettings extends ActivityBase {
                     editor.putInt("default_location", 0);
                     editor.commit();
                 }
-                Toast.makeText(ActivitySettings.this, R.string.info_delete_location, Toast.LENGTH_LONG).show();
+                Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_delete_location), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -260,7 +261,7 @@ public class ActivitySettings extends ActivityBase {
                     editor.putInt("default_game", 0);
                     editor.commit();
                 }
-                Toast.makeText(ActivitySettings.this, R.string.info_delete_game, Toast.LENGTH_LONG).show();
+                Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_delete_game), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -290,7 +291,7 @@ public class ActivitySettings extends ActivityBase {
                     editor.putInt("default_game_format", 0);
                     editor.commit();
                 }
-                Toast.makeText(ActivitySettings.this, R.string.info_delete_game_format, Toast.LENGTH_LONG).show();
+                Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_delete_game_format), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -320,7 +321,7 @@ public class ActivitySettings extends ActivityBase {
                     editor.putInt("default_blinds", 0);
                     editor.commit();
                 }
-                Toast.makeText(ActivitySettings.this, R.string.info_delete_blinds, Toast.LENGTH_LONG).show();
+                Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_delete_blinds), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -341,11 +342,11 @@ public class ActivitySettings extends ActivityBase {
         SharedPreferences.Editor editor = prefs.edit();
         if (defaultLocation == selected.getId()) {
             defaultLocation = 0;
-            Toast.makeText(ActivitySettings.this, selected.toString() + R.string.info_remove_default_location, Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_remove_default_location), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_location).setBackgroundColor(0xffb4b6b3);
         } else {
             defaultLocation = selected.getId();
-            Toast.makeText(ActivitySettings.this, selected.toString() + R.string.info_set_default_location, Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_set_default_location), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_location).setBackgroundColor(0xfff6da00);
         }
         editor.putInt("default_location", defaultLocation);
@@ -360,11 +361,11 @@ public class ActivitySettings extends ActivityBase {
         SharedPreferences.Editor editor = prefs.edit();
         if (defaultGame == selected.getId()) {
             defaultGame = 0;
-            Toast.makeText(ActivitySettings.this, selected.toString() + R.string.info_remove_default_game, Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_remove_default_game), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_game).setBackgroundColor(0xffb4b6b3);
         } else {
             defaultGame = selected.getId();
-            Toast.makeText(ActivitySettings.this, selected.toString() + R.string.info_set_default_game, Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_set_default_game), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_game).setBackgroundColor(0xfff6da00);
         }
         editor.putInt("default_game", defaultGame);
@@ -379,11 +380,11 @@ public class ActivitySettings extends ActivityBase {
         SharedPreferences.Editor editor = prefs.edit();
         if (defaultGameFormat == selected.getId()) {
             defaultGameFormat = 0;
-            Toast.makeText(ActivitySettings.this, selected.toString() + R.string.info_remove_default_game_format, Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_remove_default_game_format), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_game_format).setBackgroundColor(0xffb4b6b3);
         } else {
             defaultGameFormat = selected.getId();
-            Toast.makeText(ActivitySettings.this, selected.toString() + R.string.info_set_default_game_format, Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_set_default_game_format), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_game_format).setBackgroundColor(0xfff6da00);
         }
         editor.putInt("default_game_format", defaultGameFormat);
@@ -398,11 +399,11 @@ public class ActivitySettings extends ActivityBase {
         SharedPreferences.Editor editor = prefs.edit();
         if (defaultBlinds == selected.getId()) {
             defaultBlinds = 0;
-            Toast.makeText(ActivitySettings.this, selected.toString() + R.string.info_remove_default_blinds, Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_remove_default_blinds), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_blinds).setBackgroundColor(0xffb4b6b3);
         } else {
             defaultBlinds = selected.getId();
-            Toast.makeText(ActivitySettings.this, selected.toString() + R.string.info_set_default_blinds, Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_set_default_blinds), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_blinds).setBackgroundColor(0xfff6da00);
         }
         editor.putInt("default_blinds", defaultBlinds);
@@ -411,10 +412,10 @@ public class ActivitySettings extends ActivityBase {
 
     public void backupDatabase(View v) {
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String backupName = "pokerledger_" + df.format(c.getTime()) + ".pldb";
         File src = new File(this.getDatabasePath("sessionManager").getAbsolutePath());
-        File dst = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "pokerledger_backup"); //+df.format(c.getTime())
+        File dst = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), backupName);
         FileChannel inChannel;
         FileChannel outChannel;
 
@@ -431,9 +432,15 @@ public class ActivitySettings extends ActivityBase {
         } catch (IOException e) {
             //blah blah, thank you java
         }
+        Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_backup) + backupName, Toast.LENGTH_LONG).show();
     }
 
     public void restoreDatabase(View v) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setType("file/*");
+        startActivity(intent);
+        /*
         File dst = new File(this.getDatabasePath("sessionManager").getAbsolutePath());
         File src = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "pokerledger_backup");
         FileChannel inChannel;
@@ -452,6 +459,7 @@ public class ActivitySettings extends ActivityBase {
         } catch (IOException e) {
             //blah blah, thank you java
         }
+        */
     }
 
     public class EditLocation extends AsyncTask<Location, Void, Void> {

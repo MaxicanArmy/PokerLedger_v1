@@ -4,19 +4,13 @@ package com.pokerledger.app.model;
  * Created by Catface Meowmers on 7/25/15.
  */
 public class Blinds {
-    private int id = 0;
-    private int sb = 0;
-    private int bb = 0;
-    private int straddle = 0;
-    private int bringIn = 0;
-    private int ante = 0;
-    private int perPoint = 0;
-    private int filtered = 0;
+    private int id, filtered = 0;
+    private double sb, bb, straddle, bringIn, ante, perPoint = 0.00;
 
     //constructors
     public Blinds() {}
 
-    public Blinds(int sb, int bb, int str, int bi, int a, int pp) {
+    public Blinds(double sb, double bb, double str, double bi, double a, double pp) {
         this.sb = sb;
         this.bb = bb;
         this.straddle = str;
@@ -25,7 +19,7 @@ public class Blinds {
         this.perPoint = pp;
     }
 
-    public Blinds(int sb, int bb, int str, int bi, int a, int pp, int f) {
+    public Blinds(double sb, double bb, double str, double bi, double a, double pp, int f) {
         this.sb = sb;
         this.bb = bb;
         this.straddle = str;
@@ -35,7 +29,7 @@ public class Blinds {
         this.filtered = f;
     }
 
-    public Blinds(int id, int sb, int bb, int str, int bi, int a, int pp, int f) {
+    public Blinds(int id, double sb, double bb, double str, double bi, double a, double pp, int f) {
         this.id = id;
         this.sb = sb;
         this.bb = bb;
@@ -81,27 +75,27 @@ public class Blinds {
         this.id = i;
     }
 
-    public void setSB(int i) {
+    public void setSB(double i) {
         this.sb = i;
     }
 
-    public void setBB(int i) {
+    public void setBB(double i) {
         this.bb = i;
     }
 
-    public void setStraddle(int i) {
+    public void setStraddle(double i) {
         this.straddle = i;
     }
 
-    public void setBringIn(int i) {
+    public void setBringIn(double i) {
         this.bringIn = i;
     }
 
-    public void setAnte(int i) {
+    public void setAnte(double i) {
         this.ante = i;
     }
 
-    public void setPerPoint(int i) {
+    public void setPerPoint(double i) {
         this.perPoint = i;
     }
 
@@ -114,27 +108,27 @@ public class Blinds {
         return this.id;
     }
 
-    public int getSB() {
+    public double getSB() {
         return this.sb;
     }
 
-    public int getBB() {
+    public double getBB() {
         return this.bb;
     }
 
-    public int getStraddle() {
+    public double getStraddle() {
         return this.straddle;
     }
 
-    public int getBringIn() {
+    public double getBringIn() {
         return this.bringIn;
     }
 
-    public int getAnte() {
+    public double getAnte() {
         return this.ante;
     }
 
-    public int getPerPoint() {
+    public double getPerPoint() {
         return this.perPoint;
     }
 

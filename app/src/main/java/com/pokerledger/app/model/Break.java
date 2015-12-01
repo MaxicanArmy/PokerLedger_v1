@@ -89,23 +89,4 @@ public class Break {
 
         return timePlayed;
     }
-
-    /*
-    public Long breakTimeMillis() {
-        Calendar startTime = Calendar.getInstance();
-        Calendar endTime = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        try {
-            startTime.setTime(sdf.parse(this.startDate + " " + this.startTime));
-
-            if (!this.endDate.equals("")) {
-                endTime.setTime(sdf.parse(this.endDate + " " + this.endTime));
-            }
-        } catch (Exception e) {
-            //fucking parse exception needs to be handled
-        }
-
-        return endTime.getTimeInMillis() - startTime.getTimeInMillis();
-    }
-    */
 }

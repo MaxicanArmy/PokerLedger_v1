@@ -9,9 +9,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.pokerledger.app.model.Break;
-import com.pokerledger.app.model.Session;
 import com.pokerledger.app.helper.PLCommon;
 
 import java.util.ArrayList;
@@ -85,22 +83,22 @@ public class FragmentAddBreak extends DialogFragment {
                 String endTime = ((Button) getView().findViewById(R.id.break_end_time)).getHint().toString();
 
                 if (startDate.equals("Start Date")) {
-                    Toast.makeText(getActivity(), R.string.error_enter_break_start_date, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_enter_break_start_date), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (startTime.equals("Start Time")) {
-                    Toast.makeText(getActivity(), R.string.error_enter_break_start_time, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_enter_break_start_time), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (endDate.equals("End Date")) {
-                    Toast.makeText(getActivity(), R.string.error_enter_break_end_date, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_enter_break_end_date), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (endTime.equals("End Time")) {
-                    Toast.makeText(getActivity(), R.string.error_enter_break_end_time, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_enter_break_end_time), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -110,15 +108,15 @@ public class FragmentAddBreak extends DialogFragment {
                 //error conditions
                 //1. Break end datetime is before break start datetime
                 if (end < start) {
-                    Toast.makeText(a, R.string.error_negative_break_length, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(a, getResources().getString(R.string.error_negative_break_length), Toast.LENGTH_SHORT).show();
                 }
                 //2. Break starts before session start datetime
                 else if (start < a.activeSession.getStart()) {
-                    Toast.makeText(a, R.string.error_break_start_early, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(a, getResources().getString(R.string.error_break_start_early), Toast.LENGTH_SHORT).show();
                 }
                 //3. Break ends after session end datetime
                 else if (end > a.activeSession.getEnd()) {
-                    Toast.makeText(a, R.string.error_break_end_late, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(a, getResources().getString(R.string.error_break_end_late), Toast.LENGTH_SHORT).show();
                 }
                 //4. Any part of the break overlaps with another break
                 else {
@@ -126,7 +124,7 @@ public class FragmentAddBreak extends DialogFragment {
                     if (!ba.isEmpty()) {
                         for (Break b : ba) {
                             if ((start < b.getEnd()) && (end > b.getStart())) {
-                                Toast.makeText(a, R.string.error_break_overlap, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(a, getResources().getString(R.string.error_break_overlap), Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         }

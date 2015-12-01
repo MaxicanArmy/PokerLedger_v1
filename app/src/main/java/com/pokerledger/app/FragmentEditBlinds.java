@@ -28,27 +28,27 @@ public class FragmentEditBlinds extends DialogFragment {
         blinds = gson.fromJson(json, Blinds.class);
 
         if (blinds.getSB() != 0) {
-            ((EditText) view.findViewById(R.id.small_blind)).setText(Integer.toString(blinds.getSB()));
+            ((EditText) view.findViewById(R.id.small_blind)).setText(Double.toString(blinds.getSB()));
         }
 
         if (blinds.getBB() != 0) {
-            ((EditText) view.findViewById(R.id.big_blind)).setText(Integer.toString(blinds.getBB()));
+            ((EditText) view.findViewById(R.id.big_blind)).setText(Double.toString(blinds.getBB()));
         }
 
         if (blinds.getStraddle() != 0) {
-            ((EditText) view.findViewById(R.id.straddle)).setText(Integer.toString(blinds.getStraddle()));
+            ((EditText) view.findViewById(R.id.straddle)).setText(Double.toString(blinds.getStraddle()));
         }
 
         if (blinds.getBringIn() != 0) {
-            ((EditText) view.findViewById(R.id.bring_in)).setText(Integer.toString(blinds.getBringIn()));
+            ((EditText) view.findViewById(R.id.bring_in)).setText(Double.toString(blinds.getBringIn()));
         }
 
         if (blinds.getAnte() != 0) {
-            ((EditText) view.findViewById(R.id.ante)).setText(Integer.toString(blinds.getAnte()));
+            ((EditText) view.findViewById(R.id.ante)).setText(Double.toString(blinds.getAnte()));
         }
 
         if (blinds.getPerPoint() != 0) {
-            ((EditText) view.findViewById(R.id.points)).setText(Integer.toString(blinds.getPerPoint()));
+            ((EditText) view.findViewById(R.id.points)).setText(Double.toString(blinds.getPerPoint()));
         }
 
         Button createBlinds = (Button) view.findViewById(R.id.create_blinds);
@@ -62,37 +62,37 @@ public class FragmentEditBlinds extends DialogFragment {
                 String ppText = ((EditText) getView().findViewById(R.id.points)).getText().toString();
 
                 if (!bbText.equals("") && sbText.equals("")) {
-                    Toast.makeText(getActivity(), R.string.error_single_blind, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_single_blind), Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 if (!ppText.equals("") && (!sbText.equals("") || !bbText.equals("") || !strText.equals("") || !biText.equals("") || !anteText.equals(""))) {
-                    Toast.makeText(getActivity(), R.string.error_points_plus, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_points_plus), Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 if (!strText.equals("") && (sbText.equals("") || bbText.equals(""))) {
-                    Toast.makeText(getActivity(), R.string.error_straddle_no_blinds, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_straddle_no_blinds), Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 if (!sbText.equals("")) {
-                    blinds.setSB(Integer.parseInt(sbText));
+                    blinds.setSB(Double.parseDouble(sbText));
                 }
                 if (!bbText.equals("")) {
-                    blinds.setBB(Integer.parseInt(bbText));
+                    blinds.setBB(Double.parseDouble(bbText));
                 }
                 if (!strText.equals("")) {
-                    blinds.setStraddle(Integer.parseInt(strText));
+                    blinds.setStraddle(Double.parseDouble(strText));
                 }
                 if (!biText.equals("")) {
-                    blinds.setBringIn(Integer.parseInt(biText));
+                    blinds.setBringIn(Double.parseDouble(biText));
                 }
                 if (!anteText.equals("")) {
-                    blinds.setAnte(Integer.parseInt(anteText));
+                    blinds.setAnte(Double.parseDouble(anteText));
                 }
                 if (!ppText.equals("")) {
-                    blinds.setPerPoint(Integer.parseInt(ppText));
+                    blinds.setPerPoint(Double.parseDouble(ppText));
                 }
 
                 ((ActivitySettings) getActivity()).notifyEditBlinds(blinds);

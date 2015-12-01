@@ -158,7 +158,7 @@ public class ActivitySession extends ActivityBase {
 
     public void showBreaksDialog(View v) {
         if (activeSession.getBreaks().size() == 0) {
-            Toast.makeText(this, R.string.info_no_breaks, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getResources().getString(R.string.info_no_breaks), Toast.LENGTH_LONG).show();
         }
         else {
             FragmentManager manager = getFragmentManager();
@@ -180,7 +180,7 @@ public class ActivitySession extends ActivityBase {
         String endTime = ((Button) this.findViewById(R.id.end_time)).getHint().toString();
 
         if (startDate.equals("Start Date") || startTime.equals("Start Time") || endDate.equals("End Date") || endTime.equals("End Time")) {
-            Toast.makeText(this, R.string.error_enter_break, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_enter_break), Toast.LENGTH_SHORT).show();
         }
         else {
             this.activeSession.setStart(PLCommon.datetimeToTimestamp(startDate + " " + startTime));

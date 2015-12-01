@@ -34,7 +34,7 @@ public class FragmentCreateGameFormat extends DialogFragment {
                 }
 
                 if (gameFormatName.equals("")) {
-                    Toast.makeText(getActivity(), R.string.error_no_game_format_name, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_no_game_format_name), Toast.LENGTH_SHORT).show();
                 } else {
                     ((ActivityBase) getActivity()).notifyCreateGameFormat(gameFormatName, baseFormatId, baseFormat);
                     dismiss();
