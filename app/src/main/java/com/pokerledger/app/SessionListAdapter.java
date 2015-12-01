@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.pokerledger.app.helper.PLCommon;
 import com.pokerledger.app.model.Session;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class SessionListAdapter extends ArrayAdapter<Session>{
         }
         setTime(currentSession, viewItem.time, viewItem.time.getTag().toString());
         viewItem.location.setText(currentSession.getLocation().getLocation());
-        viewItem.buyin.setText("$" + Double.toString(currentSession.getBuyIn()));
+        viewItem.buyin.setText("$" + PLCommon.formatDouble(currentSession.getBuyIn()));
         viewItem.game.setText(currentSession.getGame().getGame());
         return convertView;
     }

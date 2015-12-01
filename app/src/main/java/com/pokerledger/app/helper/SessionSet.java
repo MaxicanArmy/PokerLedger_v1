@@ -86,9 +86,9 @@ public class SessionSet {
     public String profitFormatted() {
         String profitText;
         if (profit < 0 ) {
-            profitText = "($" + Double.toString(Math.abs(profit)) + ")";
+            profitText = "($" + PLCommon.formatDouble(Math.abs(profit)) + ")";
         } else {
-            profitText = "$" + Double.toString(profit);
+            profitText = "$" + PLCommon.formatDouble(profit);
         }
 
         return profitText;
@@ -127,12 +127,10 @@ public class SessionSet {
             hourly = this.profit / time;
         }
 
-        DecimalFormat df = new DecimalFormat("0.00");
-
         if (hourly < 0 ) {
-            hourlyWage = "($" + df.format(Math.abs(hourly)) + ")";
+            hourlyWage = "($" + PLCommon.formatDouble(Math.abs(hourly)) + ")";
         } else {
-            hourlyWage = "$" + df.format(hourly);
+            hourlyWage = "$" + PLCommon.formatDouble(hourly);
         }
 
         return hourlyWage;

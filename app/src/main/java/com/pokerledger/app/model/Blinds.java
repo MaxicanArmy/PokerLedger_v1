@@ -1,5 +1,7 @@
 package com.pokerledger.app.model;
 
+import com.pokerledger.app.helper.PLCommon;
+
 /**
  * Created by Catface Meowmers on 7/25/15.
  */
@@ -45,26 +47,26 @@ public class Blinds {
         String blinds = "";
 
         if (sb != 0 && bb != 0) {
-            blinds += "$" + sb + "/$" + bb;
+            blinds += "$" + PLCommon.formatDouble(sb) + "/$" + PLCommon.formatDouble(bb);
         }
         else if (sb != 0) {
-            blinds += "$" + sb + " blind";
+            blinds += "$" + PLCommon.formatDouble(sb) + " blind";
         }
 
         if (straddle != 0) {
-            blinds += "/$" + straddle;
+            blinds += "/$" + PLCommon.formatDouble(straddle);
         }
 
         if (bringIn != 0) {
-            blinds += " w/$" + bringIn + " bring in";
+            blinds += " w/$" + PLCommon.formatDouble(bringIn) + " bring in";
         }
 
         if (ante != 0) {
-            blinds += " w/$" + ante + " ante";
+            blinds += " w/$" + PLCommon.formatDouble(ante) + " ante";
         }
 
         if (perPoint != 0) {
-            blinds += "$" + perPoint + "/point";
+            blinds += "$" + PLCommon.formatDouble(perPoint) + "/point";
         }
 
         return blinds;

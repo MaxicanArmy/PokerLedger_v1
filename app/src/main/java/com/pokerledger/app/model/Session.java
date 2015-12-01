@@ -1,5 +1,7 @@
 package com.pokerledger.app.model;
 
+import com.pokerledger.app.helper.PLCommon;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -222,9 +224,9 @@ public class Session {
         String profitText;
         double profit = this.getProfit();
         if (profit < 0 ) {
-            profitText = "($" + Double.toString(Math.abs(profit)) + ")";
+            profitText = "($" + PLCommon.formatDouble(Math.abs(profit)) + ")";
         } else {
-            profitText = "$" + Double.toString(profit);
+            profitText = "$" + PLCommon.formatDouble(profit);
         }
 
         return profitText;

@@ -1,5 +1,6 @@
 package com.pokerledger.app.helper;
 
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -39,5 +40,12 @@ public class PLCommon {
         cal.setTimeInMillis(timestamp);
 
         return df.format(cal.get(Calendar.HOUR_OF_DAY)) + ":" + df.format(cal.get(Calendar.MINUTE));
+    }
+
+    public static String formatDouble(double d) {
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.CEILING);
+
+        return df.format(d);
     }
 }

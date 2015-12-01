@@ -1,6 +1,7 @@
 package com.pokerledger.app;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.app.FragmentManager;
@@ -34,6 +35,7 @@ import java.util.Calendar;
  * Created by max on 8/23/15.
  */
 public class ActivitySettings extends ActivityBase {
+    private static final int SELECT_BACKUP = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -432,34 +434,45 @@ public class ActivitySettings extends ActivityBase {
         } catch (IOException e) {
             //blah blah, thank you java
         }
-        Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_backup) + backupName, Toast.LENGTH_LONG).show();
+        Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_backup) + " " + backupName, Toast.LENGTH_LONG).show();
     }
 
     public void restoreDatabase(View v) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_GET_CONTENT);
         intent.setType("file/*");
-        startActivity(intent);
-        /*
-        File dst = new File(this.getDatabasePath("sessionManager").getAbsolutePath());
-        File src = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "pokerledger_backup");
-        FileChannel inChannel;
-        FileChannel outChannel;
+        startActivityForResult(Intent.createChooser(intent, "Select Backup"), SELECT_BACKUP);
+    }
 
-        try
-        {
-            inChannel = new FileInputStream(src).getChannel();
-            outChannel = new FileOutputStream(dst).getChannel();
-            inChannel.transferTo(0, inChannel.size(), outChannel);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_BACKUP) {
 
-            if (inChannel != null)
-                inChannel.close();
-            if (outChannel != null)
-                outChannel.close();
-        } catch (IOException e) {
-            //blah blah, thank you java
+                Uri selectedUri = data.getData();
+                String backupPath = selectedUri.getPath();
+                Toast.makeText(ActivitySettings.this, backupPath, Toast.LENGTH_LONG).show();
+
+                File dst = new File(this.getDatabasePath("sessionManager").getAbsolutePath());
+                File src = new File(backupPath);
+                FileChannel inChannel;
+                FileChannel outChannel;
+
+                try
+                {
+                    inChannel = new FileInputStream(src).getChannel();
+                    outChannel = new FileOutputStream(dst).getChannel();
+                    inChannel.transferTo(0, inChannel.size(), outChannel);
+
+                    if (inChannel != null)
+                        inChannel.close();
+                    if (outChannel != null)
+                        outChannel.close();
+                } catch (IOException e) {
+                    //blah blah, thank you java
+                }
+            }
+            Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_restore), Toast.LENGTH_LONG).show();
         }
-        */
     }
 
     public class EditLocation extends AsyncTask<Location, Void, Void> {
