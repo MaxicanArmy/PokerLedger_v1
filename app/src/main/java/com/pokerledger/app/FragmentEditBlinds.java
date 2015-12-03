@@ -113,6 +113,7 @@ public class FragmentEditBlinds extends DialogFragment {
 
     @Override
     public void onActivityCreated (Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 }
