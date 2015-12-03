@@ -59,7 +59,7 @@ public class ActivityGraphs extends ActivityBase {
             });
 
             if (set.getSessions().size() > 0) {
-                double minY = set.getMinY(), maxY = set.getMaxY(), maxX = set.getHoursPlayed();
+                double minY = set.getMinY(), maxY = set.getMaxY(), maxX = set.getLengthHours();
                 if (minY < 0) {
                     minY -= 100 + (minY % 100);
                 }

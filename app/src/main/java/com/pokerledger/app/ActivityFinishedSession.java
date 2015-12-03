@@ -35,7 +35,7 @@ public class ActivityFinishedSession extends ActivitySession  {
             Gson gson = new Gson();
             this.activeSession = gson.fromJson(json, Session.class);
 
-            ((EditText) findViewById(R.id.buy_in)).setText(Double.toString(this.activeSession.getBuyIn()));
+            ((EditText) findViewById(R.id.buy_in)).setText(PLCommon.formatDouble(this.activeSession.getBuyIn()));
 
             if (this.activeSession.getEntrants() != 0) {
                 ((EditText) findViewById(R.id.entrants)).setText(Integer.toString(this.activeSession.getEntrants()));
@@ -44,6 +44,12 @@ public class ActivityFinishedSession extends ActivitySession  {
             ((Button) findViewById(R.id.start_date)).setHint(PLCommon.timestampToDate(this.activeSession.getStart()));
             ((Button) findViewById(R.id.start_time)).setHint(PLCommon.timestampToTime(this.activeSession.getStart()));
 
+            Calendar cal = Calendar.getInstance();
+            this.activeSession.setEnd(cal.getTimeInMillis());
+
+            ((Button) findViewById(R.id.end_date)).setHint(PLCommon.timestampToDate(this.activeSession.getEnd()));
+            ((Button) findViewById(R.id.end_time)).setHint(PLCommon.timestampToTime(this.activeSession.getEnd()));
+
             if (this.activeSession.onBreak()) {
                 this.activeSession.breakEnd();
             }
@@ -51,11 +57,6 @@ public class ActivityFinishedSession extends ActivitySession  {
             if (!this.activeSession.getNote().equals("")) {
                 ((EditText) findViewById(R.id.note)).setText(this.activeSession.getNote());
             }
-
-            Calendar cal = Calendar.getInstance();
-            this.activeSession.setEnd(cal.getTimeInMillis());
-            ((Button) findViewById(R.id.end_date)).setHint(PLCommon.timestampToDate(this.activeSession.getEnd()));
-            ((Button) findViewById(R.id.end_time)).setHint(PLCommon.timestampToTime(this.activeSession.getEnd()));
         }
     }
 
@@ -232,7 +233,6 @@ public class ActivityFinishedSession extends ActivitySession  {
             FlurryAgent.logEvent("Session_Finish_Active");
             new EditSession().execute(this.activeSession);
         }
-
         setResult(RESULT_OK);
         finish();
     }

@@ -441,7 +441,7 @@ public class ActivitySettings extends ActivityBase {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_GET_CONTENT);
         intent.setType("file/*");
-        startActivityForResult(Intent.createChooser(intent, "Select Backup"), SELECT_BACKUP);
+        startActivityForResult(Intent.createChooser(intent, "Select File Manager"), SELECT_BACKUP);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

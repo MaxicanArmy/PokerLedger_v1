@@ -34,30 +34,22 @@ public class ActivityEditSession extends ActivitySession  {
             this.activeSession = gson.fromJson(json, Session.class);
 
             ((EditText) findViewById(R.id.buy_in)).setText(Double.toString(this.activeSession.getBuyIn()));
-
-            if (this.activeSession.getEntrants() != 0) {
-                ((EditText) findViewById(R.id.entrants)).setText(Integer.toString(this.activeSession.getEntrants()));
-            }
+            ((EditText) findViewById(R.id.cash_out)).setText(Double.toString(this.activeSession.getCashOut()));
 
             ((Button) findViewById(R.id.start_date)).setHint(PLCommon.timestampToDate(this.activeSession.getStart()));
             ((Button) findViewById(R.id.start_time)).setHint(PLCommon.timestampToTime(this.activeSession.getStart()));
 
-            if (this.activeSession.onBreak()) {
-                this.activeSession.breakEnd();
-            }
+            ((Button) findViewById(R.id.end_date)).setHint(PLCommon.timestampToDate(this.activeSession.getEnd()));
+            ((Button) findViewById(R.id.end_time)).setHint(PLCommon.timestampToTime(this.activeSession.getEnd()));
 
             if (!this.activeSession.getNote().equals("")) {
                 ((EditText) findViewById(R.id.note)).setText(this.activeSession.getNote());
             }
 
-            ((EditText) findViewById(R.id.cash_out)).setText(Double.toString(this.activeSession.getCashOut()));
-
             if (this.activeSession.getGameFormat().getBaseFormatId() == 2) {
+                ((EditText) findViewById(R.id.entrants)).setText(Integer.toString(this.activeSession.getEntrants()));
                 ((EditText) findViewById(R.id.placed)).setText(Integer.toString(this.activeSession.getPlaced()));
             }
-
-            ((Button) findViewById(R.id.end_date)).setHint(PLCommon.timestampToDate(this.activeSession.getEnd()));
-            ((Button) findViewById(R.id.end_time)).setHint(PLCommon.timestampToTime(this.activeSession.getEnd()));
         }
     }
 
@@ -98,7 +90,7 @@ public class ActivityEditSession extends ActivitySession  {
             return;
         }
         else {
-            this.activeSession.setBuyIn(Integer.parseInt(buyinText));
+            this.activeSession.setBuyIn(Double.parseDouble(buyinText));
         }
 
         String cashOutText = ((EditText) findViewById(R.id.cash_out)).getText().toString();
@@ -109,7 +101,7 @@ public class ActivityEditSession extends ActivitySession  {
             return;
         }
         else {
-            this.activeSession.setCashOut(Integer.parseInt(cashOutText));
+            this.activeSession.setCashOut(Double.parseDouble(cashOutText));
         }
 
         Spinner locationSpinner = (Spinner) findViewById(R.id.location);
@@ -214,7 +206,7 @@ public class ActivityEditSession extends ActivitySession  {
             this.activeSession.setEnd(end);
         }
 
-        if (this.activeSession.lengthMillis() <= 0) {
+        if (this.activeSession.lengthMillis() < 0) {
             Toast.makeText(this, getResources().getString(R.string.error_negative_length), Toast.LENGTH_SHORT).show();
             return;
         }

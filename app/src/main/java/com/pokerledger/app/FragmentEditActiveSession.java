@@ -74,15 +74,14 @@ public class FragmentEditActiveSession extends DialogFragment implements Adapter
             new ToggleBreak().execute();
         }
         else if (position == 1) {
+
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View adbView = inflater.inflate(R.layout.fragment_rebuy_addon, null);
+
             AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
             adb.setTitle("Rebuy/Addon");
-
-            //Set an EditText view to get user input
-            final EditText input = new EditText(getActivity());
-            input.setHint("Amount");
-            input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
-            adb.setView(input);
-
+            adb.setView(adbView);
+            final EditText input = (EditText) adbView.findViewById(R.id.amount);
             adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     double value = Double.parseDouble(input.getText().toString());
@@ -109,7 +108,6 @@ public class FragmentEditActiveSession extends DialogFragment implements Adapter
             AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
             adb.setTitle("Confirmation");
             adb.setMessage("Are you sure you want to delete this session?");
-            //dialog.setCancelable(false);
             adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int buttonId) {
                     new DeleteActive().execute();

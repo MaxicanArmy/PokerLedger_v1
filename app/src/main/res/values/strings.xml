@@ -112,6 +112,7 @@
     <string name="save_hint">Save</string>
     <string name="backup_hint">Backup</string>
     <string name="restore_hint">Restore</string>
+    <string name="rebuy_hint">Amount</string>
 
     <string name="sb_hint">SB</string>
     <string name="bb_hint">BB</string>

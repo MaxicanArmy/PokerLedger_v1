@@ -70,7 +70,6 @@ public class FragmentEditFinishedSession extends DialogFragment implements Adapt
             AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
             adb.setTitle("Confirmation");
             adb.setMessage("Are you sure you want to delete this session?");
-            //dialog.setCancelable(false);
             adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int buttonId) {
                     new DeleteFinished().execute();

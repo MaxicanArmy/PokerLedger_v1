@@ -6,8 +6,8 @@ import com.pokerledger.app.helper.PLCommon;
  * Created by Catface Meowmers on 7/25/15.
  */
 public class Blinds {
-    private int id, filtered = 0;
-    private double sb, bb, straddle, bringIn, ante, perPoint = 0.00;
+    private int id = 0, filtered = 0;
+    private double sb = 0, bb = 0, straddle = 0, bringIn = 0, ante = 0, perPoint = 0;
 
     //constructors
     public Blinds() {}

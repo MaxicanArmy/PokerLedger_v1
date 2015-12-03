@@ -32,22 +32,12 @@ public class SessionSet {
         return this.sessions;
     }
 
-    public Long getLengthMillis() {
-        return this.lengthMillis;
+    public double getLengthSeconds() {
+        return Math.round(this.lengthMillis.doubleValue() / 1000);
     }
 
-    public Long getLengthMinutes() {
-        return this.lengthMillis / (1000 * 60);
-    }
-
-    public double getHoursPlayed() {
-        int minutesPlayed = this.getLengthMinutes().intValue();
-        int hours = minutesPlayed / 60;
-        double minutes = minutesPlayed % 60;
-
-        double time = hours + (Math.round((minutes / 60.00) * 100.0) / 100.0);
-
-        return time;
+    public double getLengthHours() {
+        return this.getLengthSeconds() / 3600;
     }
 
     public double getProfit() {
@@ -74,7 +64,7 @@ public class SessionSet {
         this.sessions.add(s);
         this.lengthMillis += s.lengthMillis();
         this.profit += s.getProfit();
-        this.dataPoints.add(new DataPoint(this.getHoursPlayed(), this.profit));
+        this.dataPoints.add(new DataPoint(this.getLengthHours(), this.profit));
         if (this.profit > maxY) {
             maxY = this.profit;
         }
@@ -116,7 +106,7 @@ public class SessionSet {
     }
 
     public String wageFormatted() {
-        double time = getHoursPlayed();
+        double time = getLengthHours();
         double hourly;
         String hourlyWage;
 

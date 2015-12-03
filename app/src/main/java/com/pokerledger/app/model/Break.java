@@ -9,7 +9,7 @@ import java.util.Calendar;
  */
 public class Break {
     private int id = 0;
-    private Long start, end = 0L;
+    private Long start = 0L, end = 0L;
 
     //constructors
     public Break() {}

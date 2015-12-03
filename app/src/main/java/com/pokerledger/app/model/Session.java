@@ -10,10 +10,10 @@ import java.util.Calendar;
  * Created by Catface Meowmers on 7/25/15.
  */
 public class Session {
-    private int id, entrants, placed, state = 0;
-    private double buyIn, cashOut = 0.00;
+    private int id = 0, entrants = 0, placed = 0, state = 0;
+    private double buyIn = 0, cashOut = 0;
     private String note = "";
-    private Long start, end = 0L;
+    private Long start = 0L, end = 0L;
     private Location location = new Location();
     private Game game = new Game();
     private GameFormat gameFormat = new GameFormat();
@@ -173,7 +173,6 @@ public class Session {
 
     public void breakEnd() {
         Calendar cal = Calendar.getInstance();
-        DecimalFormat df = new DecimalFormat("00");
         int position = this.breaks.size() - 1;
 
         this.breaks.get(position).setEnd(cal.getTimeInMillis());
@@ -196,7 +195,7 @@ public class Session {
             breakTotal += b.lengthMillis();
         }
 
-        return endTime - this.start - breakTotal;
+        return ((endTime - this.start - breakTotal) / 1000) * 1000;
     }
 
     public String lengthFormatted() {
