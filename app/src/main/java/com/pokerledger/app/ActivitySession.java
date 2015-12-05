@@ -186,7 +186,7 @@ public class ActivitySession extends ActivityBase {
             this.activeSession.setStart(PLCommon.datetimeToTimestamp(startDate + " " + startTime));
             this.activeSession.setEnd(PLCommon.datetimeToTimestamp(endDate + " " + endTime));
             FragmentManager manager = getFragmentManager();
-            FragmentAddBreak dialog = new FragmentAddBreak();
+            FragmentAddBreak dialog = FragmentAddBreak.newInstance(startDate, startTime);
             dialog.show(manager, "AddBreak");
         }
     }

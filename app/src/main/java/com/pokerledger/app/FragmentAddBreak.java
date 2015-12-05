@@ -19,6 +19,28 @@ import java.util.ArrayList;
  */
 public class FragmentAddBreak extends DialogFragment {
     View view;
+    private String initDate;
+    private String initTime;
+
+    static FragmentAddBreak newInstance(String initDate, String initTime) {
+        FragmentAddBreak f = new FragmentAddBreak();
+
+        // Supply num input as an argument.
+        Bundle args = new Bundle();
+        args.putString("initDate", initDate);
+        args.putString("initTime", initTime);
+        f.setArguments(args);
+
+        return f;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        initDate = getArguments().getString("initDate");
+        initTime = getArguments().getString("initTime");
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -71,6 +93,10 @@ public class FragmentAddBreak extends DialogFragment {
                 ((ActivitySession) getActivity()).showTimePickerDialog(v);
             }
         });
+
+        ((Button) view.findViewById(R.id.break_start_date)).setHint(initDate);
+        ((Button) view.findViewById(R.id.break_end_date)).setHint(initDate);
+        ((Button) view.findViewById(R.id.break_start_time)).setHint(initTime);
 
         Button addBreak = (Button) view.findViewById(R.id.add_break);
         addBreak.setOnClickListener(new View.OnClickListener() {

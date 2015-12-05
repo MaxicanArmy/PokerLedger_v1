@@ -31,14 +31,14 @@
     <string name="error_no_game_format_name">You must enter a game format name or press cancel.</string>
     <string name="error_no_location_name">You must enter a location name or press cancel.</string>
 
-    <string name="info_set_default_blinds"> is now your default blinds.</string>
-    <string name="info_remove_default_blinds"> is no longer your default blinds.</string>
-    <string name="info_set_default_game"> is now your default game.</string>
-    <string name="info_remove_default_game"> is no longer your default game.</string>
-    <string name="info_set_default_game_format"> is now your default game format.</string>
-    <string name="info_remove_default_game_format"> is no longer your default game format.</string>
-    <string name="info_set_default_location"> is now your default location.</string>
-    <string name="info_remove_default_location"> is no longer your default location.</string>
+    <string name="info_set_default_blinds">is now your default blinds.</string>
+    <string name="info_remove_default_blinds">is no longer your default blinds.</string>
+    <string name="info_set_default_game">is now your default game.</string>
+    <string name="info_remove_default_game">is no longer your default game.</string>
+    <string name="info_set_default_game_format">is now your default game format.</string>
+    <string name="info_remove_default_game_format">is no longer your default game format.</string>
+    <string name="info_set_default_location">is now your default location.</string>
+    <string name="info_remove_default_location">is no longer your default location.</string>
     <string name="info_delete_blinds">Blind set deleted.</string>
     <string name="info_delete_game">Game deleted.</string>
     <string name="info_delete_game_format">Game format deleted.</string>

@@ -344,11 +344,11 @@ public class ActivitySettings extends ActivityBase {
         SharedPreferences.Editor editor = prefs.edit();
         if (defaultLocation == selected.getId()) {
             defaultLocation = 0;
-            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_remove_default_location), Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + " " + getResources().getString(R.string.info_remove_default_location), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_location).setBackgroundColor(0xffb4b6b3);
         } else {
             defaultLocation = selected.getId();
-            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_set_default_location), Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + " " + getResources().getString(R.string.info_set_default_location), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_location).setBackgroundColor(0xfff6da00);
         }
         editor.putInt("default_location", defaultLocation);
@@ -363,11 +363,11 @@ public class ActivitySettings extends ActivityBase {
         SharedPreferences.Editor editor = prefs.edit();
         if (defaultGame == selected.getId()) {
             defaultGame = 0;
-            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_remove_default_game), Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + " " + getResources().getString(R.string.info_remove_default_game), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_game).setBackgroundColor(0xffb4b6b3);
         } else {
             defaultGame = selected.getId();
-            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_set_default_game), Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + " " + getResources().getString(R.string.info_set_default_game), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_game).setBackgroundColor(0xfff6da00);
         }
         editor.putInt("default_game", defaultGame);
@@ -382,11 +382,11 @@ public class ActivitySettings extends ActivityBase {
         SharedPreferences.Editor editor = prefs.edit();
         if (defaultGameFormat == selected.getId()) {
             defaultGameFormat = 0;
-            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_remove_default_game_format), Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + " " + getResources().getString(R.string.info_remove_default_game_format), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_game_format).setBackgroundColor(0xffb4b6b3);
         } else {
             defaultGameFormat = selected.getId();
-            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_set_default_game_format), Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + " " + getResources().getString(R.string.info_set_default_game_format), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_game_format).setBackgroundColor(0xfff6da00);
         }
         editor.putInt("default_game_format", defaultGameFormat);
@@ -401,11 +401,11 @@ public class ActivitySettings extends ActivityBase {
         SharedPreferences.Editor editor = prefs.edit();
         if (defaultBlinds == selected.getId()) {
             defaultBlinds = 0;
-            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_remove_default_blinds), Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + " " + getResources().getString(R.string.info_remove_default_blinds), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_blinds).setBackgroundColor(0xffb4b6b3);
         } else {
             defaultBlinds = selected.getId();
-            Toast.makeText(ActivitySettings.this, selected.toString() + getResources().getString(R.string.info_set_default_blinds), Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, selected.toString() + " " + getResources().getString(R.string.info_set_default_blinds), Toast.LENGTH_LONG).show();
             ActivitySettings.this.findViewById(R.id.set_default_blinds).setBackgroundColor(0xfff6da00);
         }
         editor.putInt("default_blinds", defaultBlinds);
@@ -450,7 +450,6 @@ public class ActivitySettings extends ActivityBase {
 
                 Uri selectedUri = data.getData();
                 String backupPath = selectedUri.getPath();
-                Toast.makeText(ActivitySettings.this, backupPath, Toast.LENGTH_LONG).show();
 
                 File dst = new File(this.getDatabasePath("sessionManager").getAbsolutePath());
                 File src = new File(backupPath);
