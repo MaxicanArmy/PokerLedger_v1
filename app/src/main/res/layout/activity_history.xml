@@ -5,9 +5,6 @@
 
     <LinearLayout
         android:id="@+id/welcome_wrapper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
         style="@style/Wrapper"
         android:visibility="gone">
 
@@ -16,125 +13,141 @@
             android:text="@string/welcome_header"
             style="@style/WrapperHeader"/>
 
-        <TextView
-            android:id="@+id/welcome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/welcome"
-            android:padding="@dimen/standard_padding">
-        </TextView>
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/timeframe_wrapper"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/Wrapper">
-
-        <TextView
-            android:id="@+id/timeframe_tiny_header"
-            android:text="@string/timeframe_header"
-            style="@style/TinyHeader" />
-
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:id="@+id/active_sessions_content"
+            style="@style/WrapperContent">
 
-            <Spinner
-                android:id="@+id/timeblocks"
-                android:layout_width="0dp"
-                android:layout_weight=".30"
-                android:layout_height="wrap_content" />
-
-            <Spinner
-                android:id="@+id/timeframes"
-                android:layout_width="0dp"
-                android:layout_weight=".70"
-                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/welcome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/welcome"
+                android:padding="@dimen/unit2">
+            </TextView>
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/overview_wrapper"
-        android:orientation="vertical"
         style="@style/Wrapper"
         android:visibility="gone">
 
         <TextView
             android:id="@+id/overview_header"
             android:text="@string/summary_title"
-            style="@style/WrapperHeader"
-            android:layout_marginBottom="@dimen/standard_padding" />
+            style="@style/WrapperHeader" />
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/row1"
-            android:orientation="horizontal"
-            style="@style/Row">
+        <LinearLayout
+            android:id="@+id/overview_content"
+            style="@style/WrapperContent">
 
-            <TextView
-                android:id="@+id/profit_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/overview_profit"
-                android:textSize="16sp" />
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/row1"
+                style="@style/ContentRow">
 
-            <TextView
-                android:id="@+id/profit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:textSize="16sp"/>
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/profit_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/overview_profit" />
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/row2"
-            android:orientation="horizontal"
-            style="@style/Row">
+                <TextView
+                    android:id="@+id/profit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"/>
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/time_played_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/overview_time"
-                android:textSize="16sp" />
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/row2"
+                style="@style/ContentRow">
 
-            <TextView
-                android:id="@+id/time_played"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/time_played_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/overview_time" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/time_played"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end" />
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/row3"
-            android:orientation="horizontal"
-            style="@style/Row">
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/hourly_wage_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/overview_hourly"
-                android:textSize="16sp" />
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/row3"
+                style="@style/ContentRow">
 
-            <TextView
-                android:id="@+id/hourly_wage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/hourly_wage_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/overview_hourly" />
+
+                <TextView
+                    android:id="@+id/hourly_wage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/history_session_list"
-        style="@style/Wrapper"
-        android:paddingLeft="@dimen/standard_padding"
-        android:paddingRight="@dimen/standard_padding"
-        android:visibility="gone">
-    </ListView>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/timeframe_wrapper"
+        style="@style/Wrapper">
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/timeframe_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/unit8"
+            android:paddingTop="@dimen/unit1"
+            android:paddingRight="@dimen/unit8"
+            android:paddingBottom="@dimen/unit1"
+            android:background="@color/colorPrimaryLight">
+
+            <Spinner
+                android:id="@+id/timeblocks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true">
+
+                <Button
+                    android:id="@+id/previous"
+                    android:text="@string/previous_hint"
+                    android:onClick="saveFinishedSession"
+                    style="@style/buttonArrow" />
+
+                <Spinner
+                    android:id="@+id/timeframes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:layout_marginLeft="@dimen/unit2" />
+
+                <Button
+                    android:id="@+id/next"
+                    android:text="@string/next_hint"
+                    android:onClick="saveFinishedSession"
+                    style="@style/buttonArrow" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/history_session_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+        </ListView>
+    </LinearLayout>
 </LinearLayout>

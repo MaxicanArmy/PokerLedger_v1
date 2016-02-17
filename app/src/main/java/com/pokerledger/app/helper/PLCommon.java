@@ -43,8 +43,15 @@ public class PLCommon {
     }
 
     public static String formatDouble(double d) {
-        DecimalFormat df = new DecimalFormat("#.##");
-        df.setRoundingMode(RoundingMode.CEILING);
+        int wholeNum = (int) d;
+        double remainder = d - wholeNum;
+        DecimalFormat df;
+        if (remainder > 0) {
+            df = new DecimalFormat("0.00");
+        } else {
+            df = new DecimalFormat("#.##");
+        }
+        df.setRoundingMode(RoundingMode.HALF_UP);
 
         return df.format(d);
     }

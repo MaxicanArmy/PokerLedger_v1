@@ -3,8 +3,9 @@ package com.pokerledger.app.helper;
 import com.jjoe64.graphview.series.DataPoint;
 import com.pokerledger.app.model.Session;
 
-import java.text.DecimalFormat;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Catface Meowmers on 7/25/15.
@@ -14,6 +15,7 @@ public class SessionSet {
     double profit = 0, minY = 0, maxY = 0;
     Long lengthMillis = 0L;
     ArrayList<DataPoint> dataPoints = new ArrayList<>();
+    HashMap<String, SessionSet> children = new HashMap<>();
 
     public SessionSet() {}
 
@@ -57,6 +59,10 @@ public class SessionSet {
 
     public double getMaxY() {
         return this.maxY;
+    }
+
+    public HashMap<String, SessionSet> getChildren() {
+        return this.children;
     }
 
     //other
@@ -124,5 +130,37 @@ public class SessionSet {
         }
 
         return hourlyWage;
+    }
+
+    public void createHierarchy(ArrayList<Method> levels) {
+        /*
+        levels needs to be ordered from lowest to highest (i.e. index 0 will be the lowest tier)
+         */
+        for (Session s : sessions) {
+            try {
+                String key = (String) levels.get(levels.size() - 1).invoke(s);
+
+                if (children.containsKey(key)) {
+                    children.get(key).addSession(s);
+                } else {
+                    children.put(key, new SessionSet(s));
+                }
+            } catch (Exception e) {
+                //java blah blah
+            }
+        }
+
+        ArrayList<Method> nextLevels = new ArrayList<>();
+
+        for (Method m : levels) {
+            nextLevels.add(m);
+        }
+        nextLevels.remove(nextLevels.size() - 1);
+
+        if (nextLevels.size() > 0) {
+            for (HashMap.Entry<String, SessionSet> entry : children.entrySet()) {
+                entry.getValue().createHierarchy(nextLevels);
+            }
+        }
     }
 }

@@ -32,7 +32,7 @@ public class SessionListAdapter extends ArrayAdapter<Session>{
             viewItem.location = (TextView) convertView.findViewById(R.id.location);
             viewItem.buyin = (TextView) convertView.findViewById(R.id.buyin);
             viewItem.game = (TextView) convertView.findViewById(R.id.game);
-            viewItem.time = (TextView) convertView.findViewById(R.id.start);
+            viewItem.time = (TextView) convertView.findViewById(R.id.length);
             viewItem.time.setTag(position);
             convertView.setTag(viewItem);
         } else {
@@ -47,7 +47,7 @@ public class SessionListAdapter extends ArrayAdapter<Session>{
 
     private void setTime(final Session currentSession, final TextView tv, final String tag) {
         if (tv.getTag().toString().equals(tag)) {
-            tv.setText(currentSession.lengthFormatted());
+            tv.setText(currentSession.lengthFormatted(true));
         }
     }
 

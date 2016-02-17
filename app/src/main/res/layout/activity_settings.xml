@@ -12,7 +12,6 @@
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/location_wrapper"
-            android:orientation="vertical"
             style="@style/Wrapper">
 
             <TextView
@@ -73,7 +72,6 @@
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/game_wrapper"
-            android:orientation="vertical"
             style="@style/Wrapper">
 
             <TextView
@@ -134,7 +132,6 @@
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/game_format_wrapper"
-            android:orientation="vertical"
             style="@style/Wrapper">
 
             <TextView
@@ -196,7 +193,6 @@
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/blinds_wrapper"
-            android:orientation="vertical"
             style="@style/Wrapper">
 
             <TextView
@@ -257,7 +253,6 @@
         </LinearLayout>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/backup_wrapper"
-            android:orientation="vertical"
             style="@style/Wrapper">
 
             <TextView

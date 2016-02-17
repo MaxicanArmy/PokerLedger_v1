@@ -50,7 +50,7 @@
 
     <string name="more">More</string>
 
-    <string name="welcome_header">WELCOME</string>
+    <string name="welcome_header">Welcome!</string>
     <string name="welcome">Thanks for using Poker Ledger! To get started adding your first poker session, click the "+" in the Actionbar.</string>
 
     <string name="active_session_activity_name">Active Session</string>
@@ -68,7 +68,7 @@
     <string name="game_format_header">game formats</string>
     <string name="blinds_header">blinds</string>
     <string name="backup_header">backup &amp; restore database</string>
-    <string name="timeframe_header">timeframe</string>
+    <string name="timeframe_header">Timeframe</string>
     <string name="buy_in_header">buy in</string>
     <string name="profit_header">buy in / cash out</string>
     <string name="tournament_header">tournament info</string>
@@ -113,6 +113,8 @@
     <string name="backup_hint">Backup</string>
     <string name="restore_hint">Restore</string>
     <string name="rebuy_hint">Amount</string>
+    <string name="previous_hint">\u003C</string>
+    <string name="next_hint">\u003E</string>
 
     <string name="sb_hint">SB</string>
     <string name="bb_hint">BB</string>
@@ -124,12 +126,13 @@
     <string name="close_hint">Close</string>
     <string name="cancel_hint">Cancel</string>
 
-    <string name="overview_title">OVERVIEW</string>
-    <string name="summary_title">SUMMARY</string>
-    <string name="active_games_title">ACTIVE GAMES</string>
+    <string name="overview_title">Overview</string>
+    <string name="breakdown_title">Breakdown</string>
+    <string name="summary_title">Summary</string>
+    <string name="active_games_title">Active Games</string>
     <string name="wage_game_title">HOURLY WAGE BY GAME</string>
     <string name="wage_day_title">HOURLY WAGE BY DAY</string>
-    <string name="profit_vs_time_graph_title">PROFIT OVER TIME</string>
+    <string name="profit_vs_time_graph_title">Profit Over Time</string>
 
     <string name="overview_profit">Profit</string>
     <string name="overview_time">Time Played</string>

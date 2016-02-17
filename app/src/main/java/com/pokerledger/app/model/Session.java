@@ -198,7 +198,7 @@ public class Session {
         return ((endTime - this.start - breakTotal) / 1000) * 1000;
     }
 
-    public String lengthFormatted() {
+    public String lengthFormatted(boolean showSeconds) {
         Long length = lengthMillis();
         Long seconds = (length / 1000) % 60;
         Long minutes = (length / (1000 * 60)) % 60;
@@ -211,10 +211,12 @@ public class Session {
         }
 
         if (hours > 0 || minutes > 0) {
-            timePlayed += minutes + "m ";
+            timePlayed += minutes + "m";
         }
 
-        timePlayed += seconds + "s";
+        if (showSeconds == true) {
+            timePlayed += " " + seconds + "s";
+        }
 
         return timePlayed;
     }
@@ -245,5 +247,25 @@ public class Session {
         }
 
         return output;
+    }
+
+    /*
+    functions that support SessionSet Hierarchy creation
+     */
+    public String getGameName() {
+        return getGame().getGame();
+    }
+
+    public String getStakes() {
+        int baseFormat = getGameFormat().getBaseFormatId();
+        String rValue;
+
+        if (baseFormat == 1) {
+            rValue = getBlinds().toString();
+        } else {
+            rValue = "$" + PLCommon.formatDouble(buyIn) + " tournaments";
+        }
+
+        return rValue;
     }
 }

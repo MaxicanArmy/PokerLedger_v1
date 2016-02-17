@@ -63,8 +63,8 @@ public class ActivityHistory extends ActivityBase {
         this.tbSpinner = (Spinner) findViewById(R.id.timeblocks);
         this.tfSpinner = (Spinner) findViewById(R.id.timeframes);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.timeblocks_array, R.layout.spinner_item_view);
-        adapter.setDropDownViewResource(R.layout.spinner_item_view);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.timeblocks_array, R.layout.spinner_timeframe_view);
+        adapter.setDropDownViewResource(R.layout.spinner_timeframe_view);
         this.tbSpinner.setAdapter(adapter);
         this.tbSpinner.setSelection(tbSpinnerPos);
 
@@ -173,19 +173,19 @@ public class ActivityHistory extends ActivityBase {
 
                     switch (tbSpinnerPos) {
                         case 0 :
-                            tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_item_view, ActivityHistory.this.weeklyList);
+                            tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_timeframe_view, ActivityHistory.this.weeklyList);
                             break;
                         case 2 :
-                            tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_item_view, ActivityHistory.this.yearlyList);
+                            tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_timeframe_view, ActivityHistory.this.yearlyList);
                             break;
                         case 3 :
                             ActivityHistory.this.tfSpinner.setEnabled(false);
-                            tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_item_view, ActivityHistory.this.allList);
+                            tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_timeframe_view, ActivityHistory.this.allList);
                             break;
                         default :
-                            tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_item_view, ActivityHistory.this.monthlyList);
+                            tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_timeframe_view, ActivityHistory.this.monthlyList);
                     }
-                    tfAdapter.setDropDownViewResource(R.layout.spinner_item_view);
+                    tfAdapter.setDropDownViewResource(R.layout.spinner_timeframe_view);
                     ActivityHistory.this.tfSpinner.setAdapter(tfAdapter);
                 }
 
@@ -209,19 +209,19 @@ public class ActivityHistory extends ActivityBase {
             ArrayAdapter tfAdapter;
             switch (tbSpinnerPos) {
                 case 0 :
-                    tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_item_view, ActivityHistory.this.weeklyList);
+                    tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_timeframe_view, ActivityHistory.this.weeklyList);
                     break;
                 case 2 :
-                    tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_item_view, ActivityHistory.this.yearlyList);
+                    tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_timeframe_view, ActivityHistory.this.yearlyList);
                     break;
                 case 3 :
                     ActivityHistory.this.tfSpinner.setEnabled(false);
-                    tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_item_view, ActivityHistory.this.allList);
+                    tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_timeframe_view, ActivityHistory.this.allList);
                     break;
                 default :
-                    tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_item_view, ActivityHistory.this.monthlyList);
+                    tfAdapter = new ArrayAdapter(ActivityHistory.this, R.layout.spinner_timeframe_view, ActivityHistory.this.monthlyList);
             }
-            tfAdapter.setDropDownViewResource(R.layout.spinner_item_view);
+            tfAdapter.setDropDownViewResource(R.layout.spinner_timeframe_view);
             ActivityHistory.this.tfSpinner.setAdapter(tfAdapter);
             ActivityHistory.this.tfSpinner.setSelection(tfSpinnerPos);
             displayStats();

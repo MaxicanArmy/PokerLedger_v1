@@ -671,10 +671,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<Session> getSessions(int state) {
-        return this.getSessions(state, "DESC");
+        return this.getSessions(state, 0, "DESC");
     }
 
-    public ArrayList<Session> getSessions(int state, String chrono) {
+    public ArrayList<Session> getSessions(int state, int baseType, String chrono) {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Session> sessions = new ArrayList<>();
 
@@ -692,7 +692,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_TOURNAMENT + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_CASH +
                 " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_CASH + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_BLINDS +
                 " ON " + TABLE_CASH + "." + KEY_BLINDS + "=" + TABLE_BLINDS + "." + KEY_BLIND_ID + " WHERE " + KEY_STATE + "=" + state +
-                " AND " + TABLE_SESSION + "." + KEY_FILTERED + "=0 ORDER BY " + KEY_START + " " + chrono + ";";
+                " AND " + TABLE_SESSION + "." + KEY_FILTERED + "=0";
+
+        if (baseType != 0) {
+            query += " AND " + KEY_BASE_FORMAT_ID + "=" + baseType;
+        }
+
+        query += " ORDER BY " + KEY_START + " " + chrono + ";";
 
         Cursor c = db.rawQuery(query, null);
 

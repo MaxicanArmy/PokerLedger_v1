@@ -1,44 +1,79 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="Activity" parent="MyMaterialTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/windowBackground</item>
     </style>
 
-    <style name="Wrapper" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Wrapper" parent="MyMaterialTheme">
+        <item name="android:orientation">vertical</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/half_standard_padding</item>
-        <item name="android:background">@drawable/wrapper</item>
+        <item name="android:layout_marginBottom">@dimen/unit2</item>
+        <item name="android:background">@color/colorSecondary</item>
     </style>
 
-    <style name="DialogWrap" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="WrapperHeader" parent="MyMaterialTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/unit8</item>
+        <item name="android:paddingLeft">@dimen/unit4</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/textColorSecondary</item>
+        <item name="android:background">@color/colorPrimaryLight</item>
+    </style>
+
+    <style name="WrapperContent" parent="MyMaterialTheme">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/unit4</item>
+        <item name="android:paddingTop">@dimen/unit1</item>
+        <item name="android:paddingRight">@dimen/unit4</item>
+        <item name="android:paddingBottom">@dimen/unit1</item>
+    </style>
+
+    <style name="ContentRow" parent="MyMaterialTheme">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="buttonArrow" parent="MyMaterialTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginLeft">@dimen/unit2</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:minWidth">@dimen/unit8</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+    </style>
+
+    <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
+
+    </style>
+
+    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowNoTitle">false</item> <!-- was set to true, when i copy pastad, find out why-->
+        <item name="windowActionBar">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- old styles i plan to deprecate -->
+
+    <style name="DialogWrap" parent="MyMaterialTheme">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">#ffffffff</item>
     </style>
 
-    <style name="Activity" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:background">#ffb4b6b3</item>
-        <item name="android:paddingRight">@dimen/half_standard_padding</item>
-        <item name="android:paddingLeft">@dimen/half_standard_padding</item>
-        <item name="android:paddingBottom">@dimen/half_standard_padding</item>
-    </style>
-
-    <style name="WrapperHeader" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center_horizontal</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:paddingLeft">@dimen/standard_padding</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">#ffffffff</item>
-        <item name="android:background">@drawable/wrapperheader</item>
-    </style>
-
-    <style name="TinyHeader" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="TinyHeader" parent="MyMaterialTheme">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">12sp</item>
@@ -46,15 +81,7 @@
         <item name="android:paddingLeft">4dp</item>
     </style>
 
-    <style name="Row" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingBottom">@dimen/standard_padding</item>
-        <item name="android:paddingRight">@dimen/standard_padding</item>
-        <item name="android:paddingLeft">@dimen/standard_padding</item>
-    </style>
-
-    <style name="buttonRowItem" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="buttonRowItem" parent="MyMaterialTheme">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">4dp</item>

@@ -1,12 +1,15 @@
 package com.pokerledger.app;
 
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -18,9 +21,15 @@ import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
 import com.pokerledger.app.helper.SessionSet;
+import com.pokerledger.app.model.Blinds;
+import com.pokerledger.app.model.Game;
+import com.pokerledger.app.model.GameFormat;
 import com.pokerledger.app.model.Session;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * Created by Catface Meowmers on 7/26/15.
@@ -60,6 +69,7 @@ public class ActivityMain extends ActivityBase {
         this.timePlayed = (TextView) findViewById(R.id.time_played);
         this.hourlyWage = (TextView) findViewById(R.id.hourly_wage);
         new LoadStatistics().execute();
+        new LoadBreakdown().execute();
 
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -189,11 +199,75 @@ public class ActivityMain extends ActivityBase {
                 ActivityMain.this.profit.setText(stats.profitFormatted());
                 ActivityMain.this.timePlayed.setText(stats.lengthFormatted());
                 ActivityMain.this.hourlyWage.setText(stats.wageFormatted());
-
             }
 
             welcome();
         }
+    }
+
+    public class LoadBreakdown extends AsyncTask<Void, Void, SessionSet> {
+
+        @Override
+        protected SessionSet doInBackground(Void... params) {
+            DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+            return new SessionSet(dbHelper.getSessions(0, 0, "DESC"));
+        }
+
+        @Override
+        protected void onPostExecute(SessionSet stats) {
+            if (stats.getSessions().size() > 0) {
+                try {
+                    stats.createHierarchy(new ArrayList<>(Arrays.asList(
+                            Session.class.getDeclaredMethod("getStakes"),
+                            Session.class.getDeclaredMethod("getGameName"))));
+                } catch (Exception e) {
+                    //java java java
+                }
+
+                if (stats.getChildren().size() > 0) {
+                    ((LinearLayout) ActivityMain.this.findViewById(R.id.breakdown_content)).addView(createStatsLayer(stats));
+                }
+            }
+        }
+    }
+
+    public LinearLayout createStatsLayer(SessionSet ss) {
+        int padding = (int) getResources().getDimension(R.dimen.unit2);
+
+        LinearLayout child = new LinearLayout(ActivityMain.this);
+        child.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        child.setOrientation(LinearLayout.VERTICAL);
+        child.setPadding(padding, 0, 0, padding/2);
+
+        for (HashMap.Entry<String, SessionSet> entry : ss.getChildren().entrySet()) {
+            LinearLayout row = new LinearLayout(ActivityMain.this);
+            row.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            row.setOrientation(LinearLayout.HORIZONTAL);
+
+            TextView hourlyLabel = new TextView(this);
+            hourlyLabel.setText(entry.getKey());
+            hourlyLabel.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            row.addView(hourlyLabel);
+
+            TextView hourly = new TextView(this);
+            hourly.setText(entry.getValue().wageFormatted());
+            hourly.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            hourly.setGravity(Gravity.RIGHT);
+
+            if (entry.getValue().getProfit() < 0) {
+                hourly.setTextColor(Color.parseColor("#ff0000"));
+            } else {
+                hourly.setTextColor(Color.parseColor("#4eb502"));
+            }
+
+            row.addView(hourly);
+            child.addView(row);
+            if (entry.getValue().getChildren().size() > 0) {
+                child.addView(createStatsLayer(entry.getValue()));
+            }
+        }
+
+        return child;
     }
 
     public void welcome() {

@@ -32,18 +32,14 @@ public class HistoryListAdapter extends ArrayAdapter<Session> {
         View rowView= inflater.inflate(R.layout.list_history, null, true);
 
         TextView txtGame = (TextView) rowView.findViewById(R.id.game);
-        TextView txtDate = (TextView) rowView.findViewById(R.id.date);
-        TextView txtGameFormat = (TextView) rowView.findViewById(R.id.game_format);
+        TextView txtDate = (TextView) rowView.findViewById(R.id.date_time_played);
         TextView txtProfit = (TextView) rowView.findViewById(R.id.profit);
         TextView txtLocation = (TextView) rowView.findViewById(R.id.location);
-        TextView txtTimePlayed = (TextView) rowView.findViewById(R.id.time_played);
 
         Session current = active.get(position);
 
         txtGame.setText(current.displayFormat());
-        txtDate.setText(PLCommon.timestampToDate(current.getStart()));
-
-        txtGameFormat.setText(current.getGameFormat().getBaseFormat());
+        txtDate.setText(PLCommon.timestampToDate(current.getStart()) + " > " + current.lengthFormatted(false));
 
         if (current.getProfit() < 0 ) {
             txtProfit.setTextColor(Color.parseColor("#ff0000"));
@@ -51,7 +47,6 @@ public class HistoryListAdapter extends ArrayAdapter<Session> {
         txtProfit.setText(current.profitFormatted());
 
         txtLocation.setText(current.getLocation().getLocation());
-        txtTimePlayed.setText(current.lengthFormatted());
 
         return rowView;
     }
