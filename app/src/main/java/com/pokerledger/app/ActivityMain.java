@@ -30,6 +30,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Catface Meowmers on 7/26/15.
@@ -69,7 +70,7 @@ public class ActivityMain extends ActivityBase {
         this.timePlayed = (TextView) findViewById(R.id.time_played);
         this.hourlyWage = (TextView) findViewById(R.id.hourly_wage);
         new LoadStatistics().execute();
-        new LoadBreakdown().execute();
+        //new LoadBreakdown().execute();
 
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -186,6 +187,8 @@ public class ActivityMain extends ActivityBase {
         protected void onPostExecute(SessionSet stats) {
             if (stats.getSessions().size() < 1) {
                 ActivityMain.this.findViewById(R.id.overview_wrapper).setVisibility(LinearLayout.GONE);
+                ActivityMain.this.findViewById(R.id.best_wrapper).setVisibility(LinearLayout.GONE);
+                ActivityMain.this.findViewById(R.id.breakdown_wrapper).setVisibility(LinearLayout.GONE);
             } else {
                 ActivityMain.this.findViewById(R.id.overview_wrapper).setVisibility(LinearLayout.VISIBLE);
                 if (stats.getProfit() < 0 ) {
@@ -196,6 +199,113 @@ public class ActivityMain extends ActivityBase {
                     ActivityMain.this.hourlyWage.setTextColor(Color.parseColor("#4eb502"));
                 }
 
+                try {
+                    stats.createHierarchy(new ArrayList<>(Arrays.asList(
+                            Session.class.getDeclaredMethod("getStakes"),
+                            Session.class.getDeclaredMethod("getGameName"))));
+                } catch (Exception e) {
+                    //java java java
+                }
+
+                if (stats.getChildren().size() > 0) {
+                    LinearLayout brkContent = ((LinearLayout) ActivityMain.this.findViewById(R.id.breakdown_content));
+                    brkContent.removeAllViews();
+                    brkContent.addView(createStatsLayer(stats));
+                }
+
+                LinearLayout bc = ((LinearLayout) ActivityMain.this.findViewById(R.id.best_content));
+                bc.removeAllViews();
+
+                String game = "";
+                String location = "";
+                HashMap<String, SessionSet> byGames = new HashMap();
+                HashMap<String, SessionSet> byLocations = new HashMap();
+
+                for (Session s : stats.getSessions()) {
+                    game = s.getGame().getGame();
+                    location = s.getLocation().getLocation();
+
+                    if (byGames.containsKey(game)) {
+                        byGames.get(game).addSession(s);
+                    } else {
+                        byGames.put(game, new SessionSet(s));
+                    }
+
+                    if (byLocations.containsKey(location)) {
+                        byLocations.get(location).addSession(s);
+                    } else {
+                        byLocations.put(location, new SessionSet(s));
+                    }
+                }
+
+                double bestGameProfit = byGames.get(game).getWage();
+                String bestGameName = game;
+                String bestGameWage = byGames.get(game).wageFormatted();
+                for (HashMap.Entry<String, SessionSet> entry : byGames.entrySet()) {
+                    if (entry.getValue().getWage() > bestGameProfit) {
+                        bestGameName = entry.getKey();
+                        bestGameProfit = entry.getValue().getWage();
+                        bestGameWage = entry.getValue().wageFormatted();
+                    }
+                }
+
+                double bestLocationProfit = byLocations.get(location).getWage();
+                String bestLocationName = location;
+                String bestLocationWage = byLocations.get(location).wageFormatted();
+                for (HashMap.Entry<String, SessionSet> entry : byLocations.entrySet()) {
+                    if (entry.getValue().getWage() > bestLocationProfit) {
+                        bestLocationName = entry.getKey();
+                        bestLocationProfit = entry.getValue().getWage();
+                        bestLocationWage = entry.getValue().wageFormatted();
+                    }
+                }
+
+                LinearLayout gameRow = new LinearLayout(ActivityMain.this);
+                gameRow.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                gameRow.setOrientation(LinearLayout.HORIZONTAL);
+
+                TextView gameLabel = new TextView(ActivityMain.this);
+                gameLabel.setText(getResources().getString(R.string.best_game) + " " + bestGameName);
+                gameLabel.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                gameRow.addView(gameLabel);
+
+                TextView gameHourly = new TextView(ActivityMain.this);
+                gameHourly.setText(bestGameWage + getResources().getString(R.string.per_hour));
+                gameHourly.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                gameHourly.setGravity(Gravity.END);
+                gameRow.addView(gameHourly);
+
+                if (bestGameProfit < 0) {
+                    gameHourly.setTextColor(Color.parseColor("#ff0000"));
+                } else {
+                    gameHourly.setTextColor(Color.parseColor("#4eb502"));
+                }
+
+                bc.addView(gameRow);
+
+                LinearLayout locationRow = new LinearLayout(ActivityMain.this);
+                locationRow.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                locationRow.setOrientation(LinearLayout.HORIZONTAL);
+
+                TextView locationLabel = new TextView(ActivityMain.this);
+                locationLabel.setText(getResources().getString(R.string.best_location) + " " + bestLocationName);
+                locationLabel.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                locationRow.addView(locationLabel);
+
+                TextView locationHourly = new TextView(ActivityMain.this);
+                locationHourly.setText(bestLocationWage + getResources().getString(R.string.per_hour));
+                locationHourly.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                locationHourly.setGravity(Gravity.END);
+                locationRow.addView(locationHourly);
+
+                if (bestLocationProfit < 0) {
+                    locationHourly.setTextColor(Color.parseColor("#ff0000"));
+                } else {
+                    locationHourly.setTextColor(Color.parseColor("#4eb502"));
+                }
+
+                bc.addView(locationRow);
+
                 ActivityMain.this.profit.setText(stats.profitFormatted());
                 ActivityMain.this.timePlayed.setText(stats.lengthFormatted());
                 ActivityMain.this.hourlyWage.setText(stats.wageFormatted());
@@ -204,13 +314,13 @@ public class ActivityMain extends ActivityBase {
             welcome();
         }
     }
-
+    /*
     public class LoadBreakdown extends AsyncTask<Void, Void, SessionSet> {
 
         @Override
         protected SessionSet doInBackground(Void... params) {
             DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-            return new SessionSet(dbHelper.getSessions(0, 0, "DESC"));
+            return new SessionSet(dbHelper.getSessions(0));
         }
 
         @Override
@@ -230,6 +340,7 @@ public class ActivityMain extends ActivityBase {
             }
         }
     }
+    */
 
     public LinearLayout createStatsLayer(SessionSet ss) {
         int padding = (int) getResources().getDimension(R.dimen.unit2);
@@ -250,9 +361,9 @@ public class ActivityMain extends ActivityBase {
             row.addView(hourlyLabel);
 
             TextView hourly = new TextView(this);
-            hourly.setText(entry.getValue().wageFormatted());
+            hourly.setText(entry.getValue().wageFormatted() + getResources().getString(R.string.per_hour));
             hourly.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            hourly.setGravity(Gravity.RIGHT);
+            hourly.setGravity(Gravity.END);
 
             if (entry.getValue().getProfit() < 0) {
                 hourly.setTextColor(Color.parseColor("#ff0000"));

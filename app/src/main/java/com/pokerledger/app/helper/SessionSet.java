@@ -46,6 +46,20 @@ public class SessionSet {
         return this.profit;
     }
 
+    public double getWage() {
+        double time = getLengthHours();
+        double hourly;
+
+        if (time == 0) {
+            hourly = 0;
+        }
+        else {
+            hourly = this.profit / time;
+        }
+
+        return hourly;
+    }
+
     public DataPoint[] getDataPoints() {
         ArrayList<DataPoint> result = new ArrayList<>();
         result.add(new DataPoint(0, 0));

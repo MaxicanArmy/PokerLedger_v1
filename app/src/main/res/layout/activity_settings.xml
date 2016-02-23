@@ -6,38 +6,29 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
         android:focusable="true"
         android:focusableInTouchMode="true">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/location_wrapper"
-            style="@style/Wrapper">
+            style="@style/WrapperTinyHeader">
 
             <TextView
                 android:id="@+id/location_tiny_header"
                 android:text="@string/locations_header"
                 style="@style/TinyHeader" />
 
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/location_row_wrapper"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Spinner
-                    android:id="@+id/location"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="6"
-                    android:prompt="@string/location_prompt" />
+                android:layout_height="wrap_content">
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/location_settings_wrapper"
                     android:orientation="horizontal"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4">
+                    android:layout_alignParentRight="true">
 
                     <Button
                         android:id="@+id/new_location"
@@ -67,37 +58,36 @@
                         android:onClick="setDefaultLocation"
                         style="@style/buttonRowItem" />
                 </LinearLayout>
-            </LinearLayout>
+
+                <Spinner
+                    android:id="@+id/location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:prompt="@string/location_prompt"
+                    android:layout_toLeftOf="@id/location_settings_wrapper"/>
+            </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/game_wrapper"
-            style="@style/Wrapper">
+            style="@style/WrapperTinyHeader">
 
             <TextView
                 android:id="@+id/game_tiny_header"
                 android:text="@string/games_header"
                 style="@style/TinyHeader" />
 
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/game_row_wrapper"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Spinner
-                    android:id="@+id/game"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="6"
-                    android:prompt="@string/game_prompt" />
+                android:layout_height="wrap_content">
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/game_settings_wrapper"
                     android:orientation="horizontal"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4">
+                    android:layout_alignParentRight="true">
 
                     <Button
                         android:id="@+id/new_game"
@@ -127,12 +117,19 @@
                         android:onClick="setDefaultGame"
                         style="@style/buttonRowItem" />
                 </LinearLayout>
-            </LinearLayout>
+
+                <Spinner
+                    android:id="@+id/game"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:prompt="@string/game_prompt"
+                    android:layout_toLeftOf="@id/game_settings_wrapper"/>
+            </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/game_format_wrapper"
-            style="@style/Wrapper">
+            style="@style/WrapperTinyHeader">
 
             <TextView
                 android:id="@+id/game_format_tiny_header"
@@ -140,25 +137,18 @@
                 style="@style/TinyHeader" />
 
 
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/game_format_row_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <Spinner
-                    android:id="@+id/game_format"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="6"
-                    android:prompt="@string/game_format_prompt" />
-
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/game_format_settings_wrapper"
                     android:orientation="horizontal"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4">
+                    android:layout_alignParentRight="true">
 
                     <Button
                         android:id="@+id/new_game_format"
@@ -188,12 +178,19 @@
                         android:onClick="setDefaultGameFormat"
                         style="@style/buttonRowItem" />
                 </LinearLayout>
-            </LinearLayout>
+
+                <Spinner
+                    android:id="@+id/game_format"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:prompt="@string/game_format_prompt"
+                    android:layout_toLeftOf="@id/game_format_settings_wrapper"/>
+            </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/blinds_wrapper"
-            style="@style/Wrapper">
+            style="@style/WrapperTinyHeader">
 
             <TextView
                 android:id="@+id/blinds_tiny_header"
@@ -201,25 +198,17 @@
                 style="@style/TinyHeader" />
 
 
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/blinds_row_wrapper"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Spinner
-                    android:id="@+id/blinds"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="6"
-                    android:prompt="@string/blinds_prompt" />
+                android:layout_height="wrap_content">
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/blinds_settings_wrapper"
                     android:orientation="horizontal"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4">
+                    android:layout_alignParentRight="true">
 
                     <Button
                         android:id="@+id/new_blinds"
@@ -249,11 +238,19 @@
                         android:onClick="setDefaultBlinds"
                         style="@style/buttonRowItem" />
                 </LinearLayout>
-            </LinearLayout>
+
+                <Spinner
+                    android:id="@+id/blinds"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:prompt="@string/blinds_prompt"
+                    android:layout_toLeftOf="@id/blinds_settings_wrapper" />
+            </RelativeLayout>
         </LinearLayout>
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/backup_wrapper"
-            style="@style/Wrapper">
+            style="@style/WrapperTinyHeader">
 
             <TextView
                 android:id="@+id/backup_tiny_header"

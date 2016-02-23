@@ -33,8 +33,8 @@ public class ActivityEditSession extends ActivitySession  {
             Gson gson = new Gson();
             this.activeSession = gson.fromJson(json, Session.class);
 
-            ((EditText) findViewById(R.id.buy_in)).setText(Double.toString(this.activeSession.getBuyIn()));
-            ((EditText) findViewById(R.id.cash_out)).setText(Double.toString(this.activeSession.getCashOut()));
+            ((EditText) findViewById(R.id.buy_in)).setText(PLCommon.formatDouble(this.activeSession.getBuyIn()));
+            ((EditText) findViewById(R.id.cash_out)).setText(PLCommon.formatDouble(this.activeSession.getCashOut()));
 
             ((Button) findViewById(R.id.start_date)).setHint(PLCommon.timestampToDate(this.activeSession.getStart()));
             ((Button) findViewById(R.id.start_time)).setHint(PLCommon.timestampToTime(this.activeSession.getStart()));

@@ -33,15 +33,15 @@
 
     <string name="info_set_default_blinds">is now your default blinds.</string>
     <string name="info_remove_default_blinds">is no longer your default blinds.</string>
+    <string name="info_delete_blinds">Blind set deleted.</string>
     <string name="info_set_default_game">is now your default game.</string>
     <string name="info_remove_default_game">is no longer your default game.</string>
+    <string name="info_delete_game">Game deleted.</string>
     <string name="info_set_default_game_format">is now your default game format.</string>
     <string name="info_remove_default_game_format">is no longer your default game format.</string>
+    <string name="info_delete_game_format">Game format deleted.</string>
     <string name="info_set_default_location">is now your default location.</string>
     <string name="info_remove_default_location">is no longer your default location.</string>
-    <string name="info_delete_blinds">Blind set deleted.</string>
-    <string name="info_delete_game">Game deleted.</string>
-    <string name="info_delete_game_format">Game format deleted.</string>
     <string name="info_delete_location">Location deleted.</string>
     <string name="info_db_backup">Database saved to downloads folder as</string>
     <string name="info_db_restore">Database restored.</string>
@@ -60,7 +60,6 @@
     <string name="history_activity_name">History</string>
     <string name="statistics_activity_name">Statistics</string>
     <string name="settings_activity_name">Settings</string>
-    <string name="backup_activity_name">Backup &amp; Restore</string>
     <string name="filter_activity_name">Filters</string>
 
     <string name="locations_header">locations</string>
@@ -89,12 +88,9 @@
     <string name="location_prompt">Select Location</string>
     <string name="blinds_prompt">Select Blind</string>
     <string name="game_format_prompt">Select Game Format</string>
-    <string name="date_format_prompt">Select Date Format</string>
 
     <string name="tourney_radio_text">Tournament</string>
     <string name="cash_radio_text">Cash Game</string>
-    <string name="twelve_hour_text">AM / PM</string>
-    <string name="twenty_four_hour_text">24 Hour</string>
 
     <string name="buy_in_hint">Buy In</string>
     <string name="cash_out_hint">Cash Out</string>
@@ -107,8 +103,6 @@
     <string name="view_breaks_hint">View Breaks</string>
     <string name="add_break_hint">Add Break</string>
     <string name="notes_hint">Notes (300 char. max)</string>
-    <string name="backup_db_hint">Backup</string>
-    <string name="restore_db_hint">Restore</string>
     <string name="save_hint">Save</string>
     <string name="backup_hint">Backup</string>
     <string name="restore_hint">Restore</string>
@@ -123,30 +117,28 @@
     <string name="ante_hint">Ante</string>
     <string name="points_hint">\u0024/point</string>
 
-    <string name="close_hint">Close</string>
-    <string name="cancel_hint">Cancel</string>
-
-    <string name="overview_title">Overview</string>
-    <string name="breakdown_title">Breakdown</string>
-    <string name="summary_title">Summary</string>
-    <string name="active_games_title">Active Games</string>
-    <string name="wage_game_title">HOURLY WAGE BY GAME</string>
-    <string name="wage_day_title">HOURLY WAGE BY DAY</string>
-    <string name="profit_vs_time_graph_title">Profit Over Time</string>
-
-    <string name="overview_profit">Profit</string>
-    <string name="overview_time">Time Played</string>
-    <string name="overview_hourly">Hourly Wage</string>
-
     <string name="create_location_hint">Location Name</string>
     <string name="create_game_hint">Game Name</string>
     <string name="create_game_format_hint">Game Format Name</string>
     <string name="create_button_hint">Create</string>
 
-    <string name="create_new_hint">+</string>
-    <string name="edit_hint">\?</string>
-    <string name="delete_hint">X</string>
-    <string name="set_default_hint">Default</string>
+    <string name="cancel_hint">Cancel</string>
+
+    <string name="overview_header">Overview</string>
+    <string name="best_header">Best Results</string>
+    <string name="breakdown_header">Breakdown</string>
+    <string name="summary_header">Summary</string>
+    <string name="active_games_header">Active Games</string>
+
+    <string name="profit_vs_time_graph_header">Profit Over Time</string>
+
+    <string name="profit_label">Profit</string>
+    <string name="time_played_label">Time Played</string>
+    <string name="wage_label">Hourly Wage</string>
+
+    <string name="per_hour">/hr</string>
+    <string name="best_game">Game:</string>
+    <string name="best_location">Location:</string>
 
     <string name="preferences_file_key">com.pokerledger.app.shared_prefs</string>
 

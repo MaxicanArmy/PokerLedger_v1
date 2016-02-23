@@ -216,6 +216,10 @@ public class Session {
 
         if (showSeconds == true) {
             timePlayed += " " + seconds + "s";
+        } else {
+            if (hours < 1 && minutes < 1) {
+                timePlayed = "< 1m";
+            }
         }
 
         return timePlayed;

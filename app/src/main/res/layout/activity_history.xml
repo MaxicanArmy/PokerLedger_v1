@@ -34,7 +34,7 @@
 
         <TextView
             android:id="@+id/overview_header"
-            android:text="@string/summary_title"
+            android:text="@string/summary_header"
             style="@style/WrapperHeader" />
 
         <LinearLayout
@@ -43,13 +43,15 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/row1"
-                style="@style/ContentRow">
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/profit_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/overview_profit" />
+                    android:text="@string/profit_label" />
 
                 <TextView
                     android:id="@+id/profit"
@@ -60,13 +62,15 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/row2"
-                style="@style/ContentRow">
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/time_played_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/overview_time" />
+                    android:text="@string/time_played_label" />
 
                 <TextView
                     android:id="@+id/time_played"
@@ -78,13 +82,15 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/row3"
-                style="@style/ContentRow">
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/hourly_wage_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/overview_hourly" />
+                    android:text="@string/wage_label" />
 
                 <TextView
                     android:id="@+id/hourly_wage"
@@ -125,7 +131,7 @@
                 <Button
                     android:id="@+id/previous"
                     android:text="@string/previous_hint"
-                    android:onClick="saveFinishedSession"
+                    android:onClick="previousTimeframe"
                     style="@style/buttonArrow" />
 
                 <Spinner
@@ -138,7 +144,7 @@
                 <Button
                     android:id="@+id/next"
                     android:text="@string/next_hint"
-                    android:onClick="saveFinishedSession"
+                    android:onClick="nextTimeframe"
                     style="@style/buttonArrow" />
             </LinearLayout>
         </RelativeLayout>

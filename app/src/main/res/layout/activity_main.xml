@@ -30,7 +30,7 @@
 
         <TextView
             android:id="@+id/active_sessions_header"
-            android:text="@string/active_games_title"
+            android:text="@string/active_games_header"
             style="@style/WrapperHeader"/>
 
             <ListView
@@ -47,7 +47,7 @@
 
         <TextView
             android:id="@+id/overview_header"
-            android:text="@string/overview_title"
+            android:text="@string/overview_header"
             style="@style/WrapperHeader" />
 
         <LinearLayout
@@ -56,13 +56,15 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/row1"
-                style="@style/ContentRow">
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/profit_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/overview_profit" />
+                    android:text="@string/profit_label" />
 
                 <TextView
                     android:id="@+id/profit"
@@ -74,13 +76,15 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/row2"
-                style="@style/ContentRow">
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/time_played_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/overview_time" />
+                    android:text="@string/time_played_label" />
 
                 <TextView
                     android:id="@+id/time_played"
@@ -91,13 +95,15 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/row3"
-                style="@style/ContentRow">
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/hourly_wage_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/overview_hourly" />
+                    android:text="@string/wage_label" />
 
                 <TextView
                     android:id="@+id/hourly_wage"
@@ -110,13 +116,30 @@
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/breakdown_wrapper"
+        android:id="@+id/best_wrapper"
         android:layout_below="@id/overview_wrapper"
         style="@style/Wrapper">
 
         <TextView
+            android:id="@+id/best_header"
+            android:text="@string/best_header"
+            style="@style/WrapperHeader" />
+
+        <LinearLayout
+            android:id="@+id/best_content"
+            style="@style/WrapperContent">
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/breakdown_wrapper"
+        android:layout_below="@id/best_wrapper"
+        style="@style/Wrapper">
+
+        <TextView
             android:id="@+id/breakdown_header"
-            android:text="@string/breakdown_title"
+            android:text="@string/breakdown_header"
             style="@style/WrapperHeader" />
 
         <LinearLayout

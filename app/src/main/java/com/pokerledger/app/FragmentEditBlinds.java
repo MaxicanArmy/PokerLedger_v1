@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.pokerledger.app.helper.PLCommon;
 import com.pokerledger.app.model.Blinds;
 
 /**
@@ -18,6 +19,12 @@ import com.pokerledger.app.model.Blinds;
  */
 public class FragmentEditBlinds extends DialogFragment {
     Blinds blinds;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,27 +36,27 @@ public class FragmentEditBlinds extends DialogFragment {
         blinds = gson.fromJson(json, Blinds.class);
 
         if (blinds.getSB() != 0) {
-            ((EditText) view.findViewById(R.id.small_blind)).setText(Double.toString(blinds.getSB()));
+            ((EditText) view.findViewById(R.id.small_blind)).setText(PLCommon.formatDouble(blinds.getSB()));
         }
 
         if (blinds.getBB() != 0) {
-            ((EditText) view.findViewById(R.id.big_blind)).setText(Double.toString(blinds.getBB()));
+            ((EditText) view.findViewById(R.id.big_blind)).setText(PLCommon.formatDouble(blinds.getBB()));
         }
 
         if (blinds.getStraddle() != 0) {
-            ((EditText) view.findViewById(R.id.straddle)).setText(Double.toString(blinds.getStraddle()));
+            ((EditText) view.findViewById(R.id.straddle)).setText(PLCommon.formatDouble(blinds.getStraddle()));
         }
 
         if (blinds.getBringIn() != 0) {
-            ((EditText) view.findViewById(R.id.bring_in)).setText(Double.toString(blinds.getBringIn()));
+            ((EditText) view.findViewById(R.id.bring_in)).setText(PLCommon.formatDouble(blinds.getBringIn()));
         }
 
         if (blinds.getAnte() != 0) {
-            ((EditText) view.findViewById(R.id.ante)).setText(Double.toString(blinds.getAnte()));
+            ((EditText) view.findViewById(R.id.ante)).setText(PLCommon.formatDouble(blinds.getAnte()));
         }
 
         if (blinds.getPerPoint() != 0) {
-            ((EditText) view.findViewById(R.id.points)).setText(Double.toString(blinds.getPerPoint()));
+            ((EditText) view.findViewById(R.id.points)).setText(PLCommon.formatDouble(blinds.getPerPoint()));
         }
 
         Button createBlinds = (Button) view.findViewById(R.id.create_blinds);

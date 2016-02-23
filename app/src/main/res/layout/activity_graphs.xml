@@ -9,7 +9,7 @@
 
         <TextView
             android:id="@+id/profit_vs_time_graph_header"
-            android:text="@string/profit_vs_time_graph_title"
+            android:text="@string/profit_vs_time_graph_header"
             style="@style/WrapperHeader" />
 
         <com.jjoe64.graphview.GraphView

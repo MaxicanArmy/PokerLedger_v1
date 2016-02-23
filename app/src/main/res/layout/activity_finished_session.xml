@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Activity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    style="@style/Activity">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/save_wrapper"
-        android:orientation="horizontal"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/unit4"
+        android:paddingRight="@dimen/unit4"
         android:layout_alignParentBottom="true"
         android:background="@color/colorPrimary">
 
@@ -29,13 +30,13 @@
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:focusable="true"
             android:focusableInTouchMode="true">
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/buy_in_wrapper"
-                style="@style/Wrapper">
+                style="@style/WrapperTinyHeader">
 
                 <TextView
                     android:id="@+id/profit_tiny_header"
@@ -69,85 +70,142 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/location_wrapper"
-                style="@style/Wrapper">
+                style="@style/WrapperTinyHeader">
 
                 <TextView
                     android:id="@+id/location_tiny_header"
                     android:text="@string/locations_header"
                     style="@style/TinyHeader" />
 
-                <LinearLayout
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/new_location"
+                        android:drawableStart="@drawable/ic_add_black_18dp"
+                        android:drawableLeft="@drawable/ic_add_black_18dp"
+                        style="@style/buttonRowItem"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:onClick="showCreateLocationDialog" />
 
                     <Spinner
                         android:id="@+id/location"
-                        android:layout_width="0dp"
-                        android:layout_weight="9"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/new_location"
+                        android:layout_toStartOf="@id/new_location"
                         android:prompt="@string/location_prompt" />
-
-                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <Button
-                            android:id="@+id/new_location"
-                            android:drawableStart="@drawable/ic_add_black_18dp"
-                            android:drawableLeft="@drawable/ic_add_black_18dp"
-                            style="@style/buttonRowItem"
-                            android:onClick="showCreateLocationDialog" />
-                    </LinearLayout>
-                </LinearLayout>
+                </RelativeLayout>
             </LinearLayout>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/game_wrapper"
-                style="@style/Wrapper">
+                style="@style/WrapperTinyHeader">
 
                 <TextView
                     android:id="@+id/game_tiny_header"
                     android:text="@string/games_header"
                     style="@style/TinyHeader" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/new_game"
+                        android:drawableStart="@drawable/ic_add_black_18dp"
+                        android:drawableLeft="@drawable/ic_add_black_18dp"
+                        style="@style/buttonRowItem"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:onClick="showCreateGameDialog" />
 
                     <Spinner
                         android:id="@+id/game"
-                        android:layout_width="0dp"
-                        android:layout_weight="9"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/new_game"
+                        android:layout_toStartOf="@id/new_game"
                         android:prompt="@string/game_prompt" />
-
-                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <Button
-                            android:id="@+id/new_game"
-                            android:drawableStart="@drawable/ic_add_black_18dp"
-                            android:drawableLeft="@drawable/ic_add_black_18dp"
-                            style="@style/buttonRowItem"
-                            android:onClick="showCreateGameDialog" />
-                    </LinearLayout>
-                </LinearLayout>
+                </RelativeLayout>
             </LinearLayout>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/game_format_wrapper"
-                style="@style/Wrapper">
+                style="@style/WrapperTinyHeader">
 
                 <TextView
                     android:id="@+id/game_format_tiny_header"
                     android:text="@string/game_format_header"
+                    style="@style/TinyHeader" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/new_game_format"
+                        android:drawableStart="@drawable/ic_add_black_18dp"
+                        android:drawableLeft="@drawable/ic_add_black_18dp"
+                        style="@style/buttonRowItem"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:onClick="showCreateGameFormatDialog" />
+
+                    <Spinner
+                        android:id="@+id/game_format"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/new_game_format"
+                        android:layout_toStartOf="@id/new_game_format"
+                        android:prompt="@string/game_format_prompt" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/cash_wrapper"
+                style="@style/WrapperTinyHeader">
+
+                <TextView
+                    android:id="@+id/blinds_tiny_header"
+                    android:text="@string/blinds_header"
+                    style="@style/TinyHeader" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/new_blinds"
+                        android:drawableStart="@drawable/ic_add_black_18dp"
+                        android:drawableLeft="@drawable/ic_add_black_18dp"
+                        style="@style/buttonRowItem"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:onClick="showCreateBlindsDialog" />
+
+                    <Spinner
+                        android:id="@+id/blinds"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/new_blinds"
+                        android:layout_toStartOf="@id/new_blinds"
+                        android:prompt="@string/blinds_prompt" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/tournament_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tournament_tiny_header"
+                    android:text="@string/tournament_header"
                     style="@style/TinyHeader" />
 
                 <LinearLayout
@@ -155,113 +213,29 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <Spinner
-                        android:id="@+id/game_format"
+                    <EditText
+                        android:id="@+id/entrants"
                         android:layout_width="0dp"
-                        android:layout_weight="9"
                         android:layout_height="wrap_content"
-                        android:prompt="@string/game_format_prompt" />
+                        android:layout_weight=".50"
+                        android:hint="@string/entrants_hint"
+                        android:inputType="number"
+                        android:textSize="16sp" />
 
-                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    <EditText
+                        android:id="@+id/placed"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <Button
-                            android:id="@+id/new_game_format"
-                            android:drawableStart="@drawable/ic_add_black_18dp"
-                            android:drawableLeft="@drawable/ic_add_black_18dp"
-                            style="@style/buttonRowItem"
-                            android:onClick="showCreateGameFormatDialog" />
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/cash_tournament_wrapper"
-                style="@style/Wrapper">
-
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/cash_wrapper"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/blinds_tiny_header"
-                        android:text="@string/blinds_header"
-                        style="@style/TinyHeader" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <Spinner
-                            android:id="@+id/blinds"
-                            android:layout_width="0dp"
-                            android:layout_weight="9"
-                            android:layout_height="wrap_content"
-                            android:prompt="@string/blinds_prompt" />
-
-                        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <Button
-                                android:id="@+id/new_blind"
-                                android:drawableStart="@drawable/ic_add_black_18dp"
-                                android:drawableLeft="@drawable/ic_add_black_18dp"
-                                style="@style/buttonRowItem"
-                                android:onClick="showCreateBlindsDialog" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/tournament_wrapper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/tournament_tiny_header"
-                        android:text="@string/tournament_header"
-                        style="@style/TinyHeader" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <EditText
-                            android:id="@+id/entrants"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight=".50"
-                            android:hint="@string/entrants_hint"
-                            android:inputType="number"
-                            android:textSize="16sp" />
-
-                        <EditText
-                            android:id="@+id/placed"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight=".50"
-                            android:hint="@string/placed_hint"
-                            android:inputType="number"
-                            android:textSize="16sp" />
-                    </LinearLayout>
+                        android:layout_weight=".50"
+                        android:hint="@string/placed_hint"
+                        android:inputType="number"
+                        android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/time_wrapper"
-                style="@style/Wrapper">
+                style="@style/WrapperTinyHeader">
 
                 <TextView
                     android:id="@+id/session_length_tiny_header"
@@ -321,7 +295,7 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/breaks_wrapper"
-                style="@style/Wrapper">
+                style="@style/WrapperTinyHeader">
 
                 <TextView
                     android:id="@+id/breaks_tiny_header"
@@ -355,7 +329,7 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/notes_wrapper"
-                style="@style/Wrapper">
+                style="@style/WrapperTinyHeader">
 
                 <TextView
                     android:id="@+id/notes_tiny_header"

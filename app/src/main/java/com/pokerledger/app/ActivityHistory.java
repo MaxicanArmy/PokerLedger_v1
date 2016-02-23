@@ -285,6 +285,18 @@ public class ActivityHistory extends ActivityBase {
         ActivityHistory.this.findViewById(R.id.overview_wrapper).setVisibility(showOverview);
     }
 
+    public void previousTimeframe(View v) {
+        if (tfSpinnerPos < tfSpinner.getAdapter().getCount() - 1) {
+            tfSpinner.setSelection(++tfSpinnerPos);
+        }
+    }
+
+    public void nextTimeframe(View v) {
+        if (tfSpinnerPos > 0) {
+            tfSpinner.setSelection(--tfSpinnerPos);
+        }
+    }
+
     protected void notifyListChange() {
         //this method is necessary because i cant get fragments to call async tasks
         new PopulateSpinnerDataSources().execute();

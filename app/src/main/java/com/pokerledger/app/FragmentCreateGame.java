@@ -15,6 +15,12 @@ import android.widget.Toast;
  */
 public class FragmentCreateGame extends DialogFragment {
     @Override
+    public void onStart() {
+        super.onStart();
+        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_game, null, false);
         getDialog().setTitle("Create Game");
