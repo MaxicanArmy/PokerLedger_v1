@@ -14,7 +14,7 @@
         app:showAsAction="never" />
 <!--
     <item android:id="@+id/statistics"
-        android:icon="@drawable/ic_stats_white_18dp"
+        android:icon="@drawable/ic_notes_white_18dp"
         android:title="@string/action_statistics"
         app:showAsAction="ifRoom" />
 -->
@@ -22,12 +22,17 @@
         android:title="@string/action_view_history"
         android:icon="@drawable/ic_history_white_18dp"
         app:showAsAction="never" />
-<!--
-    <item android:id="@+id/filter"
+
+    <item android:id="@+id/filters"
         android:icon="@drawable/ic_filter_list_white_18dp"
         android:title="@string/action_filter"
-        app:showAsAction="ifRoom" />
--->
+        app:showAsAction="never" />
+
+    <item android:id="@+id/notes"
+        android:title="@string/action_view_notes"
+        android:icon="@drawable/ic_notes_white_18dp"
+        app:showAsAction="never" />
+
     <item android:id="@+id/settings"
         android:title="@string/action_view_settings"
         android:icon="@drawable/ic_settings_white_18dp"

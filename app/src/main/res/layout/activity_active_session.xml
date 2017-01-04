@@ -246,10 +246,13 @@
                     android:id="@+id/note"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minLines="1"
+                    android:maxLines="5"
+                    android:scrollbars="vertical"
+                    android:inputType="textMultiLine|textCapSentences"
                     android:hint="@string/notes_hint"
                     android:maxLength="300"
                     android:textColor="#000"
-                    android:inputType="textCapSentences"
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>

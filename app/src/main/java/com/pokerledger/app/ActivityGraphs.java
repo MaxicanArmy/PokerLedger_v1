@@ -33,8 +33,8 @@ public class ActivityGraphs extends ActivityBase {
     protected void onResume() {
         super.onResume();
         new LoadDataPoints().execute();
-
     }
+
     public class LoadDataPoints extends AsyncTask<Void, Void, SessionSet> {
 
         @Override

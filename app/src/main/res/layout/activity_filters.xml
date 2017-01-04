@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    style="@style/Activity">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/save_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/unit4"
+        android:paddingRight="@dimen/unit4"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary">
+
+        <Button
+            android:id="@+id/save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/save_hint"
+            android:onClick="saveFilters"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/save_wrapper">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                style="@style/WrapperTinyHeader">
+
+                <TextView
+                    android:id="@+id/location_tiny_header"
+                    android:text="@string/locations_header"
+                    style="@style/TinyHeader" />
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/location_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                style="@style/WrapperTinyHeader">
+
+                <TextView
+                    android:id="@+id/game_tiny_header"
+                    android:text="@string/games_header"
+                    style="@style/TinyHeader" />
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/game_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                style="@style/WrapperTinyHeader">
+
+                <TextView
+                    android:id="@+id/game_format_tiny_header"
+                    android:text="@string/game_format_header"
+                    style="@style/TinyHeader" />
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/game_format_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                style="@style/WrapperTinyHeader">
+
+                <TextView
+                    android:id="@+id/blinds_tiny_header"
+                    android:text="@string/blinds_header"
+                    style="@style/TinyHeader" />
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/blinds_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <!--
+            Need to offer cash game/tournament filter
+            -->
+            <!--
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                style="@style/WrapperTinyHeader">
+
+                <TextView
+                    android:id="@+id/session_length_tiny_header"
+                    android:text="@string/finished_session_length_header"
+                    style="@style/TinyHeader" />
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/time_wrapper"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/start_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".50"
+                        android:hint="@string/start_date_hint"
+                        android:onClick="showDatePickerDialog"/>
+
+                    <Button
+                        android:id="@+id/end_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".50"
+                        android:hint="@string/end_date_hint"
+                        android:onClick="showDatePickerDialog"/>
+                </LinearLayout>
+            </LinearLayout>
+            -->
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

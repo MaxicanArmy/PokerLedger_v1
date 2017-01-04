@@ -51,8 +51,32 @@
                 android:value=".ActivityMain" />
         </activity>
         <activity
+            android:name=".ActivityGraphs"
+            android:label="@string/graphs_activity_name"
+            android:parentActivityName=".ActivityMain" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ActivityMain" />
+        </activity>
+        <activity
             android:name=".ActivityHistory"
             android:label="@string/history_activity_name"
+            android:parentActivityName=".ActivityMain" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ActivityMain" />
+        </activity>
+        <activity
+            android:name=".ActivityFilters"
+            android:label="@string/filter_activity_name"
+            android:parentActivityName=".ActivityMain" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ActivityMain" />
+        </activity>
+        <activity
+            android:name=".ActivityNotes"
+            android:label="@string/notes_activity_name"
             android:parentActivityName=".ActivityMain" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -66,27 +90,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ActivityMain" />
         </activity>
-        <activity
-            android:name=".ActivityGraphs"
-            android:label="@string/graphs_activity_name"
-            android:parentActivityName=".ActivityMain" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ActivityMain" />
-        </activity>
         <!--
         <activity
             android:name=".StatisticsActivity"
             android:label="@string/statistics_activity_name"
             android:parentActivityName=".ActivityMain">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.pokerledger.app.ActivityMain" />
-        </activity>
-        <activity
-            android:name=".FilterActivity"
-            android:label="@string/filter_activity_name"
-            android:parentActivityName=".ActivityMain" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.pokerledger.app.ActivityMain" />

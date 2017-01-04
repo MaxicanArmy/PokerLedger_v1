@@ -16,6 +16,7 @@ import java.util.ArrayList;
 /**
  * Created by Catface Meowmers on 7/28/15.
  */
+
 public class HistoryListAdapter extends ArrayAdapter<Session> {
     private final Activity context;
     private final ArrayList<Session> active;

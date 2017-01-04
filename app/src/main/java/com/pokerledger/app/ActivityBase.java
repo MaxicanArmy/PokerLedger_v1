@@ -62,14 +62,18 @@ public class ActivityBase extends AppCompatActivity {
                 Intent statistics = new Intent(this, ActivityGraphs.class);
                 this.startActivity(statistics);
                 break;
+            case R.id.filters :
+                Intent filters = new Intent(this, ActivityFilters.class);
+                this.startActivity(filters);
+                break;
+            case R.id.notes :
+                Intent notes = new Intent(this, ActivityNotes.class);
+                this.startActivity(notes);
+                break;
             /*
             case R.id.statistics :
                 Intent statistics = new Intent(this, StatisticsActivity.class);
                 this.startActivity(statistics);
-                break;
-            case R.id.filter :
-                Intent filter = new Intent(this, FilterActivity.class);
-                this.startActivity(filter);
                 break;
                 */
         }

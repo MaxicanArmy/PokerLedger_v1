@@ -756,6 +756,91 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return sessions;
     }
 
+    public ArrayList<Session> getNotes(int state, int baseType, String chrono) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<Session> sessions = new ArrayList<>();
+
+        String query = "SELECT " + TABLE_SESSION + "." + KEY_SESSION_ID + ", " + KEY_START + ", " + KEY_END + ", " +
+                KEY_BUY_IN + ", " + KEY_CASH_OUT + ", " + KEY_GAME_FORMAT_ID + ", " + TABLE_GAME_FORMAT + "." + KEY_GAME_FORMAT + ", " +
+                KEY_BASE_FORMAT_ID + ", " + TABLE_BASE_FORMAT + "." + KEY_BASE_FORMAT + ", " + KEY_STATE + ", " + KEY_GAME_ID + ", " + TABLE_GAME + "." + KEY_GAME + ", " +
+                KEY_LOCATION_ID + ", " + TABLE_LOCATION + "." + KEY_LOCATION + ", " + TABLE_BLINDS + "." + KEY_BLIND_ID + ", " +
+                KEY_SMALL_BLIND + ", " + KEY_BIG_BLIND + ", " + KEY_STRADDLE + ", " + KEY_BRING_IN + ", " + KEY_ANTE + ", " + KEY_PER_POINT + ", " +
+                KEY_ENTRANTS + ", " + KEY_PLACED + ", " + KEY_NOTE + " FROM " + TABLE_SESSION + " INNER JOIN " + TABLE_GAME +
+                " ON " + TABLE_SESSION + "." + KEY_GAME + "=" + KEY_GAME_ID + " INNER JOIN " + TABLE_LOCATION +
+                " ON " + TABLE_SESSION + "." + KEY_LOCATION + "=" + KEY_LOCATION_ID + " INNER JOIN " + TABLE_GAME_FORMAT +
+                " ON " + TABLE_SESSION + "." + KEY_GAME_FORMAT + "=" + KEY_GAME_FORMAT_ID + " INNER JOIN " + TABLE_BASE_FORMAT +
+                " ON " + TABLE_GAME_FORMAT + "." + KEY_BASE_FORMAT + "=" + TABLE_BASE_FORMAT + "." + KEY_BASE_FORMAT_ID + " LEFT JOIN " + TABLE_NOTE +
+                " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_NOTE + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_TOURNAMENT +
+                " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_TOURNAMENT + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_CASH +
+                " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_CASH + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_BLINDS +
+                " ON " + TABLE_CASH + "." + KEY_BLINDS + "=" + TABLE_BLINDS + "." + KEY_BLIND_ID +
+                " WHERE " + KEY_STATE + "=" + state +
+                " AND " + TABLE_SESSION + "." + KEY_FILTERED + "=0" +
+                " AND " + TABLE_SESSION + "." + KEY_SESSION_ID + " IN (SELECT " + TABLE_NOTE + "." + KEY_SESSION_ID + " FROM " + TABLE_NOTE +
+                " WHERE " + KEY_NOTE + " !='')";
+
+        if (baseType != 0) {
+            query += " AND " + KEY_BASE_FORMAT_ID + "=" + baseType;
+        }
+
+        query += " ORDER BY " + KEY_START + " " + chrono + ";";
+
+        Cursor c = db.rawQuery(query, null);
+
+        //loop through rows and add to session if any results returned
+        if (c.moveToFirst()) {
+            do {
+                Session s = new Session();
+                s.setId(c.getInt(c.getColumnIndex(KEY_SESSION_ID)));
+                s.setStart(c.getLong(c.getColumnIndex(KEY_START)));
+                s.setEnd(c.getLong(c.getColumnIndex(KEY_END)));
+                s.setBuyIn(c.getDouble(c.getColumnIndex(KEY_BUY_IN)));
+                s.setCashOut(c.getDouble(c.getColumnIndex(KEY_CASH_OUT)));
+                s.setGame(new Game(c.getInt(c.getColumnIndex(KEY_GAME_ID)), c.getString(c.getColumnIndex(KEY_GAME))));
+                s.setGameFormat(new GameFormat(c.getInt(c.getColumnIndex(KEY_GAME_FORMAT_ID)), c.getString(c.getColumnIndex(KEY_GAME_FORMAT)),
+                        c.getInt(c.getColumnIndex(KEY_BASE_FORMAT_ID)), c.getString(c.getColumnIndex(KEY_BASE_FORMAT))));
+                s.setLocation(new Location(c.getInt(c.getColumnIndex(KEY_LOCATION_ID)), c.getString(c.getColumnIndex(KEY_LOCATION))));
+                s.setState(c.getInt(c.getColumnIndex(KEY_STATE)));
+
+                if (s.getGameFormat().getBaseFormatId() == 1) {
+                    s.setBlinds(new Blinds(c.getInt(c.getColumnIndex(KEY_BLIND_ID)), c.getDouble(c.getColumnIndex(KEY_SMALL_BLIND)), c.getDouble(c.getColumnIndex(KEY_BIG_BLIND)),
+                            c.getDouble(c.getColumnIndex(KEY_STRADDLE)), c.getDouble(c.getColumnIndex(KEY_BRING_IN)), c.getDouble(c.getColumnIndex(KEY_ANTE)),
+                            c.getDouble(c.getColumnIndex(KEY_PER_POINT)), 0));
+
+                } else {
+                    if (!c.isNull(c.getColumnIndex(KEY_ENTRANTS))) {
+                        s.setEntrants(c.getInt(c.getColumnIndex(KEY_ENTRANTS)));
+                    }
+
+                    if (!c.isNull(c.getColumnIndex(KEY_PLACED))) {
+                        s.setPlaced(c.getInt(c.getColumnIndex(KEY_PLACED)));
+                    }
+                }
+
+                if (!c.isNull(c.getColumnIndex(KEY_NOTE))) {
+                    s.setNote(c.getString(c.getColumnIndex(KEY_NOTE)));
+                }
+
+                SQLiteDatabase db2 = this.getReadableDatabase();
+                Cursor b = db2.rawQuery("SELECT * FROM " + TABLE_BREAK + " WHERE " + KEY_SESSION_ID + "=" + s.getId() + " ORDER BY " + KEY_BREAK_ID + " ASC", null);
+
+                if (b.moveToFirst()) {
+                    ArrayList<Break> breaks = new ArrayList<>();
+                    do {
+                        breaks.add(new Break(b.getInt(b.getColumnIndex(KEY_BREAK_ID)), b.getLong(b.getColumnIndex(KEY_START)), b.getLong(b.getColumnIndex(KEY_END))));
+                    } while (b.moveToNext());
+
+                    s.setBreaks(breaks);
+                }
+                b.close();
+                sessions.add(s);
+            } while (c.moveToNext());
+        }
+        c.close();
+
+        return sessions;
+    }
+
     public void addSession(Session s) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -877,6 +962,87 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String query = "UPDATE " + TABLE_SESSION + " SET " + KEY_BUY_IN + "=" + KEY_BUY_IN + "+" + amount + " WHERE " + KEY_SESSION_ID + "=" + id + ";";
         db.execSQL(query);
+        db.close();
+    }
+
+    public void clearFilters() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.beginTransaction();
+        db.execSQL("UPDATE " + TABLE_SESSION + " SET " + KEY_FILTERED + "=0;");
+        db.execSQL("UPDATE " + TABLE_LOCATION + " SET " + KEY_FILTERED + "=0;");
+        db.execSQL("UPDATE " + TABLE_GAME + " SET " + KEY_FILTERED + "=0;");
+        db.execSQL("UPDATE " + TABLE_GAME_FORMAT + " SET " + KEY_FILTERED + "=0;");
+        db.execSQL("UPDATE " + TABLE_BLINDS + " SET " + KEY_FILTERED + "=0;");
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
+    public void applyFilters(ArrayList<Integer> locationIds, ArrayList<Integer> gameIds, ArrayList<Integer> gameFormatIds, ArrayList<Integer> blindsIds) {
+        clearFilters();
+        String locations = "(";
+
+        if (locationIds.size() > 0) {
+            for (Integer l : locationIds) {
+                if (!locations.equals("("))
+                    locations += ", ";
+                locations += Integer.toString(l);
+            }
+        }
+        locations += ")";
+
+        String games = "(";
+
+        if (gameIds.size() > 0) {
+            for (Integer g : gameIds) {
+                if (!games.equals("("))
+                    games += ", ";
+                games += Integer.toString(g);
+            }
+        }
+        games += ")";
+
+        String gameFormats = "(";
+
+        if (gameFormatIds.size() > 0) {
+            for (Integer gf : gameFormatIds) {
+                if (!gameFormats.equals("("))
+                    gameFormats += ", ";
+                gameFormats += Integer.toString(gf);
+            }
+        }
+        gameFormats += ")";
+
+        String blinds = "(";
+
+        if (blindsIds.size() > 0) {
+            for (Integer b : blindsIds) {
+                if (!blinds.equals("("))
+                    blinds += ", ";
+                blinds += Integer.toString(b);
+            }
+        }
+        blinds += ")";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        db.execSQL("UPDATE " + TABLE_LOCATION + " SET " + KEY_FILTERED + "=1 WHERE " + KEY_LOCATION_ID + " IN " + locations + ";");
+        db.execSQL("UPDATE " + TABLE_GAME + " SET " + KEY_FILTERED + "=1 WHERE " + KEY_GAME_ID + " IN " + games + ";");
+        db.execSQL("UPDATE " + TABLE_GAME_FORMAT + " SET " + KEY_FILTERED + "=1 WHERE " + KEY_GAME_FORMAT_ID + " IN " + gameFormats + ";");
+        db.execSQL("UPDATE " + TABLE_BLINDS + " SET " + KEY_FILTERED + "=1 WHERE " + KEY_BLIND_ID + " IN " + blinds + ";");
+
+        db.execSQL("UPDATE " + TABLE_SESSION + " SET " + KEY_FILTERED + "=1 WHERE " +
+                KEY_LOCATION + " IN " + locations + " OR " +
+                KEY_GAME + " IN " + games + " OR " +
+                KEY_GAME_FORMAT + " IN " + gameFormats + ";");
+
+        db.execSQL("UPDATE " + TABLE_SESSION + " SET " + KEY_FILTERED + "=1 WHERE " +
+                KEY_SESSION_ID + " IN (SELECT " + TABLE_CASH + "." + KEY_SESSION_ID + " FROM " + TABLE_CASH +
+                " INNER JOIN " +  TABLE_BLINDS + " ON " + TABLE_CASH + "." + KEY_BLINDS + "=" + TABLE_BLINDS + "." + KEY_BLIND_ID +
+                " WHERE " + TABLE_BLINDS + "." + KEY_FILTERED + "=1)");
+        db.setTransactionSuccessful();
+        db.endTransaction();
         db.close();
     }
 }
