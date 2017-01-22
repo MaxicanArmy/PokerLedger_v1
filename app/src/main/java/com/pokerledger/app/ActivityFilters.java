@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
 import com.pokerledger.app.helper.DatabaseHelper;
@@ -235,6 +236,7 @@ public class ActivityFilters extends ActivityBase {
 
         @Override
         protected void onPostExecute(Void v) {
+            /*
             AlertDialog alertDialog = new AlertDialog.Builder(ActivityFilters.this).create();
             alertDialog.setTitle("Status");
             alertDialog.setMessage("Your new filter settings have been applied throughout Poker Ledger.");
@@ -245,6 +247,8 @@ public class ActivityFilters extends ActivityBase {
                         }
                     });
             alertDialog.show();
+            */
+            Toast.makeText(ActivityFilters.this, "Your new filter settings have been applied throughout Poker Ledger.", Toast.LENGTH_LONG).show();
         }
     }
 /*
