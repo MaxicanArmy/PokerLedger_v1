@@ -19,6 +19,7 @@ public class Session {
     private GameFormat gameFormat = new GameFormat();
     private Blinds blinds = new Blinds();
     private ArrayList<Break> breaks = new ArrayList<>();
+    private int filtered = 0;
 
     //constructors
     public Session() {}
@@ -101,6 +102,10 @@ public class Session {
         this.breaks = b;
     }
 
+    public void setFiltered(int b) {
+        this.filtered = b;
+    }
+
     //getters
     public int getId() {
         return this.id;
@@ -156,6 +161,10 @@ public class Session {
 
     public ArrayList<Break> getBreaks() {
         return this.breaks;
+    }
+
+    public int getFiltered() {
+        return this.filtered;
     }
 
     //other

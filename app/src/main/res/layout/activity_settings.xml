@@ -283,6 +283,43 @@
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/export_cvs_wrapper"
+            style="@style/WrapperTinyHeader">
+
+            <TextView
+                android:id="@+id/export_csv_tiny_header"
+                android:text="@string/export_csv_header"
+                style="@style/TinyHeader" />
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/csv_row_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/export_csv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/export_csv_hint"
+                    android:onClick="callExportCSV"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/version_wrapper"
+            style="@style/WrapperTinyHeader">
+
+            <TextView
+                android:id="@+id/version_tiny_header"
+                android:text="@string/backup_header"
+                style="@style/TinyHeader" />
+        </LinearLayout>
         <!--
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

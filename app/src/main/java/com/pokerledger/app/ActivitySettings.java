@@ -1,6 +1,9 @@
 package com.pokerledger.app;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
@@ -9,15 +12,18 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
+import com.pokerledger.app.helper.SessionSet;
 import com.pokerledger.app.model.Blinds;
 import com.pokerledger.app.model.Game;
 import com.pokerledger.app.model.GameFormat;
@@ -27,6 +33,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,6 +49,16 @@ public class ActivitySettings extends ActivityBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         FlurryAgent.logEvent("Activity_Settings");
+
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version = pInfo.versionName;
+
+            TextView versionText = (TextView) this.findViewById(R.id.version_tiny_header);
+            versionText.setText("Pokerledger v" + version + " (build " + Integer.toString(pInfo.versionCode) + ")");
+        } catch (PackageManager.NameNotFoundException e) {
+            //this should probably be a flurry call
+        }
 
         final Spinner locationSpinner = (Spinner) this.findViewById(R.id.location);
         locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -412,6 +429,10 @@ public class ActivitySettings extends ActivityBase {
         editor.commit();
     }
 
+    public void callExportCSV(View v) {
+        new ExportCVS().execute();
+    }
+
     public void backupDatabase(View v) {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
@@ -599,6 +620,43 @@ public class ActivitySettings extends ActivityBase {
         @Override
         protected void onPostExecute(Void v) {
             new LoadBlinds().execute();
+        }
+    }
+
+    public class ExportCVS extends AsyncTask<Void, Void, SessionSet> {
+
+        @Override
+        protected SessionSet doInBackground(Void... params) {
+            DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+            return new SessionSet(dbHelper.getSessions());
+        }
+
+        @Override
+        protected void onPostExecute(SessionSet allSessions) {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            String csvName = "pokerledger_" + df.format(c.getTime()) + ".csv";
+            File dst = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), csvName);
+
+            String data = allSessions.exportCSV();
+            try
+            {
+                dst.createNewFile();
+                FileOutputStream fOut = new FileOutputStream(dst);
+                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                myOutWriter.append(data);
+
+                myOutWriter.close();
+
+                fOut.flush();
+                fOut.close();
+            }
+            catch (IOException e)
+            {
+                Log.e("Exception", "Writing cvs file failed: " + e.toString());
+            }
+
+            Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_export_cvs) + " " + csvName, Toast.LENGTH_LONG).show();
         }
     }
 }

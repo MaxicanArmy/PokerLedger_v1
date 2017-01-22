@@ -2,6 +2,7 @@ package com.pokerledger.app.helper;
 
 import com.flurry.android.FlurryAgent;
 import com.jjoe64.graphview.series.DataPoint;
+import com.pokerledger.app.model.Break;
 import com.pokerledger.app.model.Session;
 
 import java.lang.reflect.Method;
@@ -177,5 +178,34 @@ public class SessionSet {
                 entry.getValue().createHierarchy(nextLevels);
             }
         }
+    }
+
+    public String exportCSV() {
+        String csv = "id, buy_in, cash_out, start_time, end_time, location, game, game_format, blinds, breaks, entrants, placed, state, note, filtered\r\n";
+
+        for (Session current : sessions) {
+            csv += Integer.toString(current.getId()) + ", " +
+                    Double.toString(current.getBuyIn()) + ", " +
+                    Double.toString(current.getCashOut()) + ", " +
+                    Long.toString(current.getStart()) + ", " +
+                    Long.toString(current.getEnd()) + ", \"" +
+                    current.getLocation().toString() + "\", \"" +
+                    current.getGame().toString() + "\", \"" +
+                    current.getGameFormat().toString() + "\", \"" +
+                    current.getBlinds().toString() + "\", ";
+
+            String tempBreaks = "";
+            for (Break b : current.getBreaks()) {
+                if (!tempBreaks.equals(""))
+                    tempBreaks += "+";
+                tempBreaks += b.getStart() + ":" + b.getEnd();
+            }
+            csv += tempBreaks + ", " + Integer.toString(current.getEntrants()) + ", " +
+                    Integer.toString(current.getPlaced()) + ", " +
+                    Integer.toString(current.getState()) + ", \"" +
+                    current.getNote() + "\", " +
+                    Integer.toString(current.getFiltered()) + "\r\n";
+        }
+        return csv;
     }
 }
