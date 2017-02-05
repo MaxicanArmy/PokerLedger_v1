@@ -186,9 +186,9 @@ public class SessionSet {
         for (Session current : sessions) {
             csv += Integer.toString(current.getId()) + ", " +
                     Double.toString(current.getBuyIn()) + ", " +
-                    Double.toString(current.getCashOut()) + ", " +
-                    Long.toString(current.getStart()) + ", " +
-                    Long.toString(current.getEnd()) + ", \"" +
+                    Double.toString(current.getCashOut()) + ", \"" +
+                    PLCommon.timestampToDatetime(current.getStart()) + "\", \"" +
+                    PLCommon.timestampToDatetime(current.getEnd()) + "\", \"" +
                     current.getLocation().toString() + "\", \"" +
                     current.getGame().toString() + "\", \"" +
                     current.getGameFormat().toString() + "\", \"" +
@@ -197,14 +197,15 @@ public class SessionSet {
             String tempBreaks = "";
             for (Break b : current.getBreaks()) {
                 if (!tempBreaks.equals(""))
-                    tempBreaks += "+";
-                tempBreaks += b.getStart() + ":" + b.getEnd();
+                    tempBreaks += ",";
+                tempBreaks += PLCommon.timestampToDatetime(b.getStart()) + ":" + PLCommon.timestampToDatetime(b.getEnd());
             }
-            csv += tempBreaks + ", " + Integer.toString(current.getEntrants()) + ", " +
-                    Integer.toString(current.getPlaced()) + ", " +
-                    Integer.toString(current.getState()) + ", \"" +
-                    current.getNote() + "\", " +
-                    Integer.toString(current.getFiltered()) + "\r\n";
+            csv += "\"" + tempBreaks + "\", " + Integer.toString(current.getEntrants()) + ", " +
+                    Integer.toString(current.getPlaced()) + ", ";
+            csv += (current.getState() == 0) ? "Finished" : "Active";
+            csv += ", \"" + current.getNote() + "\", ";
+            csv += (current.getFiltered() == 0) ? "No" : "Yes";
+            csv += "\r\n";
         }
         return csv;
     }

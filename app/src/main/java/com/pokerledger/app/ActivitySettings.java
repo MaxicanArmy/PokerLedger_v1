@@ -430,7 +430,7 @@ public class ActivitySettings extends ActivityBase {
     }
 
     public void callExportCSV(View v) {
-        new ExportCVS().execute();
+        new ExportCSV().execute();
     }
 
     public void backupDatabase(View v) {
@@ -623,7 +623,7 @@ public class ActivitySettings extends ActivityBase {
         }
     }
 
-    public class ExportCVS extends AsyncTask<Void, Void, SessionSet> {
+    public class ExportCSV extends AsyncTask<Void, Void, SessionSet> {
 
         @Override
         protected SessionSet doInBackground(Void... params) {

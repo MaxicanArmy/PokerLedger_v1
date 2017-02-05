@@ -236,18 +236,6 @@ public class ActivityFilters extends ActivityBase {
 
         @Override
         protected void onPostExecute(Void v) {
-            /*
-            AlertDialog alertDialog = new AlertDialog.Builder(ActivityFilters.this).create();
-            alertDialog.setTitle("Status");
-            alertDialog.setMessage("Your new filter settings have been applied throughout Poker Ledger.");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            alertDialog.show();
-            */
             Toast.makeText(ActivityFilters.this, "Your new filter settings have been applied throughout Poker Ledger.", Toast.LENGTH_LONG).show();
         }
     }
