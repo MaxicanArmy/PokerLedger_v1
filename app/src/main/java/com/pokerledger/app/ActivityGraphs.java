@@ -40,7 +40,7 @@ public class ActivityGraphs extends ActivityBase {
         @Override
         protected SessionSet doInBackground(Void... params) {
             DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-            return new SessionSet(dbHelper.getSessions(0, "ASC"));
+            return new SessionSet(dbHelper.getSessions("0", "ASC", "0"));
         }
 
         @Override

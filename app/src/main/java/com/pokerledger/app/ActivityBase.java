@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.flurry.android.FlurryAgent;
 import com.pokerledger.app.helper.DatabaseHelper;
 import com.pokerledger.app.model.Blinds;
 import com.pokerledger.app.model.Game;
@@ -19,6 +21,11 @@ import com.pokerledger.app.model.GameFormat;
 import com.pokerledger.app.model.Location;
 import com.pokerledger.app.model.Session;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -358,6 +365,28 @@ public class ActivityBase extends AppCompatActivity {
                 count++;
             }
             blindsSpinner.setSelection(spinnerPos);
+        }
+    }
+
+    public void autoBackup() {
+        String backupName = "pokerledger_restore_point.pldb";
+        File src = new File(this.getDatabasePath("sessionManager").getAbsolutePath());
+        File dst = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), backupName);
+        FileChannel inChannel;
+        FileChannel outChannel;
+
+        try
+        {
+            inChannel = new FileInputStream(src).getChannel();
+            outChannel = new FileOutputStream(dst).getChannel();
+            inChannel.transferTo(0, inChannel.size(), outChannel);
+
+            if (inChannel != null)
+                inChannel.close();
+            if (outChannel != null)
+                outChannel.close();
+        } catch (IOException e) {
+            FlurryAgent.logEvent("Error_BackupDatabase");
         }
     }
 }

@@ -198,28 +198,6 @@ public class ActivitySession extends ActivityBase {
         }
     }
 
-    public void autoBackup() {
-        String backupName = "pokerledger_restore_point.pldb";
-        File src = new File(this.getDatabasePath("sessionManager").getAbsolutePath());
-        File dst = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), backupName);
-        FileChannel inChannel;
-        FileChannel outChannel;
-
-        try
-        {
-            inChannel = new FileInputStream(src).getChannel();
-            outChannel = new FileOutputStream(dst).getChannel();
-            inChannel.transferTo(0, inChannel.size(), outChannel);
-
-            if (inChannel != null)
-                inChannel.close();
-            if (outChannel != null)
-                outChannel.close();
-        } catch (IOException e) {
-            FlurryAgent.logEvent("Error_BackupDatabase");
-        }
-    }
-
     public class AddSession extends AsyncTask<Session, Void, Void> {
 
         @Override

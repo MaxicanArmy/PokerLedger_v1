@@ -45,7 +45,8 @@
     <string name="info_delete_location">Location deleted.</string>
     <string name="info_db_backup">Database saved to downloads folder as</string>
     <string name="info_export_cvs">Database exported to downloads folder as</string>
-    <string name="info_db_restore">Database restored.</string>
+    <string name="info_db_overwritten">Database overwritten with backup.</string>
+    <string name="info_db_merge">Database merged with backup.</string>
 
     <string name="info_no_breaks">There are no breaks associated with this session.</string>
 

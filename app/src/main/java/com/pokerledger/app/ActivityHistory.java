@@ -107,7 +107,7 @@ public class ActivityHistory extends ActivityBase {
             DatabaseHelper db;
             db = new DatabaseHelper(getApplicationContext());
 
-            return db.getSessions(0);
+            return db.getSessions("0", "DESC", "0");
         }
 
         @Override

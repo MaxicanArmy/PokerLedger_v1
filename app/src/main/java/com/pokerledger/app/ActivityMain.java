@@ -146,7 +146,7 @@ public class ActivityMain extends ActivityBase {
         @Override
         protected Void doInBackground(Void... params) {
             DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-            sessions = dbHelper.getActiveSessions();
+            sessions = dbHelper.getSessions("1", "DESC", null);
 
             return null;
         }
@@ -173,7 +173,7 @@ public class ActivityMain extends ActivityBase {
         @Override
         protected SessionSet doInBackground(Void... params) {
             DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-            return new SessionSet(dbHelper.getSessions(0));
+            return new SessionSet(dbHelper.getSessions("0", "DESC", "0"));
         }
 
         @Override
