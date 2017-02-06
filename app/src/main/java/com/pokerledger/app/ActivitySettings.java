@@ -434,130 +434,6 @@ public class ActivitySettings extends ActivityBase {
         editor.commit();
     }
 
-    public void callExportCSV(View v) {
-        new ExportCSV().execute();
-    }
-
-    public void backupDatabase(View v) {
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String backupName = "pokerledger_" + df.format(c.getTime()) + ".pldb";
-        File src = new File(this.getDatabasePath("sessionManager").getAbsolutePath());
-        File dst = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), backupName);
-        FileChannel inChannel;
-        FileChannel outChannel;
-
-        try
-        {
-            inChannel = new FileInputStream(src).getChannel();
-            outChannel = new FileOutputStream(dst).getChannel();
-            inChannel.transferTo(0, inChannel.size(), outChannel);
-
-            if (inChannel != null)
-                inChannel.close();
-            if (outChannel != null)
-                outChannel.close();
-        } catch (IOException e) {
-            FlurryAgent.logEvent("Error_BackupDatabase");
-        }
-        Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_backup) + " " + backupName, Toast.LENGTH_LONG).show();
-    }
-
-    public void restoreDatabase(View v) {
-
-        restoreIntent.setAction(Intent.ACTION_GET_CONTENT);
-        restoreIntent.setType("file/*");
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Do you want to overwrite the data currently in the app, or do you want to merge with the backup?")
-                .setCancelable(false)
-                .setPositiveButton("Overwrite", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        startActivityForResult(Intent.createChooser(ActivitySettings.this.restoreIntent, "Select File Manager"), OVERWRITE_BACKUP);
-                    }
-                })
-                .setNegativeButton("Merge", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        startActivityForResult(Intent.createChooser(ActivitySettings.this.restoreIntent, "Select File Manager"), MERGE_BACKUP);
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-
-            if (requestCode == MERGE_BACKUP) {
-                new DatabaseMerge().execute(data);
-            }
-            else if (requestCode == OVERWRITE_BACKUP) {
-                overWriteDB(data);
-                Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_overwritten), Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    public class DatabaseMerge extends AsyncTask<Intent, Void, Intent> {
-        ArrayList<Session> sessions = new ArrayList<>();
-
-        @Override
-        protected Intent doInBackground(Intent... data) {
-            DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-            sessions = dbHelper.getSessions(null, "DESC", null);
-
-            return data[0];
-        }
-
-        @Override
-        protected void onPostExecute(Intent d) {
-            overWriteDB(d);
-            new ImportSessions().execute(sessions);
-            Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_merge), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    public class ImportSessions extends AsyncTask<ArrayList<Session>, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            ActivitySettings.this.autoBackup();
-        }
-
-        @Override
-        protected Void doInBackground(ArrayList<Session>... s) {
-            DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
-            db.addSessions(s[0]);
-
-            return null;
-        }
-    }
-
-    public void overWriteDB(Intent data) {
-        Uri selectedUri = data.getData();
-        String backupPath = selectedUri.getPath();
-
-        File dst = new File(this.getDatabasePath("sessionManager").getAbsolutePath());
-        File src = new File(backupPath);
-        FileChannel inChannel;
-        FileChannel outChannel;
-
-        try
-        {
-            inChannel = new FileInputStream(src).getChannel();
-            outChannel = new FileOutputStream(dst).getChannel();
-            inChannel.transferTo(0, inChannel.size(), outChannel);
-
-            if (inChannel != null)
-                inChannel.close();
-            if (outChannel != null)
-                outChannel.close();
-        } catch (IOException e) {
-            FlurryAgent.logEvent("Error_RestoreDatabase");
-        }
-    }
-
     public class EditLocation extends AsyncTask<Location, Void, Void> {
         @Override
         protected Void doInBackground(Location... loc) {
@@ -720,6 +596,130 @@ public class ActivitySettings extends ActivityBase {
             }
 
             Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_export_cvs) + " " + csvName, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void callExportCSV(View v) {
+        new ExportCSV().execute();
+    }
+
+    public void backupDatabase(View v) {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String backupName = "pokerledger_" + df.format(c.getTime()) + ".pldb";
+        File src = new File(this.getDatabasePath("sessionManager").getAbsolutePath());
+        File dst = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), backupName);
+        FileChannel inChannel;
+        FileChannel outChannel;
+
+        try
+        {
+            inChannel = new FileInputStream(src).getChannel();
+            outChannel = new FileOutputStream(dst).getChannel();
+            inChannel.transferTo(0, inChannel.size(), outChannel);
+
+            if (inChannel != null)
+                inChannel.close();
+            if (outChannel != null)
+                outChannel.close();
+        } catch (IOException e) {
+            FlurryAgent.logEvent("Error_BackupDatabase");
+        }
+        Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_backup) + " " + backupName, Toast.LENGTH_LONG).show();
+    }
+
+    public void restoreDatabase(View v) {
+
+        restoreIntent.setAction(Intent.ACTION_GET_CONTENT);
+        restoreIntent.setType("file/*");
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Do you want to overwrite the data currently in the app, or do you want to merge with the backup?")
+                .setCancelable(false)
+                .setPositiveButton("Overwrite", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        startActivityForResult(Intent.createChooser(ActivitySettings.this.restoreIntent, "Select File Manager"), OVERWRITE_BACKUP);
+                    }
+                })
+                .setNegativeButton("Merge", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        startActivityForResult(Intent.createChooser(ActivitySettings.this.restoreIntent, "Select File Manager"), MERGE_BACKUP);
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+
+            if (requestCode == MERGE_BACKUP) {
+                new DatabaseMerge().execute(data);
+            }
+            else if (requestCode == OVERWRITE_BACKUP) {
+                overWriteDB(data);
+                Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_overwritten), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    public class DatabaseMerge extends AsyncTask<Intent, Void, Intent> {
+        ArrayList<Session> sessions = new ArrayList<>();
+
+        @Override
+        protected void onPreExecute() {
+            ActivitySettings.this.autoBackup();
+        }
+
+        @Override
+        protected Intent doInBackground(Intent... data) {
+            DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+            sessions = dbHelper.getSessions(null, "DESC", null);
+
+            return data[0];
+        }
+
+        @Override
+        protected void onPostExecute(Intent d) {
+            overWriteDB(d);
+            new ImportSessions().execute(sessions);
+            Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_merge), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public class ImportSessions extends AsyncTask<ArrayList<Session>, Void, Void> {
+
+        @Override
+        protected Void doInBackground(ArrayList<Session>... s) {
+            DatabaseHelper db;
+            db = new DatabaseHelper(getApplicationContext());
+            db.addSessions(s[0]);
+
+            return null;
+        }
+    }
+
+    public void overWriteDB(Intent data) {
+        Uri selectedUri = data.getData();
+        String backupPath = selectedUri.getPath();
+
+        File dst = new File(this.getDatabasePath("sessionManager").getAbsolutePath());
+        File src = new File(backupPath);
+        FileChannel inChannel;
+        FileChannel outChannel;
+
+        try
+        {
+            inChannel = new FileInputStream(src).getChannel();
+            outChannel = new FileOutputStream(dst).getChannel();
+            inChannel.transferTo(0, inChannel.size(), outChannel);
+
+            if (inChannel != null)
+                inChannel.close();
+            if (outChannel != null)
+                outChannel.close();
+        } catch (IOException e) {
+            FlurryAgent.logEvent("Error_RestoreDatabase");
         }
     }
 }
