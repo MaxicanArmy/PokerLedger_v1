@@ -88,7 +88,7 @@ public class FragmentEditFinishedSession extends DialogFragment implements Adapt
     public class DeleteFinished extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(FragmentEditFinishedSession.this.activity);
+            DatabaseHelper db = DatabaseHelper.getInstance(FragmentEditFinishedSession.this.activity);
             db.deleteSession(FragmentEditFinishedSession.this.active.getId());
 
             return null;

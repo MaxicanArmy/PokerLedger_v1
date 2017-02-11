@@ -105,7 +105,7 @@ public class ActivityHistory extends ActivityBase {
         @Override
         protected ArrayList<Session> doInBackground(Void... params) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
 
             return db.getSessions("0", "DESC", "0");
         }

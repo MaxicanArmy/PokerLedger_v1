@@ -142,9 +142,14 @@
             android:text="@string/breakdown_header"
             style="@style/WrapperHeader" />
 
-        <LinearLayout
-            android:id="@+id/breakdown_content"
-            style="@style/WrapperContent">
-        </LinearLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/breakdown_content"
+                style="@style/WrapperContent">
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 </RelativeLayout>

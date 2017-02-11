@@ -136,7 +136,7 @@ public class ActivityBase extends AppCompatActivity {
         @Override
         protected Location doInBackground(Location... loc) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             return db.createLocation(loc[0]);
         }
 
@@ -151,7 +151,7 @@ public class ActivityBase extends AppCompatActivity {
         @Override
         protected ArrayList<Location> doInBackground(Void... params) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             return db.getAllLocations("frequency");
         }
 
@@ -195,7 +195,7 @@ public class ActivityBase extends AppCompatActivity {
         @Override
         protected Game doInBackground(Game... loc) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             return db.createGame(loc[0]);
         }
 
@@ -210,7 +210,7 @@ public class ActivityBase extends AppCompatActivity {
         @Override
         protected ArrayList<Game> doInBackground(Void... params) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             return db.getAllGames(null);
         }
 
@@ -254,7 +254,7 @@ public class ActivityBase extends AppCompatActivity {
         @Override
         protected GameFormat doInBackground(GameFormat... g) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             return db.createGameFormat(g[0]);
         }
 
@@ -269,7 +269,7 @@ public class ActivityBase extends AppCompatActivity {
         @Override
         protected ArrayList<GameFormat> doInBackground(Void... params) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             return db.getAllGameFormats(null);
         }
 
@@ -313,7 +313,7 @@ public class ActivityBase extends AppCompatActivity {
         @Override
         protected Blinds doInBackground(Blinds... set) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             return db.createBlinds(set[0]);
         }
 
@@ -328,7 +328,7 @@ public class ActivityBase extends AppCompatActivity {
         @Override
         protected ArrayList<Blinds> doInBackground(Void... params) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             return db.getAllBlinds(null);
         }
 

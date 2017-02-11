@@ -64,7 +64,7 @@ public class ActivityFilters extends ActivityBase {
     public class ClearFilters extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
             db.clearFilters();
 
             return null;
@@ -120,7 +120,7 @@ public class ActivityFilters extends ActivityBase {
     public class LoadLocationsFilter extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
             ActivityFilters.this.locations = db.getAllLocations(null);
 
             return null;
@@ -147,7 +147,7 @@ public class ActivityFilters extends ActivityBase {
     public class LoadGamesFilter extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
             ActivityFilters.this.games = db.getAllGames(null);
 
             return null;
@@ -174,7 +174,7 @@ public class ActivityFilters extends ActivityBase {
     public class LoadGameFormatsFilter extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
             ActivityFilters.this.gameFormats = db.getAllGameFormats(null);
 
             return null;
@@ -201,7 +201,7 @@ public class ActivityFilters extends ActivityBase {
     public class LoadBlindsFilter extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
             ActivityFilters.this.blinds = db.getAllBlinds(null);
 
             return null;
@@ -228,7 +228,7 @@ public class ActivityFilters extends ActivityBase {
     public class ApplyFilters extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
             db.applyFilters(ActivityFilters.this.filteredLocations, ActivityFilters.this.filteredGames, ActivityFilters.this.filteredGameFormats, ActivityFilters.this.filteredBlinds);
 
             return null;
@@ -243,7 +243,7 @@ public class ActivityFilters extends ActivityBase {
     public class SaveGamesFilter extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
             db.filterGames(ActivityFilters.this.filteredGames);
 
             return null;
@@ -253,7 +253,7 @@ public class ActivityFilters extends ActivityBase {
     public class SaveGameFormatsFilter extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
             db.filterGameFormats(ActivityFilters.this.filteredGameFormats);
 
             return null;
@@ -263,7 +263,7 @@ public class ActivityFilters extends ActivityBase {
     public class SaveBlindsFilter extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
 
             ArrayList<Blinds> blinds = db.getAllBlinds(null);
             CheckBox current;
@@ -291,7 +291,7 @@ public class ActivityFilters extends ActivityBase {
     public class LoadDateFilter extends AsyncTask<Void, Void, HashMap<String, String>> {
         @Override
         protected HashMap<String, String> doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
 
             return db.getFilterDates();
         }
@@ -309,7 +309,7 @@ public class ActivityFilters extends ActivityBase {
     public class SaveDateFilter extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
 
             String startDate = ((Button) findViewById(R.id.start_date)).getHint().toString();
             String endDate = ((Button) findViewById(R.id.end_date)).getHint().toString();

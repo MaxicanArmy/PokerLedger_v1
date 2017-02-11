@@ -69,7 +69,7 @@ public class ActivityNotes extends ActivityBase {
 
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+            DatabaseHelper dbHelper = DatabaseHelper.getInstance(getApplicationContext());
             sessions = dbHelper.getNotes();
 
             return null;

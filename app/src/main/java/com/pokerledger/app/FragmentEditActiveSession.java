@@ -127,7 +127,7 @@ public class FragmentEditActiveSession extends DialogFragment implements Adapter
     public class ToggleBreak extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(FragmentEditActiveSession.this.getActivity());
+            DatabaseHelper db = DatabaseHelper.getInstance(FragmentEditActiveSession.this.getActivity());
             db.toggleBreak(FragmentEditActiveSession.this.current);
 
             return null;
@@ -142,7 +142,7 @@ public class FragmentEditActiveSession extends DialogFragment implements Adapter
     public class DeleteActive extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(FragmentEditActiveSession.this.activity);
+            DatabaseHelper db = DatabaseHelper.getInstance(FragmentEditActiveSession.this.activity);
             db.deleteSession(FragmentEditActiveSession.this.current.getId());
 
             return null;
@@ -157,7 +157,7 @@ public class FragmentEditActiveSession extends DialogFragment implements Adapter
     public class RebuyAddon extends AsyncTask<Double, Void, Void> {
         @Override
         protected Void doInBackground(Double... amount) {
-            DatabaseHelper db = new DatabaseHelper(FragmentEditActiveSession.this.activity);
+            DatabaseHelper db = DatabaseHelper.getInstance(FragmentEditActiveSession.this.activity);
             db.rebuyAddon(FragmentEditActiveSession.this.current.getId(), amount[0]);
 
             return null;

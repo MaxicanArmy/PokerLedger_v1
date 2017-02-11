@@ -203,7 +203,7 @@ public class ActivitySession extends ActivityBase {
         @Override
         protected Void doInBackground(Session... s) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             db.addSession(s[0]);
 
             return null;
@@ -220,7 +220,7 @@ public class ActivitySession extends ActivityBase {
         @Override
         protected Void doInBackground(Session... s) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             db.editSession(s[0]);
 
             return null;

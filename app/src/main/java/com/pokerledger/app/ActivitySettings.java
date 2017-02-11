@@ -46,6 +46,10 @@ import java.util.Calendar;
  */
 public class ActivitySettings extends ActivityBase {
     private Intent restoreIntent = new Intent();
+
+    private Intent resultData = new Intent();
+    private ArrayList<Session> mergeSessions = new ArrayList<>();
+
     private static final int OVERWRITE_BACKUP = 1;
     private static final int MERGE_BACKUP = 2;
 
@@ -438,7 +442,7 @@ public class ActivitySettings extends ActivityBase {
         @Override
         protected Void doInBackground(Location... loc) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             db.editLocation(loc[0]);
 
             return null;
@@ -454,7 +458,7 @@ public class ActivitySettings extends ActivityBase {
         @Override
         protected Void doInBackground(Location... loc) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             db.deleteLocation(loc[0]);
 
             return null;
@@ -470,7 +474,7 @@ public class ActivitySettings extends ActivityBase {
         @Override
         protected Void doInBackground(Game... game) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             db.editGame(game[0]);
 
             return null;
@@ -486,7 +490,7 @@ public class ActivitySettings extends ActivityBase {
         @Override
         protected Void doInBackground(Game... game) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             db.deleteGame(game[0]);
 
             return null;
@@ -502,7 +506,7 @@ public class ActivitySettings extends ActivityBase {
         @Override
         protected Void doInBackground(GameFormat... g) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             db.editGameFormat(g[0]);
 
             return null;
@@ -518,7 +522,7 @@ public class ActivitySettings extends ActivityBase {
         @Override
         protected Void doInBackground(GameFormat... g) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             db.deleteGameFormat(g[0]);
 
             return null;
@@ -534,7 +538,7 @@ public class ActivitySettings extends ActivityBase {
         @Override
         protected Void doInBackground(Blinds... set) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             db.editBlinds(set[0]);
 
             return null;
@@ -550,7 +554,7 @@ public class ActivitySettings extends ActivityBase {
         @Override
         protected Void doInBackground(Blinds... set) {
             DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            db = DatabaseHelper.getInstance(getApplicationContext());
             db.deleteBlinds(set[0]);
 
             return null;
@@ -566,7 +570,7 @@ public class ActivitySettings extends ActivityBase {
 
         @Override
         protected SessionSet doInBackground(Void... params) {
-            DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+            DatabaseHelper dbHelper = DatabaseHelper.getInstance(getApplicationContext());
             return new SessionSet(dbHelper.getSessions(null, "DESC", null));
         }
 
@@ -651,75 +655,94 @@ public class ActivitySettings extends ActivityBase {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        this.resultData = data;
+
         if (resultCode == RESULT_OK) {
 
             if (requestCode == MERGE_BACKUP) {
-                new DatabaseMerge().execute(data);
+                new PrepareMerge().execute();
             }
             else if (requestCode == OVERWRITE_BACKUP) {
-                overWriteDB(data);
+                new OverWriteDB().execute();
                 Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_overwritten), Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    public class DatabaseMerge extends AsyncTask<Intent, Void, Intent> {
-        ArrayList<Session> sessions = new ArrayList<>();
+    public class PrepareMerge extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
             ActivitySettings.this.autoBackup();
+            ActivitySettings.this.mergeSessions = new ArrayList<Session>();
         }
 
         @Override
-        protected Intent doInBackground(Intent... data) {
-            DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-            sessions = dbHelper.getSessions(null, "DESC", null);
+        protected Void doInBackground(Void... v) {
+            DatabaseHelper dbHelper = DatabaseHelper.getInstance(getApplicationContext());
+            ActivitySettings.this.mergeSessions = dbHelper.getSessions(null, "DESC", null);
 
-            return data[0];
+            return null;
         }
 
         @Override
-        protected void onPostExecute(Intent d) {
-            overWriteDB(d);
-            new ImportSessions().execute(sessions);
-            Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_merge), Toast.LENGTH_LONG).show();
+        protected void onPostExecute(Void param) {
+            new OverWriteDB().execute();
         }
     }
 
-    public class ImportSessions extends AsyncTask<ArrayList<Session>, Void, Void> {
+    public class OverWriteDB extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... v) {
+            Uri selectedUri = ActivitySettings.this.resultData.getData();
+            String backupPath = selectedUri.getPath();
+
+            File dst = new File(ActivitySettings.this.getDatabasePath("sessionManager").getAbsolutePath());
+            File src = new File(backupPath);
+            FileChannel inChannel;
+            FileChannel outChannel;
+
+            try
+            {
+                inChannel = new FileInputStream(src).getChannel();
+                outChannel = new FileOutputStream(dst).getChannel();
+                inChannel.transferTo(0, inChannel.size(), outChannel);
+
+                if (inChannel != null)
+                    inChannel.close();
+                if (outChannel != null)
+                    outChannel.close();
+            } catch (IOException e) {
+                FlurryAgent.logEvent("Error_RestoreDatabase");
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            DatabaseHelper.resetDatabaseHelper();
+
+            if (ActivitySettings.this.mergeSessions != null && ActivitySettings.this.mergeSessions.size() > 0) {
+                new MergeSessions().execute(ActivitySettings.this.mergeSessions);
+            }
+        }
+    }
+
+    public class MergeSessions extends AsyncTask<ArrayList<Session>, Void, Void> {
 
         @Override
         protected Void doInBackground(ArrayList<Session>... s) {
-            DatabaseHelper db;
-            db = new DatabaseHelper(getApplicationContext());
+            DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
             db.addSessions(s[0]);
 
             return null;
         }
-    }
 
-    public void overWriteDB(Intent data) {
-        Uri selectedUri = data.getData();
-        String backupPath = selectedUri.getPath();
-
-        File dst = new File(this.getDatabasePath("sessionManager").getAbsolutePath());
-        File src = new File(backupPath);
-        FileChannel inChannel;
-        FileChannel outChannel;
-
-        try
-        {
-            inChannel = new FileInputStream(src).getChannel();
-            outChannel = new FileOutputStream(dst).getChannel();
-            inChannel.transferTo(0, inChannel.size(), outChannel);
-
-            if (inChannel != null)
-                inChannel.close();
-            if (outChannel != null)
-                outChannel.close();
-        } catch (IOException e) {
-            FlurryAgent.logEvent("Error_RestoreDatabase");
+        @Override
+        protected void onPostExecute(Void v) {
+            Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_merge), Toast.LENGTH_LONG).show();
         }
     }
 }
