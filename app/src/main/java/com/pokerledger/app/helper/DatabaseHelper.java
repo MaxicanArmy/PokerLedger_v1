@@ -45,6 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sInstance = null;
     }
 
+
     /**
      * Constructor should be private to prevent direct instantiation.
      * Make a call to the static method "getInstance()" instead.
@@ -217,7 +218,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_PER_POINT, 0);
         values.put(KEY_FILTERED, 0);
         db.insert(TABLE_BLINDS, null, values);
-        
+
         values = new ContentValues();
         values.put(KEY_SMALL_BLIND, 2);
         values.put(KEY_BIG_BLIND, 5);
@@ -824,7 +825,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " WHERE 1=1";
         /* this is where the magic happens */
         if (state != null)
-            query += " AND " + KEY_STATE + "=" + state;
+            query += " AND " + KEY_STATE + " IN (" + state + ")";
 
         if (filtered != null)
             query += " AND " + TABLE_SESSION + "." + KEY_FILTERED + "=" + filtered;

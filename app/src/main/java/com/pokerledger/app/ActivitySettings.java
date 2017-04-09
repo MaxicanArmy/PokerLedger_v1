@@ -566,12 +566,16 @@ public class ActivitySettings extends ActivityBase {
         }
     }
 
+    public void callExportCSV(View v) {
+        new ExportCSV().execute();
+    }
+
     public class ExportCSV extends AsyncTask<Void, Void, SessionSet> {
 
         @Override
         protected SessionSet doInBackground(Void... params) {
             DatabaseHelper dbHelper = DatabaseHelper.getInstance(getApplicationContext());
-            return new SessionSet(dbHelper.getSessions(null, "DESC", null));
+            return new SessionSet(dbHelper.getSessions("0,1", "DESC", null));
         }
 
         @Override
@@ -601,10 +605,6 @@ public class ActivitySettings extends ActivityBase {
 
             Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_export_cvs) + " " + csvName, Toast.LENGTH_LONG).show();
         }
-    }
-
-    public void callExportCSV(View v) {
-        new ExportCSV().execute();
     }
 
     public void backupDatabase(View v) {
@@ -660,34 +660,12 @@ public class ActivitySettings extends ActivityBase {
         if (resultCode == RESULT_OK) {
 
             if (requestCode == MERGE_BACKUP) {
-                new PrepareMerge().execute();
+                new BeginMerge().execute();
             }
             else if (requestCode == OVERWRITE_BACKUP) {
                 new OverWriteDB().execute();
                 Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_overwritten), Toast.LENGTH_LONG).show();
             }
-        }
-    }
-
-    public class PrepareMerge extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            ActivitySettings.this.autoBackup();
-            ActivitySettings.this.mergeSessions = new ArrayList<Session>();
-        }
-
-        @Override
-        protected Void doInBackground(Void... v) {
-            DatabaseHelper dbHelper = DatabaseHelper.getInstance(getApplicationContext());
-            ActivitySettings.this.mergeSessions = dbHelper.getSessions(null, "DESC", null);
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void param) {
-            new OverWriteDB().execute();
         }
     }
 
@@ -723,10 +701,147 @@ public class ActivitySettings extends ActivityBase {
         @Override
         protected void onPostExecute(Void v) {
             DatabaseHelper.resetDatabaseHelper();
+            new LoadLocations().execute();
+            new LoadGames().execute();
+            new LoadGameFormats().execute();
+            new LoadBlinds().execute();
 
             if (ActivitySettings.this.mergeSessions != null && ActivitySettings.this.mergeSessions.size() > 0) {
                 new MergeSessions().execute(ActivitySettings.this.mergeSessions);
             }
+        }
+    }
+
+    public class BeginMerge extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            ActivitySettings.this.autoBackup();
+            ActivitySettings.this.mergeSessions = new ArrayList<Session>();
+        }
+
+        @Override
+        protected Void doInBackground(Void... v) {
+            String backupName = "pokerledger_temp.pldb";
+            File src = new File(ActivitySettings.this.getDatabasePath("sessionManager").getAbsolutePath());
+            File dst = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), backupName);
+            FileChannel inChannel;
+            FileChannel outChannel;
+
+            try
+            {
+                inChannel = new FileInputStream(src).getChannel();
+                outChannel = new FileOutputStream(dst).getChannel();
+                inChannel.transferTo(0, inChannel.size(), outChannel);
+
+                if (inChannel != null)
+                    inChannel.close();
+                if (outChannel != null)
+                    outChannel.close();
+            } catch (IOException e) {
+                FlurryAgent.logEvent("Error_BeginMerge");
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void param) {
+            new MergeOverwrite().execute();
+        }
+    }
+
+    public class MergeOverwrite extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... v) {
+            Uri selectedUri = ActivitySettings.this.resultData.getData();
+            String backupPath = selectedUri.getPath();
+
+            File dst = new File(ActivitySettings.this.getDatabasePath("sessionManager").getAbsolutePath());
+            File src = new File(backupPath);
+            FileChannel inChannel;
+            FileChannel outChannel;
+
+            try
+            {
+                inChannel = new FileInputStream(src).getChannel();
+                outChannel = new FileOutputStream(dst).getChannel();
+                inChannel.transferTo(0, inChannel.size(), outChannel);
+
+                if (inChannel != null)
+                    inChannel.close();
+                if (outChannel != null)
+                    outChannel.close();
+            } catch (IOException e) {
+                FlurryAgent.logEvent("Error_RestoreDatabase");
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            DatabaseHelper.resetDatabaseHelper();
+
+            new GetMergeSessions().execute();
+        }
+    }
+
+    public class GetMergeSessions extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            ActivitySettings.this.autoBackup();
+            ActivitySettings.this.mergeSessions = new ArrayList<Session>();
+        }
+
+        @Override
+        protected Void doInBackground(Void... v) {
+            DatabaseHelper dbHelper = DatabaseHelper.getInstance(getApplicationContext());
+            ActivitySettings.this.mergeSessions = dbHelper.getSessions(null, "DESC", null);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void param) {
+            new RestoreMergeInitial().execute();
+        }
+    }
+
+    public class RestoreMergeInitial extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... v) {
+            String backupName = "pokerledger_temp.pldb";
+            File src = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), backupName);
+            File dst = new File(ActivitySettings.this.getDatabasePath("sessionManager").getAbsolutePath());
+            FileChannel inChannel;
+            FileChannel outChannel;
+
+            try
+            {
+                inChannel = new FileInputStream(src).getChannel();
+                outChannel = new FileOutputStream(dst).getChannel();
+                inChannel.transferTo(0, inChannel.size(), outChannel);
+
+                if (inChannel != null)
+                    inChannel.close();
+                if (outChannel != null)
+                    outChannel.close();
+            } catch (IOException e) {
+                FlurryAgent.logEvent("Error_BeginMerge");
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void param) {
+            new MergeSessions().execute(ActivitySettings.this.mergeSessions);
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "pokerledger_temp.pldb");
+            boolean deleted = file.delete();
         }
     }
 
@@ -742,6 +857,10 @@ public class ActivitySettings extends ActivityBase {
 
         @Override
         protected void onPostExecute(Void v) {
+            new LoadLocations().execute();
+            new LoadGames().execute();
+            new LoadGameFormats().execute();
+            new LoadBlinds().execute();
             Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_merge), Toast.LENGTH_LONG).show();
         }
     }

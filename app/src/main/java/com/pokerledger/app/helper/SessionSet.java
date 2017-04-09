@@ -187,20 +187,27 @@ public class SessionSet {
             csv += Integer.toString(current.getId()) + ", " +
                     Double.toString(current.getBuyIn()) + ", " +
                     Double.toString(current.getCashOut()) + ", \"" +
-                    PLCommon.timestampToDatetime(current.getStart()) + "\", \"" +
-                    PLCommon.timestampToDatetime(current.getEnd()) + "\", \"" +
+                    PLCommon.timestampToDatetime(current.getStart()) + "\", \"";
+
+            if (current.getEnd() != 0)
+                csv += PLCommon.timestampToDatetime(current.getEnd());
+            csv += "\", \"" +
                     current.getLocation().toString() + "\", \"" +
                     current.getGame().toString() + "\", \"" +
                     current.getGameFormat().toString() + "\", \"" +
                     current.getBlinds().toString() + "\", ";
 
             String tempBreaks = "";
-            for (Break b : current.getBreaks()) {
-                if (!tempBreaks.equals(""))
-                    tempBreaks += ",";
-                tempBreaks += PLCommon.timestampToDatetime(b.getStart()) + ":" + PLCommon.timestampToDatetime(b.getEnd());
+            if (current.getBreaks().size() > 0) {
+                tempBreaks += "{";
+                for (Break b : current.getBreaks()) {
+                    if (!tempBreaks.equals("{"))
+                        tempBreaks += "} {";
+                    tempBreaks += PLCommon.timestampToDatetime(b.getStart()) + " | " + PLCommon.timestampToDatetime(b.getEnd());
+                }
+                tempBreaks += "}";
             }
-            csv += "\"" + tempBreaks + "\", " + Integer.toString(current.getEntrants()) + ", " +
+            csv += tempBreaks + ", " + Integer.toString(current.getEntrants()) + ", " +
                     Integer.toString(current.getPlaced()) + ", ";
             csv += (current.getState() == 0) ? "Finished" : "Active";
             csv += ", \"" + current.getNote() + "\", ";
