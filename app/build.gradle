@@ -8,8 +8,8 @@ android {
         applicationId "com.pokerledger.app"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 12
-        versionName "1.4.2"
+        versionCode 13
+        versionName "1.4.3"
     }
     buildTypes {
         release {
@@ -25,4 +25,5 @@ dependencies {
     compile 'com.jjoe64:graphview:4.0.1'
     compile files('libs/gson-2.3.1.jar')
     compile files('libs/FlurryAnalytics-6.1.0.jar')
+    compile 'com.github.angads25:filepicker:1.1.0'
 }

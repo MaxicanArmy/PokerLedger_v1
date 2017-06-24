@@ -20,6 +20,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
+import com.github.angads25.filepicker.controller.DialogSelectionListener;
+import com.github.angads25.filepicker.model.DialogConfigs;
+import com.github.angads25.filepicker.model.DialogProperties;
+import com.github.angads25.filepicker.view.FilePickerDialog;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
@@ -45,13 +49,15 @@ import java.util.Calendar;
  * Created by max on 8/23/15.
  */
 public class ActivitySettings extends ActivityBase {
-    private Intent restoreIntent = new Intent();
-
-    private Intent resultData = new Intent();
-    private ArrayList<Session> mergeSessions = new ArrayList<>();
-
     private static final int OVERWRITE_BACKUP = 1;
     private static final int MERGE_BACKUP = 2;
+
+    private Intent restoreIntent = new Intent();
+
+    private ArrayList<Session> mergeSessions = new ArrayList<>();
+    private int method = 0;
+    private String restorePath = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -633,48 +639,55 @@ public class ActivitySettings extends ActivityBase {
     }
 
     public void restoreDatabase(View v) {
-
-        restoreIntent.setAction(Intent.ACTION_GET_CONTENT);
-        restoreIntent.setType("file/*");
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Do you want to overwrite the data currently in the app, or do you want to merge with the backup?")
                 .setCancelable(false)
                 .setPositiveButton("Overwrite", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        startActivityForResult(Intent.createChooser(ActivitySettings.this.restoreIntent, "Select File Manager"), OVERWRITE_BACKUP);
+                        ActivitySettings.this.method = OVERWRITE_BACKUP;
+                        restoreDatabaseMethod();
                     }
                 })
                 .setNegativeButton("Merge", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        startActivityForResult(Intent.createChooser(ActivitySettings.this.restoreIntent, "Select File Manager"), MERGE_BACKUP);
+                        ActivitySettings.this.method = MERGE_BACKUP;
+                        restoreDatabaseMethod();
                     }
                 });
         AlertDialog alert = builder.create();
         alert.show();
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        this.resultData = data;
+    public void restoreDatabaseMethod() {
+        DialogProperties properties = new DialogProperties();
+        properties.selection_mode = DialogConfigs.SINGLE_MODE;
+        properties.selection_type = DialogConfigs.FILE_SELECT;
+        properties.root = new File(DialogConfigs.DEFAULT_DIR);
+        properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
+        properties.offset = new File(DialogConfigs.DEFAULT_DIR);
+        properties.extensions = null;
 
-        if (resultCode == RESULT_OK) {
-
-            if (requestCode == MERGE_BACKUP) {
-                new BeginMerge().execute();
+        FilePickerDialog dialog = new FilePickerDialog(ActivitySettings.this, properties);
+        dialog.setTitle("Select a File");
+        dialog.setDialogSelectionListener(new DialogSelectionListener() {
+            @Override
+            public void onSelectedFilePaths(String[] files) {
+                ActivitySettings.this.restorePath = files[0];
+                if (ActivitySettings.this.method == OVERWRITE_BACKUP) {
+                    new OverWriteDB().execute();
+                } else if (ActivitySettings.this.method == MERGE_BACKUP) {
+                    new BeginMerge().execute();
+                }
             }
-            else if (requestCode == OVERWRITE_BACKUP) {
-                new OverWriteDB().execute();
-                Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_overwritten), Toast.LENGTH_LONG).show();
-            }
-        }
+        });
+        dialog.show();
     }
 
     public class OverWriteDB extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... v) {
-            Uri selectedUri = ActivitySettings.this.resultData.getData();
-            String backupPath = selectedUri.getPath();
+            String backupPath = ActivitySettings.this.restorePath;
 
             File dst = new File(ActivitySettings.this.getDatabasePath("sessionManager").getAbsolutePath());
             File src = new File(backupPath);
@@ -706,9 +719,7 @@ public class ActivitySettings extends ActivityBase {
             new LoadGameFormats().execute();
             new LoadBlinds().execute();
 
-            if (ActivitySettings.this.mergeSessions != null && ActivitySettings.this.mergeSessions.size() > 0) {
-                new MergeSessions().execute(ActivitySettings.this.mergeSessions);
-            }
+            Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_overwritten), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -755,8 +766,7 @@ public class ActivitySettings extends ActivityBase {
 
         @Override
         protected Void doInBackground(Void... v) {
-            Uri selectedUri = ActivitySettings.this.resultData.getData();
-            String backupPath = selectedUri.getPath();
+            String backupPath = ActivitySettings.this.restorePath;
 
             File dst = new File(ActivitySettings.this.getDatabasePath("sessionManager").getAbsolutePath());
             File src = new File(backupPath);
