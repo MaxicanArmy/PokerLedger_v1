@@ -1,5 +1,6 @@
 package com.pokerledger.app;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -7,6 +8,7 @@ import com.flurry.android.FlurryAgent;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
+import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.pokerledger.app.helper.DatabaseHelper;
@@ -17,6 +19,8 @@ import com.pokerledger.app.helper.SessionSet;
  */
 public class ActivityGraphs extends ActivityBase {
     GraphView graph;
+    GraphView dayOfWeekGraph;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +31,10 @@ public class ActivityGraphs extends ActivityBase {
         //graph.getGridLabelRenderer().setVerticalAxisTitle("profit");
         graph.getGridLabelRenderer().setHorizontalAxisTitle("hours");
         graph.getViewport().setScrollable(true);
+
+        dayOfWeekGraph = (GraphView) findViewById(R.id.profit_by_day_of_week_graph);
+        dayOfWeekGraph.getGridLabelRenderer().setHorizontalAxisTitle("day");
+        dayOfWeekGraph.getViewport().setScrollable(true);
     }
 
     @Override
@@ -57,6 +65,36 @@ public class ActivityGraphs extends ActivityBase {
                     }
                 }
             });
+
+            dayOfWeekGraph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                @Override
+                public String formatLabel(double value, boolean isValueX) {
+                    String rValue = "";
+                    if (isValueX) {
+                        // show normal x values
+                        if (value == 1.0) {
+                            rValue = "Sun";
+                        } else if (value == 2.0) {
+                            rValue = "Mon";
+                        } else if (value == 3.0) {
+                            rValue = "Tue";
+                        } else if (value == 4.0) {
+                            rValue = "Wed";
+                        } else if (value == 5.0) {
+                            rValue = "Thu";
+                        } else if (value == 6.0) {
+                            rValue = "Fri";
+                        } else if (value == 7.0) {
+                            rValue = "Sat";
+                        }
+                        return rValue;
+                    } else {
+                        // show currency for y values
+                        return super.formatLabel(value, isValueX) + "$";
+                    }
+                }
+            });
+            dayOfWeekGraph.getGridLabelRenderer().setNumHorizontalLabels(9);
 
             if (set.getSessions().size() > 0) {
                 double minY = set.getMinY(), maxY = set.getMaxY(), maxX = set.getLengthHours();
@@ -92,15 +130,30 @@ public class ActivityGraphs extends ActivityBase {
                         third = maxY - ((yRange / 4) * 3);
                     }
                 }
+
                 maxX += 4.0 - (maxX % 4.0);
+
                 graph.getViewport().setYAxisBoundsManual(true);
+                graph.getViewport().setXAxisBoundsManual(true);
                 graph.getViewport().setMinY(minY);
                 graph.getViewport().setMaxY(maxY);
-                graph.getViewport().setXAxisBoundsManual(true);
+
                 graph.getViewport().setMinX(0);
                 graph.getViewport().setMaxX(maxX);
-                LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(set.getDataPoints());
+                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(set.getDataPoints());
                 graph.addSeries(series);
+
+                dayOfWeekGraph.getViewport().setYAxisBoundsManual(true);
+                dayOfWeekGraph.getViewport().setXAxisBoundsManual(true);
+                dayOfWeekGraph.getViewport().setMinY(set.getMinBarY());
+                dayOfWeekGraph.getViewport().setMaxY(set.getMaxBarY());
+                dayOfWeekGraph.getViewport().setMinX(0);
+                dayOfWeekGraph.getViewport().setMaxX(8);
+                BarGraphSeries<DataPoint> bar = new BarGraphSeries<>(set.getDayOfWeekDataPoints());
+                dayOfWeekGraph.addSeries(bar);
+                bar.setSpacing(30);
+                bar.setDrawValuesOnTop(true);
+                bar.setValuesOnTopColor(Color.BLACK);
             }
         }
     }

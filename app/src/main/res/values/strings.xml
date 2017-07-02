@@ -137,6 +137,7 @@
     <string name="active_games_header">Active Games</string>
 
     <string name="profit_vs_time_graph_header">Profit Over Time</string>
+    <string name="profit_by_day_of_week_graph_header">Profit By Day of Week</string>
 
     <string name="profit_label">Profit</string>
     <string name="time_played_label">Time Played</string>

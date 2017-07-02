@@ -6,26 +6,43 @@ import com.pokerledger.app.model.Break;
 import com.pokerledger.app.model.Session;
 
 import java.lang.reflect.Method;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by Catface Meowmers on 7/25/15.
  */
 public class SessionSet {
-    private ArrayList<Session> sessions = new ArrayList<Session>();
+    private ArrayList<Session> sessions = new ArrayList<>();
     double profit = 0, minY = 0, maxY = 0;
     Long lengthMillis = 0L;
     ArrayList<DataPoint> dataPoints = new ArrayList<>();
     HashMap<String, SessionSet> children = new HashMap<>();
 
-    public SessionSet() {}
+    HashMap<Integer, Double> profitByDayOfWeek = new HashMap<>();
+
+    public SessionSet() {
+        profitByDayOfWeek.put(1,0.0);
+        profitByDayOfWeek.put(2,0.0);
+        profitByDayOfWeek.put(3,0.0);
+        profitByDayOfWeek.put(4,0.0);
+        profitByDayOfWeek.put(5,0.0);
+        profitByDayOfWeek.put(6,0.0);
+        profitByDayOfWeek.put(7,0.0);
+    }
 
     public SessionSet(Session s) {
+        this();
         this.addSession(s);
     }
 
     public SessionSet(ArrayList<Session> sessionList) {
+        this();
         for (Session s : sessionList) {
             this.addSession(s);
         }
@@ -69,6 +86,17 @@ public class SessionSet {
         return result.toArray(new DataPoint[result.size()]);
     }
 
+    public DataPoint[] getDayOfWeekDataPoints() {
+        ArrayList<DataPoint> result = new ArrayList<>();
+        Iterator it = this.profitByDayOfWeek.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            result.add(new DataPoint((Integer) pair.getKey(),(Double) pair.getValue()));
+            //it.remove(); // avoids a ConcurrentModificationException
+        }
+        return result.toArray(new DataPoint[result.size()]);
+    }
+
     public double getMinY() {
         return this.minY;
     }
@@ -77,16 +105,57 @@ public class SessionSet {
         return this.maxY;
     }
 
+    public double getMinBarY() {
+        Double minBarY = 0.0;
+        Iterator it = this.profitByDayOfWeek.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+
+            if ((Double) pair.getValue() < minBarY) {
+                minBarY = (Double) pair.getValue();
+            }
+            //it.remove(); // avoids a ConcurrentModificationException
+        }
+        minBarY = minBarY - (500 + (minBarY % 500));
+        return minBarY;
+    }
+
+    public double getMaxBarY() {
+        Double maxBarY = 0.0;
+        Iterator it = this.profitByDayOfWeek.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+
+            if ((Double) pair.getValue() > maxBarY) {
+                maxBarY = (Double) pair.getValue();
+            }
+            //it.remove(); // avoids a ConcurrentModificationException
+        }
+        maxBarY = maxBarY + (500 - (maxBarY % 500));
+        return maxBarY;
+    }
+
     public HashMap<String, SessionSet> getChildren() {
         return this.children;
     }
 
     //other
     public void addSession(Session s) {
+        Double currentProfit = s.getProfit();
         this.sessions.add(s);
         this.lengthMillis += s.lengthMillis();
-        this.profit += s.getProfit();
+        this.profit += currentProfit;
         this.dataPoints.add(new DataPoint(this.getLengthHours(), this.profit));
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(s.getStart());
+        Integer day = cal.get(Calendar.DAY_OF_WEEK);
+        if (this.profitByDayOfWeek.containsKey(day)) {
+            this.profitByDayOfWeek.put(day, this.profitByDayOfWeek.get(day) + currentProfit);
+        } else {
+            this.profitByDayOfWeek.put(day, currentProfit);
+        }
+
         if (this.profit > maxY) {
             maxY = this.profit;
         }

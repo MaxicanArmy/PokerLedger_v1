@@ -3,18 +3,45 @@
     android:orientation="vertical"
     style="@style/Activity">
 
-    <LinearLayout
-        android:id="@+id/graph_wrapper"
-        style="@style/Wrapper">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/profit_vs_time_graph_header"
-            android:text="@string/profit_vs_time_graph_header"
-            style="@style/WrapperHeader" />
-
-        <com.jjoe64.graphview.GraphView
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/graph_activity_wrapper"
             android:layout_width="match_parent"
-            android:layout_height="200dip"
-            android:id="@+id/graph" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/graph_wrapper"
+                style="@style/Wrapper">
+
+                <TextView
+                    android:id="@+id/profit_vs_time_graph_header"
+                    android:text="@string/profit_vs_time_graph_header"
+                    style="@style/WrapperHeader" />
+
+                <com.jjoe64.graphview.GraphView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dip"
+                    android:id="@+id/graph" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/graph_wrapper2"
+                style="@style/Wrapper">
+
+                <TextView
+                    android:id="@+id/profit_by_day_of_week_graph_header"
+                    android:text="@string/profit_by_day_of_week_graph_header"
+                    style="@style/WrapperHeader" />
+
+                <com.jjoe64.graphview.GraphView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dip"
+                    android:id="@+id/profit_by_day_of_week_graph" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
