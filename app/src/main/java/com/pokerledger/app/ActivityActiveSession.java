@@ -40,13 +40,11 @@ public class ActivityActiveSession extends ActivitySession {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Gson gson = new Gson();
 
         activeSession.setLocation((Location) ((Spinner) this.findViewById(R.id.location)).getSelectedItem());
         activeSession.setGame((Game) ((Spinner) this.findViewById(R.id.game)).getSelectedItem());
         activeSession.setGameFormat((GameFormat) ((Spinner) this.findViewById(R.id.game_format)).getSelectedItem());
         activeSession.setBlinds((Blinds) ((Spinner) this.findViewById(R.id.blinds)).getSelectedItem());
-        outState.putString("ACTIVE_SESSION_JSON", gson.toJson(activeSession));
         outState.putString("START_DATE_HINT", ((Button) this.findViewById(R.id.start_date)).getHint().toString());
         outState.putString("START_TIME_HINT", ((Button) this.findViewById(R.id.start_time)).getHint().toString());
     }
@@ -54,9 +52,6 @@ public class ActivityActiveSession extends ActivitySession {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        Gson gson = new Gson();
-
-        activeSession = gson.fromJson(savedInstanceState.getString("ACTIVE_SESSION_JSON"), Session.class);
         ((Button) this.findViewById(R.id.start_date)).setHint(savedInstanceState.getString("START_DATE_HINT"));
         ((Button) this.findViewById(R.id.start_time)).setHint(savedInstanceState.getString("START_TIME_HINT"));
     }

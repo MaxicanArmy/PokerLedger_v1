@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.flurry.android.FlurryAgent;
+import com.google.gson.Gson;
 import com.pokerledger.app.helper.DatabaseHelper;
 import com.pokerledger.app.model.Blinds;
 import com.pokerledger.app.model.Game;
@@ -42,6 +44,22 @@ public class ActivityBase extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Gson gson = new Gson();
+        savedInstanceState.putString("ACTIVE_SESSION_JSON", gson.toJson(activeSession));
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            Gson gson = new Gson();
+            activeSession = gson.fromJson(savedInstanceState.getString("ACTIVE_SESSION_JSON"), Session.class);
+        }
     }
 
     @Override
