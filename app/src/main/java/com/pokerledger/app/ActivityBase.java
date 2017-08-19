@@ -181,7 +181,7 @@ public class ActivityBase extends AppCompatActivity {
             locationSpinner.setAdapter(locationAdapter);
 
             int target;
-            if (ActivityBase.this.activeSession.getLocation().getId() > 0) {
+            if (ActivityBase.this.activeSession.getLocation() != null && ActivityBase.this.activeSession.getLocation().getId() > 0) {
                 target = ActivityBase.this.activeSession.getLocation().getId();
             }
             else {
@@ -240,7 +240,7 @@ public class ActivityBase extends AppCompatActivity {
             gameSpinner.setAdapter(gameAdapter);
 
             int target;
-            if (ActivityBase.this.activeSession.getGame().getId() > 0) {
+            if (ActivityBase.this.activeSession.getGame() != null && ActivityBase.this.activeSession.getGame().getId() > 0) {
                 target = ActivityBase.this.activeSession.getGame().getId();
             }
             else {
@@ -299,7 +299,7 @@ public class ActivityBase extends AppCompatActivity {
             gameFormatSpinner.setAdapter(gameFormatAdapter);
 
             int target;
-            if (ActivityBase.this.activeSession.getGameFormat().getId() > 0) {
+            if (ActivityBase.this.activeSession.getGameFormat() != null && ActivityBase.this.activeSession.getGameFormat().getId() > 0) {
                 target = ActivityBase.this.activeSession.getGameFormat().getId();
             }
             else {
@@ -358,7 +358,7 @@ public class ActivityBase extends AppCompatActivity {
             blindsSpinner.setAdapter(blindsAdapter);
 
             int target;
-            if (ActivityBase.this.activeSession.getBlinds().getId() > 0) {
+            if (ActivityBase.this.activeSession.getBlinds() != null && ActivityBase.this.activeSession.getBlinds().getId() > 0) {
                 target = ActivityBase.this.activeSession.getBlinds().getId();
             }
             else {

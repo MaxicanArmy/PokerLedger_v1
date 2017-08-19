@@ -133,9 +133,7 @@ public class ActivityFinishedSession extends ActivitySession  {
                 String entrantsText = ((EditText) findViewById(R.id.entrants)).getText().toString();
 
                 if (entrantsText.equals("")) {
-                    Toast.makeText(this, getResources().getString(R.string.error_enter_entrants), Toast.LENGTH_SHORT).show();
-                    findViewById(R.id.entrants).requestFocus();
-                    return;
+                    this.activeSession.setEntrants(0);
                 }
                 else {
                     this.activeSession.setEntrants(Integer.parseInt(entrantsText));
@@ -144,9 +142,7 @@ public class ActivityFinishedSession extends ActivitySession  {
                 String placedText = ((EditText) findViewById(R.id.placed)).getText().toString();
 
                 if (placedText.equals("")) {
-                    Toast.makeText(this, getResources().getString(R.string.error_enter_placed), Toast.LENGTH_SHORT).show();
-                    findViewById(R.id.placed).requestFocus();
-                    return;
+                    this.activeSession.setPlaced(0);
                 }
                 else {
                     this.activeSession.setPlaced(Integer.parseInt(placedText));
