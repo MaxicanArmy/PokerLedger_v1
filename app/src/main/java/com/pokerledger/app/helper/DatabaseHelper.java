@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.flurry.android.FlurryAgent;
+import com.pokerledger.app.ActivitySettings;
 import com.pokerledger.app.model.Blinds;
 import com.pokerledger.app.model.Break;
 import com.pokerledger.app.model.Game;

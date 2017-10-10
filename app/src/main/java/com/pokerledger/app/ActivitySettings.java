@@ -27,8 +27,10 @@ import com.github.angads25.filepicker.view.FilePickerDialog;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
+import com.pokerledger.app.helper.PLCommon;
 import com.pokerledger.app.helper.SessionSet;
 import com.pokerledger.app.model.Blinds;
+import com.pokerledger.app.model.Break;
 import com.pokerledger.app.model.Game;
 import com.pokerledger.app.model.GameFormat;
 import com.pokerledger.app.model.Location;
@@ -36,6 +38,7 @@ import com.pokerledger.app.model.Session;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -44,6 +47,9 @@ import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by max on 8/23/15.
@@ -572,8 +578,202 @@ public class ActivitySettings extends ActivityBase {
         }
     }
 
-    public void callExportCSV(View v) {
+    public void exportCSV(View v) {
         new ExportCSV().execute();
+    }
+
+    public void callImportCSV(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Do you want to overwrite the data currently in the app, or do you want to merge with the import?")
+                .setCancelable(false)
+                .setPositiveButton("Overwrite", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ActivitySettings.this.method = OVERWRITE_BACKUP;
+                        selectCSVFile();
+                    }
+                })
+                .setNegativeButton("Merge", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ActivitySettings.this.method = MERGE_BACKUP;
+                        selectCSVFile();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public void selectCSVFile() {
+        DialogProperties properties = new DialogProperties();
+        properties.selection_mode = DialogConfigs.SINGLE_MODE;
+        properties.selection_type = DialogConfigs.FILE_SELECT;
+        properties.root = new File(DialogConfigs.DEFAULT_DIR);
+        properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
+        properties.offset = new File(DialogConfigs.DEFAULT_DIR);
+        properties.extensions = null;
+
+        FilePickerDialog dialog = new FilePickerDialog(ActivitySettings.this, properties);
+        dialog.setTitle("Select a File");
+        dialog.setDialogSelectionListener(new DialogSelectionListener() {
+            @Override
+            public void onSelectedFilePaths(String[] files) {
+                ActivitySettings.this.restorePath = files[0];
+                new AutoExportCSV().execute();
+            }
+        });
+        dialog.show();
+    }
+
+    public class AutoExportCSV extends AsyncTask<Void, Void, SessionSet> {
+
+        @Override
+        protected SessionSet doInBackground(Void... params) {
+            DatabaseHelper dbHelper = DatabaseHelper.getInstance(getApplicationContext());
+            return new SessionSet(dbHelper.getSessions("0,1", "DESC", null));
+        }
+
+        @Override
+        protected void onPostExecute(SessionSet allSessions) {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            String csvName = "pokerledger_auto_" + df.format(c.getTime()) + ".csv";
+            File dst = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), csvName);
+
+            String data = allSessions.exportCSV();
+            try
+            {
+                dst.createNewFile();
+                FileOutputStream fOut = new FileOutputStream(dst);
+                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                myOutWriter.append(data);
+
+                myOutWriter.close();
+
+                fOut.flush();
+                fOut.close();
+            }
+            catch (IOException e)
+            {
+                Log.e("Exception", "Writing cvs file failed: " + e.toString());
+            }
+
+            Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_autoexport_cvs) + " " + csvName, Toast.LENGTH_LONG).show();
+            if (ActivitySettings.this.method == OVERWRITE_BACKUP) {
+                new BeginOverwriteCSV().execute();
+            } else if (ActivitySettings.this.method == MERGE_BACKUP) {
+                new MergeCSV().execute();
+            }
+        }
+    }
+
+    public class BeginOverwriteCSV extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... v) {
+            Context c = ActivitySettings.this.getApplicationContext();
+            c.deleteDatabase(ActivitySettings.this.getDatabasePath("sessionManager").getAbsolutePath());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            new MergeCSV().execute();
+        }
+    }
+
+    public class MergeCSV extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... v) {
+            ArrayList<Session> s = new ArrayList<>();
+            Session importS;
+            //parse the CSV in to an ArrayList<Session>
+            try {
+                Scanner scanner = new Scanner(new File(ActivitySettings.this.restorePath));
+                if ( scanner.hasNextLine() )
+                    scanner.nextLine(); //this grabs the pokerledger csv version
+                if ( scanner.hasNextLine() )
+                    scanner.nextLine(); //this grabs the headings
+
+                while (scanner.hasNextLine()) {
+                    importS = new Session();
+                    String[] rowValues = scanner.nextLine().split(",");
+                    importS.setBuyIn(Double.parseDouble(rowValues[0].replace("\"","")));
+                    importS.setCashOut(Double.parseDouble(rowValues[1].replace("\"","")));
+                    importS.setStart(PLCommon.datetimeToTimestamp(rowValues[2].replace("\"","")));
+                    importS.setEnd(PLCommon.datetimeToTimestamp(rowValues[3].replace("\"","")));
+                    importS.setLocation(new Location(0, rowValues[4].replace("\"","")));
+                    importS.setGame(new Game(0, rowValues[5].replace("\"","")));
+
+                    int baseGameFormatId = 1;
+                    String gameFormat = rowValues[6].replaceAll("\"","");
+                    String baseGameFormat;
+
+                    Pattern p = Pattern.compile(" Tournament$");   // the pattern to search for
+                    Matcher m = p.matcher(rowValues[6].replace("\"",""));
+
+                    // now try to find at least one match
+                    if (m.find()) {
+                        baseGameFormatId = 2;
+                        baseGameFormat = "Tournament";
+                        gameFormat = gameFormat.replaceAll(" Tournament$","");
+                    } else {
+                        baseGameFormat = "Cash Game";
+                        gameFormat = gameFormat.replaceAll(" Cash Game$","");
+                    }
+
+                    importS.setGameFormat(new GameFormat(0, gameFormat, baseGameFormatId, baseGameFormat));
+                    if (!rowValues[8].replace("\"", "").equals("0^0^0^0^0^0")) {
+                        String[] blinds = rowValues[7].replace("\"", "").split("\\^");
+                        importS.setBlinds(new Blinds(Double.parseDouble(blinds[0]), Double.parseDouble(blinds[1]), Double.parseDouble(blinds[2]),
+                                Double.parseDouble(blinds[3]), Double.parseDouble(blinds[4]), Double.parseDouble(blinds[5])));
+                    } else {
+                        importS.setBlinds(new Blinds());
+                    }
+                    if (!rowValues[8].replace("\"", "").equals("")) {
+                        String[] breaks = rowValues[8].replace("\"", "").split("\\^");
+                        ArrayList<Break> breakArrayList = new ArrayList<>();
+                        if (breaks.length > 0) {
+                            for (int i = 0; i < breaks.length; i++) {
+                                breakArrayList.add(new Break(PLCommon.datetimeToTimestamp(breaks[i].split("/")[0]), PLCommon.datetimeToTimestamp(breaks[i].split("/")[1])));
+                            }
+                        }
+                        importS.setBreaks(breakArrayList);
+                    }
+                    importS.setEntrants(Integer.parseInt(rowValues[9].replace("\"","")));
+                    importS.setPlaced(Integer.parseInt(rowValues[10].replace("\"","")));
+
+                    int state = 0;
+                    if (!rowValues[11].replace("\"","").equals("Finished"))
+                        state = 1;
+                    importS.setState(state);
+                    importS.setNote(rowValues[12].replace("\"",""));
+
+                    int filtered = 0;
+                    if (!rowValues[11].replace("\"","").equals("No"))
+                        filtered = 1;
+                    importS.setFiltered(filtered);
+                    s.add(importS);
+                }
+                scanner.close();
+            } catch (FileNotFoundException e) {
+                //error logging
+            }
+
+            DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
+            db.addSessions(s);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            DatabaseHelper.resetDatabaseHelper();
+            new LoadLocations().execute();
+            new LoadGames().execute();
+            new LoadGameFormats().execute();
+            new LoadBlinds().execute();
+
+            Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_import_complete), Toast.LENGTH_LONG).show();
+        }
     }
 
     public class ExportCSV extends AsyncTask<Void, Void, SessionSet> {
@@ -612,7 +812,7 @@ public class ActivitySettings extends ActivityBase {
             Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_export_cvs) + " " + csvName, Toast.LENGTH_LONG).show();
         }
     }
-
+/*
     public void backupDatabase(View v) {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
@@ -874,4 +1074,5 @@ public class ActivitySettings extends ActivityBase {
             Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_db_merge), Toast.LENGTH_LONG).show();
         }
     }
+*/
 }

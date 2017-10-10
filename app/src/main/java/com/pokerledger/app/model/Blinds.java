@@ -72,6 +72,17 @@ public class Blinds {
         return blinds;
     }
 
+    public String toStringCSV() {
+        String blinds = PLCommon.formatDouble(sb) + "^" +
+                PLCommon.formatDouble(bb) + "^" +
+                PLCommon.formatDouble(straddle) + "^" +
+                PLCommon.formatDouble(bringIn) + "^" +
+                PLCommon.formatDouble(ante) + "^" +
+                PLCommon.formatDouble(perPoint);
+
+        return blinds;
+    }
+
     //setters
     public void setId(int i) {
         this.id = i;

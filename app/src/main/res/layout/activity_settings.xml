@@ -249,6 +249,66 @@
         </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/export_wrapper"
+            style="@style/WrapperTinyHeader">
+
+            <TextView
+                android:id="@+id/export_tiny_header"
+                android:text="@string/export_header"
+                style="@style/TinyHeader" />
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/export_row_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/export_csv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/export_hint"
+                    android:onClick="exportCSV"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/import_wrapper"
+            style="@style/WrapperTinyHeader">
+
+            <TextView
+                android:id="@+id/import_tiny_header"
+                android:text="@string/import_header"
+                style="@style/TinyHeader" />
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/import_row_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/import_csv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/import_hint"
+                    android:onClick="callImportCSV"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/import_tiny_description"
+                android:text="@string/import_description"
+                style="@style/TinyHeader" />
+        </LinearLayout>
+        <!--
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/backup_wrapper"
             style="@style/WrapperTinyHeader">
 
@@ -310,6 +370,7 @@
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
+        -->
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/version_wrapper"

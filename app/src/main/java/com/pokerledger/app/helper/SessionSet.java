@@ -250,38 +250,35 @@ public class SessionSet {
     }
 
     public String exportCSV() {
-        String csv = "id, buy_in, cash_out, start_time, end_time, location, game, game_format, blinds, breaks, entrants, placed, state, note, filtered\r\n";
+        String csv = "POKERLEDGER CSV1.0\r\nbuy_in, cash_out, start_time, end_time, location, game, game_format, blinds, breaks, entrants, placed, state, note, filtered\r\n";
 
         for (Session current : sessions) {
-            csv += Integer.toString(current.getId()) + ", " +
-                    Double.toString(current.getBuyIn()) + ", " +
-                    Double.toString(current.getCashOut()) + ", \"" +
-                    PLCommon.timestampToDatetime(current.getStart()) + "\", \"";
+            csv += "\"" + Double.toString(current.getBuyIn()) + "\",\"" +
+                    Double.toString(current.getCashOut()) + "\",\"" +
+                    PLCommon.timestampToDatetime(current.getStart()) + "\",\"";
 
             if (current.getEnd() != 0)
                 csv += PLCommon.timestampToDatetime(current.getEnd());
-            csv += "\", \"" +
-                    current.getLocation().toString() + "\", \"" +
-                    current.getGame().toString() + "\", \"" +
-                    current.getGameFormat().toString() + "\", \"" +
-                    current.getBlinds().toString() + "\", ";
+            csv += "\",\"" +
+                    current.getLocation().toString() + "\",\"" +
+                    current.getGame().toString() + "\",\"" +
+                    current.getGameFormat().toString() + "\",\"" +
+                    current.getBlinds().toStringCSV() + "\",\"";
 
             String tempBreaks = "";
             if (current.getBreaks().size() > 0) {
-                tempBreaks += "{";
                 for (Break b : current.getBreaks()) {
-                    if (!tempBreaks.equals("{"))
-                        tempBreaks += "} {";
-                    tempBreaks += PLCommon.timestampToDatetime(b.getStart()) + " | " + PLCommon.timestampToDatetime(b.getEnd());
+                    if (!tempBreaks.equals(""))
+                        tempBreaks += "^";
+                    tempBreaks += PLCommon.timestampToDatetime(b.getStart()) + "/" + PLCommon.timestampToDatetime(b.getEnd());
                 }
-                tempBreaks += "}";
             }
-            csv += tempBreaks + ", " + Integer.toString(current.getEntrants()) + ", " +
-                    Integer.toString(current.getPlaced()) + ", ";
+            csv += tempBreaks + "\",\"" + Integer.toString(current.getEntrants()) + "\",\"" +
+                    Integer.toString(current.getPlaced()) + "\",\"";
             csv += (current.getState() == 0) ? "Finished" : "Active";
-            csv += ", \"" + current.getNote() + "\", ";
+            csv += "\",\"" + current.getNote() + "\",\"";
             csv += (current.getFiltered() == 0) ? "No" : "Yes";
-            csv += "\r\n";
+            csv += "\"\r\n";
         }
         return csv;
     }
