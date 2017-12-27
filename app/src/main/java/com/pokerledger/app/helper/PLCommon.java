@@ -4,8 +4,10 @@ import com.flurry.android.FlurryAgent;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by max on 11/25/15.
@@ -49,9 +51,9 @@ public class PLCommon {
         double remainder = d - wholeNum;
         DecimalFormat df;
         if (remainder > 0) {
-            df = new DecimalFormat("0.00");
+            df = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.US));
         } else {
-            df = new DecimalFormat("#.##");
+            df = new DecimalFormat("#.##", new DecimalFormatSymbols(Locale.US));
         }
         df.setRoundingMode(RoundingMode.HALF_UP);
 

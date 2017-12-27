@@ -3,7 +3,7 @@ package com.pokerledger.app.model;
 /**
  * Created by Max on 9/12/14.
  */
-public class Game {
+public class    Game {
     private int id = 0;
     private String game = "";
     private int filtered = 0;
