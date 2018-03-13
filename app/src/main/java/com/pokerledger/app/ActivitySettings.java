@@ -2,10 +2,8 @@ package com.pokerledger.app;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.app.FragmentManager;
@@ -38,17 +36,13 @@ import com.pokerledger.app.model.Location;
 import com.pokerledger.app.model.Session;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
-import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,10 +51,11 @@ import java.util.regex.Pattern;
  * Created by max on 8/23/15.
  */
 public class ActivitySettings extends ActivityBase {
+    private static final int NO_BACKUP = 0;
     private static final int OVERWRITE_BACKUP = 1;
     private static final int MERGE_BACKUP = 2;
 
-    private int method = 0;
+    private int method = NO_BACKUP;
     private String restorePath = "";
 
 
@@ -683,7 +678,7 @@ public class ActivitySettings extends ActivityBase {
                 while (scanner.hasNextLine()) {
                     publishProgress(progressCounter++);
                     importS = new Session();
-                    String[] rowValues = scanner.nextLine().split(",");
+                    String[] rowValues = scanner.nextLine().split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
                     importS.setBuyIn(Double.parseDouble(rowValues[0].replace("\"","")));
                     importS.setCashOut(Double.parseDouble(rowValues[1].replace("\"","")));
                     importS.setStart(PLCommon.datetimeToTimestamp(rowValues[2].replace("\"","")));
@@ -782,7 +777,7 @@ public class ActivitySettings extends ActivityBase {
                 dialog.dismiss();
             }
             new ImportGames().execute();
-            Toast.makeText(ActivitySettings.this, "Locations imported!", Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, "Locations imported!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -810,7 +805,7 @@ public class ActivitySettings extends ActivityBase {
                 dialog.dismiss();
             }
             new ImportGameFormats().execute();
-            Toast.makeText(ActivitySettings.this, "Games imported!", Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, "Games imported!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -838,7 +833,7 @@ public class ActivitySettings extends ActivityBase {
                 dialog.dismiss();
             }
             new ImportBlinds().execute();
-            Toast.makeText(ActivitySettings.this, "Game formats imported!", Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, "Game formats imported!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -882,7 +877,7 @@ public class ActivitySettings extends ActivityBase {
         @Override
         protected Void doInBackground(Void... v) {
             DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
-            db.importSessions(ActivitySettings.this.importedSessions);
+            Boolean success = db.importSessions(ActivitySettings.this.importedSessions);
 
             return null;
         }
@@ -893,7 +888,6 @@ public class ActivitySettings extends ActivityBase {
                 dialog.dismiss();
             }
 
-            //DatabaseHelper.resetDatabaseHelper();
             new LoadLocations().execute();
             new LoadGames().execute();
             new LoadGameFormats().execute();
@@ -904,6 +898,14 @@ public class ActivitySettings extends ActivityBase {
     }
 
     public class AutoExportCSV extends AsyncTask<Void, Void, SessionSet> {
+        private ProgressDialog dialog = new ProgressDialog(ActivitySettings.this);
+
+        @Override
+        protected void onPreExecute() {
+            this.dialog.setMessage("Exporting CSV restore point...");
+            this.dialog.setCanceledOnTouchOutside(false);
+            this.dialog.show();
+        }
 
         @Override
         protected SessionSet doInBackground(Void... params) {
@@ -936,6 +938,10 @@ public class ActivitySettings extends ActivityBase {
                 Log.e("Exception", "Writing cvs file failed: " + e.toString());
             }
 
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+
             Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_autoexport_cvs) + " " + csvName, Toast.LENGTH_LONG).show();
             if (ActivitySettings.this.method == OVERWRITE_BACKUP) {
                 new BeginOverwriteCSV().execute();
@@ -946,6 +952,14 @@ public class ActivitySettings extends ActivityBase {
     }
 
     public class ExportCSV extends AsyncTask<Void, Void, SessionSet> {
+        private ProgressDialog dialog = new ProgressDialog(ActivitySettings.this);
+
+        @Override
+        protected void onPreExecute() {
+            this.dialog.setMessage("Exporting CSV...");
+            this.dialog.setCanceledOnTouchOutside(false);
+            this.dialog.show();
+        }
 
         @Override
         protected SessionSet doInBackground(Void... params) {
@@ -976,6 +990,10 @@ public class ActivitySettings extends ActivityBase {
             catch (IOException e)
             {
                 Log.e("Exception", "Writing cvs file failed: " + e.toString());
+            }
+
+            if (dialog.isShowing()) {
+                dialog.dismiss();
             }
 
             Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_export_cvs) + " " + csvName, Toast.LENGTH_LONG).show();

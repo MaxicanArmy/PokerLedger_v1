@@ -1,10 +1,8 @@
 package com.pokerledger.app;
 
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -59,16 +57,6 @@ public class ActivityFilters extends ActivityBase {
         new LoadGameFormatsFilter().execute();
         new LoadBlindsFilter().execute();
         //new LoadDateFilter().execute();
-    }
-
-    public class ClearFilters extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
-            db.clearFilters();
-
-            return null;
-        }
     }
 
     public void saveFilters(View v) {
@@ -222,6 +210,16 @@ public class ActivityFilters extends ActivityBase {
                 }
                 blindsWrapper.addView(current);
             }
+        }
+    }
+
+    public class ClearFilters extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            DatabaseHelper db = DatabaseHelper.getInstance(getApplicationContext());
+            db.clearFilters();
+
+            return null;
         }
     }
 
