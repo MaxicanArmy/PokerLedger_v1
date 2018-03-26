@@ -74,8 +74,8 @@ public class Session {
         this.gameFormat = gf;
     }
 
-    public void setLocation(Location i) {
-        this.location = i;
+    public void setLocation(Location l) {
+        this.location = l;
     }
 
     public void setState(int s) {

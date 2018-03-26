@@ -306,6 +306,33 @@
                 android:text="@string/import_description"
                 style="@style/TinyHeader" />
         </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/backup_loc_wrapper"
+            style="@style/WrapperTinyHeader">
+
+            <TextView
+                android:id="@+id/back_loc_tiny_header"
+                android:text="@string/backup_loc_header"
+                style="@style/TinyHeader" />
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/backup_loc_row_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/backup_loc_select"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/backup_loc_hint"
+                    android:onClick="selectBackupLoc"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
         <!--
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -378,7 +405,6 @@
 
             <TextView
                 android:id="@+id/version_tiny_header"
-                android:text="@string/backup_header"
                 style="@style/TinyHeader" />
         </LinearLayout>
         <!--

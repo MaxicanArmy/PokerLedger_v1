@@ -72,6 +72,7 @@
     <string name="game_format_header">game formats</string>
     <string name="blinds_header">blinds</string>
     <string name="backup_header">create pldb backup or restore from pldb</string>
+    <string name="backup_loc_header">Backup location</string>
     <string name="export_header">export CSV</string>
     <string name="import_header">import CSV</string>
     <string name="import_description">If you are importing a CSV that was exported from another tracking software you will need to contact support@pokerledger.com to get it converted to the proper format.</string>
@@ -115,6 +116,7 @@
     <string name="notes_hint">Notes (300 char. max)</string>
     <string name="save_hint">Save</string>
     <string name="backup_hint">Backup</string>
+    <string name="backup_loc_hint">Backup folder location</string>
     <string name="export_hint">Export CSV</string>
     <string name="import_hint">Import CSV</string>
     <string name="restore_hint">Restore</string>

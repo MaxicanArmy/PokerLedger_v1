@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +58,7 @@ public class ActivitySettings extends ActivityBase {
 
     private int method = NO_BACKUP;
     private String restorePath = "";
+    private String backupLocation = "";
 
 
     private ArrayList<Session> importedSessions = new ArrayList<>();
@@ -75,6 +77,13 @@ public class ActivitySettings extends ActivityBase {
             versionText.setText("Pokerledger v" + version + " (build " + Integer.toString(pInfo.versionCode) + ")");
         } catch (PackageManager.NameNotFoundException e) {
             //this should probably be a flurry call
+        }
+
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.preferences_file_key), MODE_PRIVATE);
+        String backupLoc = prefs.getString("backup_location", "");
+        if (!backupLoc.equals("")) {
+            backupLocation = backupLoc;
+            ((Button) findViewById(R.id.backup_loc_select)).setText(backupLoc);
         }
 
         final Spinner locationSpinner = (Spinner) this.findViewById(R.id.location);
@@ -598,6 +607,31 @@ public class ActivitySettings extends ActivityBase {
         alert.show();
     }
 
+    public void selectBackupLoc(View v) {
+        DialogProperties properties = new DialogProperties();
+        properties.selection_mode = DialogConfigs.SINGLE_MODE;
+        properties.selection_type = DialogConfigs.DIR_SELECT;
+        properties.root = new File(DialogConfigs.DEFAULT_DIR);
+        properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
+        properties.offset = new File(DialogConfigs.DEFAULT_DIR);
+        properties.extensions = null;
+
+        FilePickerDialog dialog = new FilePickerDialog(ActivitySettings.this, properties);
+        dialog.setTitle("Check the box next to your selection.");
+        dialog.setDialogSelectionListener(new DialogSelectionListener() {
+            @Override
+            public void onSelectedFilePaths(String[] files) {
+                SharedPreferences prefs = getSharedPreferences(getString(R.string.preferences_file_key), MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("backup_location", files[0]);
+                editor.commit();
+                ((Button) findViewById(R.id.backup_loc_select)).setText(files[0]);
+                ActivitySettings.this.backupLocation = files[0];
+            }
+        });
+        dialog.show();
+    }
+
     public void selectCSVFile() {
         DialogProperties properties = new DialogProperties();
         properties.selection_mode = DialogConfigs.SINGLE_MODE;
@@ -606,6 +640,15 @@ public class ActivitySettings extends ActivityBase {
         properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
         properties.offset = new File(DialogConfigs.DEFAULT_DIR);
         properties.extensions = null;
+
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.preferences_file_key), MODE_PRIVATE);
+        String backupLoc = prefs.getString("backup_location", "");
+        if (!backupLoc.equals("")) {
+            File dirCheck = new File(backupLoc);
+            if (dirCheck.isDirectory()) {
+                properties.root = dirCheck;
+            }
+        }
 
         FilePickerDialog dialog = new FilePickerDialog(ActivitySettings.this, properties);
         dialog.setTitle("Select a File");
@@ -918,7 +961,7 @@ public class ActivitySettings extends ActivityBase {
             Calendar c = Calendar.getInstance();
             SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
             String csvName = "pokerledger_auto_" + df.format(c.getTime()) + ".csv";
-            File dst = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), csvName);
+            File dst = new File(ActivitySettings.this.backupLocation, csvName);
 
             String data = allSessions.exportCSV();
             try
@@ -942,7 +985,7 @@ public class ActivitySettings extends ActivityBase {
                 dialog.dismiss();
             }
 
-            Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_autoexport_cvs) + " " + csvName, Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, "In case something goes wrong your current data has been exported to " + ActivitySettings.this.backupLocation + "/" + csvName, Toast.LENGTH_LONG).show();
             if (ActivitySettings.this.method == OVERWRITE_BACKUP) {
                 new BeginOverwriteCSV().execute();
             } else if (ActivitySettings.this.method == MERGE_BACKUP) {
@@ -972,7 +1015,7 @@ public class ActivitySettings extends ActivityBase {
             Calendar c = Calendar.getInstance();
             SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
             String csvName = "pokerledger_" + df.format(c.getTime()) + ".csv";
-            File dst = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), csvName);
+            File dst = new File(ActivitySettings.this.backupLocation, csvName);
 
             String data = allSessions.exportCSV();
             try
@@ -996,7 +1039,7 @@ public class ActivitySettings extends ActivityBase {
                 dialog.dismiss();
             }
 
-            Toast.makeText(ActivitySettings.this, getResources().getString(R.string.info_export_cvs) + " " + csvName, Toast.LENGTH_LONG).show();
+            Toast.makeText(ActivitySettings.this, "Your data has been exported to " + ActivitySettings.this.backupLocation + "/" + csvName, Toast.LENGTH_LONG).show();
         }
     }
 }
