@@ -40,6 +40,7 @@ public class ActivityGraphs extends ActivityBase {
     @Override
     protected void onResume() {
         super.onResume();
+        dayOfWeekGraph.removeAllSeries();
         new LoadDataPoints().execute();
     }
 
