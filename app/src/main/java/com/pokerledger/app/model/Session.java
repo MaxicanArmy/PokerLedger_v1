@@ -269,6 +269,10 @@ public class Session {
         return getGame().getGame();
     }
 
+    public String getBaseFormat() {
+        return getGameFormat().getBaseFormat();
+    }
+
     public String getStakes() {
         int baseFormat = getGameFormat().getBaseFormatId();
         String rValue;
@@ -276,7 +280,7 @@ public class Session {
         if (baseFormat == 1) {
             rValue = getBlinds().toString();
         } else {
-            rValue = "$" + PLCommon.formatDouble(buyIn) + " tournaments";
+            rValue = "$" + PLCommon.formatDouble(buyIn);
         }
 
         return rValue;

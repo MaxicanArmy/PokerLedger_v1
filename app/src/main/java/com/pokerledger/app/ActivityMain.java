@@ -24,6 +24,7 @@ import com.pokerledger.app.model.Session;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 /**
  * Created by Catface Meowmers on 7/26/15.
@@ -195,7 +196,8 @@ public class ActivityMain extends ActivityBase {
                 try {
                     stats.createHierarchy(new ArrayList<>(Arrays.asList(
                             Session.class.getDeclaredMethod("getStakes"),
-                            Session.class.getDeclaredMethod("getGameName"))));
+                            Session.class.getDeclaredMethod("getGameName"),
+                            Session.class.getDeclaredMethod("getBaseFormat"))));
                 } catch (Exception e) {
                     FlurryAgent.logEvent("Error_GetDeclaredMethod");
                 }
@@ -316,7 +318,9 @@ public class ActivityMain extends ActivityBase {
         child.setOrientation(LinearLayout.VERTICAL);
         child.setPadding(padding, 0, 0, padding/2);
 
-        for (HashMap.Entry<String, SessionSet> entry : ss.getChildren().entrySet()) {
+        TreeMap<String, SessionSet> sorted = new TreeMap<>(ss.getChildren());
+
+        for (HashMap.Entry<String, SessionSet> entry : sorted.entrySet()) {
             LinearLayout row = new LinearLayout(ActivityMain.this);
             row.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             row.setOrientation(LinearLayout.HORIZONTAL);
@@ -327,7 +331,7 @@ public class ActivityMain extends ActivityBase {
             row.addView(hourlyLabel);
 
             TextView hourly = new TextView(this);
-            hourly.setText(entry.getValue().wageFormatted() + getResources().getString(R.string.per_hour));
+            hourly.setText(entry.getValue().wageFormatted() + getResources().getString(R.string.per_hour) + " x" + Math.round(entry.getValue().getLengthHours()) +"hr");
             hourly.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             hourly.setGravity(Gravity.END);
 
