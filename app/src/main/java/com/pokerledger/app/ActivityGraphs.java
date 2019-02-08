@@ -62,7 +62,7 @@ public class ActivityGraphs extends ActivityBase {
                         return super.formatLabel(value, isValueX);
                     } else {
                         // show currency for y values
-                        return super.formatLabel(value, isValueX) + "$";
+                        return super.formatLabel(value, isValueX).replaceAll("^(-?)([0-9]{1})", "$1\\$$2");
                     }
                 }
             });
@@ -91,7 +91,7 @@ public class ActivityGraphs extends ActivityBase {
                         return rValue;
                     } else {
                         // show currency for y values
-                        return super.formatLabel(value, isValueX) + "$";
+                        return super.formatLabel(value, isValueX).replaceAll("^(-?)([0-9]{1})", "$1\\$$2");
                     }
                 }
             });
