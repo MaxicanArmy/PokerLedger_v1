@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 26
+    buildToolsVersion "28.0.3"
 
     defaultConfig {
         applicationId "com.pokerledger.app"
         minSdkVersion 15
-        targetSdkVersion 22
-        versionCode 19
-        versionName "1.6.1"
+        targetSdkVersion 26
+        versionCode 20
+        versionName "1.6.2"
     }
     buildTypes {
         release {
@@ -20,10 +20,10 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.jjoe64:graphview:4.2.1'
-    compile files('libs/gson-2.3.1.jar')
-    compile files('libs/FlurryAnalytics-6.1.0.jar')
-    compile 'com.github.angads25:filepicker:1.1.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation group: 'com.android.support', name: 'appcompat-v7', version: '26.0.1'
+    implementation 'com.jjoe64:graphview:4.2.1'
+    implementation files('libs/gson-2.3.1.jar')
+    implementation files('libs/FlurryAnalytics-6.1.0.jar')
+    implementation 'com.github.angads25:filepicker:1.1.0'
 }
