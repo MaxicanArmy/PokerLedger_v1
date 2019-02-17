@@ -1145,7 +1145,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 if (!s.getNote().equals("")) {
                     db.execSQL("INSERT INTO " + TABLE_NOTE + " (" + KEY_SESSION_ID + ", " + KEY_NOTE + ") VALUES (" + sessionId + ", " +
-                            DatabaseUtils.sqlEscapeString(s.getNote()) + ");");
+                            DatabaseUtils.sqlEscapeString(s.getNote().replaceAll("\r", "").replaceAll("\n", "")) + ");");
                 }
             }
             c.close();
@@ -1202,7 +1202,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("DELETE FROM " + TABLE_NOTE + " WHERE " + KEY_SESSION_ID + "=" + s.getId() + ";");
             if (s.getNote() != null) {
                 db.execSQL("INSERT INTO " + TABLE_NOTE + " (" + KEY_SESSION_ID + ", " + KEY_NOTE + ") VALUES (" + s.getId() + ", " +
-                        DatabaseUtils.sqlEscapeString(s.getNote()) + ");");
+                        DatabaseUtils.sqlEscapeString(s.getNote().replaceAll("\r", "").replaceAll("\n", "")) + ");");
             }
 
             db.setTransactionSuccessful();
@@ -1415,7 +1415,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 sessionStatement.bindString(5, Integer.toString(s.getGame().getId()));
                 sessionStatement.bindString(6, Integer.toString(s.getGameFormat().getId()));
                 sessionStatement.bindString(7, Integer.toString(s.getLocation().getId()));
-                sessionStatement.bindString(8, Integer.toString(0));
+                sessionStatement.bindString(8, Integer.toString(s.getState()));
                 sessionStatement.bindString(9, Integer.toString(0));
                 sessionId = sessionStatement.executeInsert();
 
@@ -1445,7 +1445,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     if (!s.getNote().equals("")) {
                         SQLiteStatement noteStatement = db.compileStatement(noteQuery);
                         noteStatement.bindLong(1, sessionId);
-                        noteStatement.bindString(2, s.getNote());
+                        noteStatement.bindString(2, s.getNote().replaceAll("\r", "").replaceAll("\n", ""));
                         noteStatement.executeInsert();
                     }
                 }

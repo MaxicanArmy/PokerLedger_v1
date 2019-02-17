@@ -276,7 +276,7 @@ public class SessionSet {
             csv += tempBreaks + "\",\"" + Integer.toString(current.getEntrants()) + "\",\"" +
                     Integer.toString(current.getPlaced()) + "\",\"";
             csv += (current.getState() == 0) ? "Finished" : "Active";
-            csv += "\",\"" + current.getNote() + "\",\"";
+            csv += "\",\"" + current.getNote().replaceAll("\r", "").replaceAll("\n", "") + "\",\"";
             csv += (current.getFiltered() == 0) ? "No" : "Yes";
             csv += "\"\r\n";
         }
