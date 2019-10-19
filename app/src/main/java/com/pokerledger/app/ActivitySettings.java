@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
@@ -18,6 +19,9 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.v4.content.ContextCompat;
+import android.Manifest;
+
 
 import com.flurry.android.FlurryAgent;
 import com.github.angads25.filepicker.controller.DialogSelectionListener;
@@ -55,6 +59,7 @@ public class ActivitySettings extends ActivityBase {
     private static final int NO_BACKUP = 0;
     private static final int OVERWRITE_BACKUP = 1;
     private static final int MERGE_BACKUP = 2;
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL = 0;
 
     private int method = NO_BACKUP;
     private String restorePath = "";
@@ -964,6 +969,25 @@ public class ActivitySettings extends ActivityBase {
             File dst = new File(ActivitySettings.this.backupLocation, csvName);
 
             String data = allSessions.exportCSV();
+            if (ContextCompat.checkSelfPermission(ActivitySettings.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                // Permission is not granted
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(ActivitySettings.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    // Show an explanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+                    Log.e("Exception", "shouldShowRequestPermissionRationale");
+                } else {
+                    Log.e("Exception", "ActivityCompat.requestPermissions");
+                    // No explanation needed; request the permission
+                    ActivityCompat.requestPermissions(ActivitySettings.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL);
+
+                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                    // app-defined int constant. The callback method gets the
+                    // result of the request.
+                }
+            }
+
             try
             {
                 dst.createNewFile();
@@ -978,7 +1002,7 @@ public class ActivitySettings extends ActivityBase {
             }
             catch (IOException e)
             {
-                Log.e("Exception", "Writing cvs file failed: " + e.toString());
+                Log.e("Exception", "Auto Writing cvs file failed: " + e.toString());
             }
 
             if (dialog.isShowing()) {
@@ -1018,8 +1042,26 @@ public class ActivitySettings extends ActivityBase {
             File dst = new File(ActivitySettings.this.backupLocation, csvName);
 
             String data = allSessions.exportCSV();
-            try
-            {
+            if (ContextCompat.checkSelfPermission(ActivitySettings.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                // Permission is not granted
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(ActivitySettings.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    // Show an explanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+                    Log.e("Exception", "shouldShowRequestPermissionRationale");
+                } else {
+                    Log.e("Exception", "ActivityCompat.requestPermissions");
+                    // No explanation needed; request the permission
+                    ActivityCompat.requestPermissions(ActivitySettings.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL);
+
+                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                    // app-defined int constant. The callback method gets the
+                    // result of the request.
+                }
+            }
+
+            try {
                 dst.createNewFile();
                 FileOutputStream fOut = new FileOutputStream(dst);
                 OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
@@ -1029,10 +1071,8 @@ public class ActivitySettings extends ActivityBase {
 
                 fOut.flush();
                 fOut.close();
-            }
-            catch (IOException e)
-            {
-                Log.e("Exception", "Writing cvs file failed: " + e.toString());
+            } catch (IOException e) {
+                Log.e("Exception", "Manual Writing cvs file failed: " + e.toString());
             }
 
             if (dialog.isShowing()) {
