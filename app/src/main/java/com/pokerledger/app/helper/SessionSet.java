@@ -234,10 +234,7 @@ public class SessionSet {
         }
 
         ArrayList<Method> nextLevels = new ArrayList<>();
-
-        for (Method m : levels) {
-            nextLevels.add(m);
-        }
+        nextLevels.addAll(levels);
         nextLevels.remove(nextLevels.size() - 1);
 
         if (nextLevels.size() > 0) {

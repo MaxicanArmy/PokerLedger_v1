@@ -1,5 +1,5 @@
 package com.pokerledger.app;
 
 public interface NoteCompleteListener<N> {
-    public void onEditNoteComplete(N note);
+    void onEditNoteComplete(N note);
 }
