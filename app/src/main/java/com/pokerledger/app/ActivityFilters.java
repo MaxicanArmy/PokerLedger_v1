@@ -10,7 +10,6 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
 import com.pokerledger.app.helper.DatabaseHelper;
 import com.pokerledger.app.model.Blinds;
 import com.pokerledger.app.model.Game;
@@ -50,7 +49,6 @@ public class ActivityFilters extends ActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filters);
-        FlurryAgent.logEvent("Activity_Filters");
 
         new LoadLocationsFilter().execute();
         new LoadGamesFilter().execute();

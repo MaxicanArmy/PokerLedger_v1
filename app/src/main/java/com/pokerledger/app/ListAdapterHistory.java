@@ -17,11 +17,11 @@ import java.util.ArrayList;
  * Created by Catface Meowmers on 7/28/15.
  */
 
-public class HistoryListAdapter extends ArrayAdapter<Session> {
+public class ListAdapterHistory extends ArrayAdapter<Session> {
     private final Activity context;
     private final ArrayList<Session> active;
 
-    public HistoryListAdapter(Activity context, ArrayList<Session> active) {
+    public ListAdapterHistory(Activity context, ArrayList<Session> active) {
         super(context, R.layout.list_history, active);
         this.context = context;
         this.active = active;

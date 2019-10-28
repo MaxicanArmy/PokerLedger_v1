@@ -7,7 +7,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.PLCommon;
@@ -26,7 +25,6 @@ public class ActivityEditSession extends ActivitySession  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finished_session);
-        FlurryAgent.logEvent("Activity_Edit_Session");
 
         String json = getIntent().getStringExtra("SESSION_JSON");
         if (json != null) {
@@ -41,10 +39,6 @@ public class ActivityEditSession extends ActivitySession  {
 
             ((Button) findViewById(R.id.end_date)).setHint(PLCommon.timestampToDate(this.activeSession.getEnd()));
             ((Button) findViewById(R.id.end_time)).setHint(PLCommon.timestampToTime(this.activeSession.getEnd()));
-
-            if (!this.activeSession.getNote().equals("")) {
-                ((EditText) findViewById(R.id.note)).setText(this.activeSession.getNote());
-            }
 
             if (this.activeSession.getGameFormat().getBaseFormatId() == 2) {
                 ((EditText) findViewById(R.id.entrants)).setText(Integer.toString(this.activeSession.getEntrants()));
@@ -206,15 +200,8 @@ public class ActivityEditSession extends ActivitySession  {
             return;
         }
 
-        String note = ((EditText) findViewById(R.id.note)).getText().toString();
-
-        if (!note.equals("")) {
-            this.activeSession.setNote(note);
-        }
-
         this.activeSession.setState(0);
 
-        FlurryAgent.logEvent("Session_Edit_Finished");
         new EditSession().execute(this.activeSession);
 
         setResult(RESULT_OK);

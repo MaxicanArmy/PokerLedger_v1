@@ -13,7 +13,6 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
@@ -38,7 +37,7 @@ public class ActivityHistory extends ActivityBase {
     protected ArrayList<String> yearlyList;
     protected ArrayList<String> allList;
 
-    //these populate the history list and store the overview info
+    //these populate the history notesList and store the overview info
     protected HashMap<String, SessionSet> weekly;
     protected HashMap<String, SessionSet> monthly;
     protected HashMap<String, SessionSet> yearly;
@@ -52,7 +51,6 @@ public class ActivityHistory extends ActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        FlurryAgent.logEvent("Activity_History");
 
         if (savedInstanceState != null) {
             this.tbSpinnerPos = savedInstanceState.getInt("tbSpinnerPos");
@@ -79,7 +77,7 @@ public class ActivityHistory extends ActivityBase {
                 Bundle b = new Bundle();
                 b.putString("SESSION_JSON", gson.toJson(parent.getAdapter().getItem(position)));
 
-                FragmentEditFinishedSession dialog = new FragmentEditFinishedSession();
+                FragmentOptionsFinishedSession dialog = new FragmentOptionsFinishedSession();
                 dialog.setArguments(b);
                 dialog.show(manager, "EditHistory");
             }
@@ -122,7 +120,7 @@ public class ActivityHistory extends ActivityBase {
             ActivityHistory.this.yearlyList = new ArrayList<String>();
             ActivityHistory.this.allList = new ArrayList<String>();
 
-            //these populate the history list and store the overview info
+            //these populate the history notesList and store the overview info
             ActivityHistory.this.weekly = new HashMap<String, SessionSet>();
             ActivityHistory.this.monthly = new HashMap<String, SessionSet>();
             ActivityHistory.this.yearly = new HashMap<String, SessionSet>();
@@ -137,7 +135,7 @@ public class ActivityHistory extends ActivityBase {
                 try {
                     cal.setTimeInMillis(s.getStart());
                 } catch (Exception e) {
-                    FlurryAgent.logEvent("Error_CalendarSetTimeInMillis");
+
                 }
                 year = Integer.toString(cal.get(Calendar.YEAR));
                 weekOfYear = "Week" + " " + cal.get(Calendar.WEEK_OF_YEAR) + " " + year;
@@ -238,7 +236,7 @@ public class ActivityHistory extends ActivityBase {
     }
 
     protected void displayStats() {
-        HistoryListAdapter adapter;
+        ListAdapterHistory adapter;
         SessionSet stats;
         int showList = ListView.GONE;
         int showOverview = LinearLayout.GONE;
@@ -258,7 +256,7 @@ public class ActivityHistory extends ActivityBase {
             }
 
             if (stats.getSessions().size() > 0) {
-                adapter = new HistoryListAdapter(ActivityHistory.this, stats.getSessions());
+                adapter = new ListAdapterHistory(ActivityHistory.this, stats.getSessions());
                 ActivityHistory.this.historySessionList.setAdapter(adapter);
                 showList = ListView.VISIBLE;
                 showOverview = LinearLayout.VISIBLE;

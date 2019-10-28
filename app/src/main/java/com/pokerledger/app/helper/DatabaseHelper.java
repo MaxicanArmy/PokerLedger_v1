@@ -10,12 +10,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
-import com.flurry.android.FlurryAgent;
 import com.pokerledger.app.model.Blinds;
 import com.pokerledger.app.model.Break;
 import com.pokerledger.app.model.Game;
 import com.pokerledger.app.model.GameFormat;
 import com.pokerledger.app.model.Location;
+import com.pokerledger.app.model.Note;
 import com.pokerledger.app.model.Session;
 
 import java.sql.SQLWarning;
@@ -31,7 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "sessionManager";
 
     //database version
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     private static DatabaseHelper sInstance;
 
@@ -106,6 +106,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String KEY_LOCATION_ID = "location_id";
 
     //NOTES table
+    public static final String KEY_NOTE_ID = "note_id";
     public static final String KEY_NOTE = "note";
 
     //SESSION table - column names
@@ -152,7 +153,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_SESSION_ID + " INTEGER, " + KEY_START + " INTEGER, " + KEY_END + " INTEGER);";
 
     //NOTES
-    private static final String CREATE_TABLE_NOTES = "CREATE TABLE " + TABLE_NOTE + " (" + KEY_SESSION_ID + " INTEGER, " + KEY_NOTE + " TEXT);";
+    private static final String CREATE_TABLE_NOTES = "CREATE TABLE " + TABLE_NOTE + " (" + KEY_NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_SESSION_ID + " INTEGER, " + KEY_NOTE + " TEXT);";
 
     //CASH
     private static final String CREATE_TABLE_CASH = "CREATE TABLE " + TABLE_CASH + " (" + KEY_SESSION_ID + " INTEGER UNIQUE, " + KEY_BLINDS + " INTEGER);";
@@ -361,6 +362,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } finally {
                 db.endTransaction();
             }
+        }
+        if (oldVersion < 5) {
+            db.beginTransaction();
+            try {
+                //1. create temp_notes with note_id auto increment column
+                db.execSQL("CREATE TABLE temp_notes (" + KEY_NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_SESSION_ID + " INTEGER, " + KEY_NOTE + " TEXT);");
+
+                //2. copy data to temp_notes
+                db.execSQL("INSERT INTO temp_notes (" + KEY_SESSION_ID + ", " + KEY_NOTE + ") SELECT " + KEY_SESSION_ID + ", " + KEY_NOTE + " FROM " + TABLE_NOTE + ";");
+
+                //3. delete original table
+                db.execSQL("DROP TABLE " + TABLE_NOTE);
+
+                //4. rename temp_notes
+                db.execSQL("ALTER TABLE temp_notes RENAME TO " + TABLE_NOTE);
+
+                db.setTransactionSuccessful();
+            } catch (SQLException e) {
+
+            } finally {
+                db.endTransaction();
+            }
+
         }
     }
 
@@ -684,6 +708,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return blindSet;
     }
 
+    public Note createNote(Note n) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.beginTransaction();
+        try {
+            ContentValues noteValues = new ContentValues();
+            noteValues.put(KEY_SESSION_ID, n.getSessionId());
+            noteValues.put(KEY_NOTE, n.getNote());
+
+            long noteId = db.insert(TABLE_NOTE, null, noteValues);
+
+            if (noteId != -1) {
+                n.setId((int) noteId);
+            }
+
+            db.setTransactionSuccessful();
+        } catch (SQLException e) {
+
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+        return n;
+    }
+
     public void importLocations(ArrayList<Session> sessions) {
         Cursor c;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -899,6 +948,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void editNote(Note n) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues args = new ContentValues();
+        args.put(KEY_NOTE, n.getNote());
+
+        db.beginTransaction();
+        try {
+            db.update(TABLE_NOTE, args, KEY_NOTE_ID + "=?", new String[]{Integer.toString(n.getId())});
+            db.setTransactionSuccessful();
+        } catch (SQLException e) {
+
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
     public void deleteLocation(Location loc) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -987,6 +1054,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void deleteNote(Note n) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String query = "DELETE FROM " + TABLE_NOTE + " WHERE " + KEY_NOTE_ID + "=" + n.getId() + ";";
+
+        db.beginTransaction();
+        try {
+            db.execSQL(query);
+            db.setTransactionSuccessful();
+        } catch (SQLException e) {
+
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
     private ArrayList<Session> querySessions(String q) {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Session> sessions = new ArrayList<>();
@@ -1023,11 +1107,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         s.setPlaced(c.getInt(c.getColumnIndex(KEY_PLACED)));
                     }
                 }
-
-                if (!c.isNull(c.getColumnIndex(KEY_NOTE))) {
-                    s.setNote(c.getString(c.getColumnIndex(KEY_NOTE)));
-                }
-
                 if (!c.isNull(c.getColumnIndex(KEY_FILTERED))) {
                     s.setFiltered(c.getInt(c.getColumnIndex(KEY_FILTERED)));
                 }
@@ -1044,6 +1123,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     s.setBreaks(breaks);
                 }
                 b.close();
+
+                SQLiteDatabase db3 = this.getReadableDatabase();
+                Cursor d = db3.rawQuery("SELECT * FROM " + TABLE_NOTE + " WHERE " + KEY_SESSION_ID + "=" + s.getId() + " ORDER BY " + KEY_NOTE_ID + " ASC", null);
+
+                if (d.moveToFirst()) {
+                    ArrayList<Note> notes = new ArrayList<>();
+                    do {
+                        notes.add(new Note(d.getInt(d.getColumnIndex(KEY_NOTE_ID)), d.getInt(d.getColumnIndex(KEY_SESSION_ID)), d.getString(d.getColumnIndex(KEY_NOTE))));
+                    } while (d.moveToNext());
+
+                    s.setNotes(notes);
+                }
+                d.close();
                 sessions.add(s);
             } while (c.moveToNext());
         }
@@ -1061,12 +1153,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 KEY_BASE_FORMAT_ID + ", " + TABLE_BASE_FORMAT + "." + KEY_BASE_FORMAT + ", " + KEY_STATE + ", " + KEY_GAME_ID + ", " + TABLE_GAME + "." + KEY_GAME + ", " +
                 KEY_LOCATION_ID + ", " + TABLE_LOCATION + "." + KEY_LOCATION + ", " + TABLE_BLINDS + "." + KEY_BLIND_ID + ", " +
                 KEY_SMALL_BLIND + ", " + KEY_BIG_BLIND + ", " + KEY_STRADDLE + ", " + KEY_BRING_IN + ", " + KEY_ANTE + ", " + KEY_PER_POINT + ", " +
-                KEY_ENTRANTS + ", " + KEY_PLACED + ", " + KEY_NOTE + ", " + TABLE_SESSION + "." + KEY_FILTERED + " FROM " + TABLE_SESSION + " INNER JOIN " + TABLE_GAME +
+                KEY_ENTRANTS + ", " + KEY_PLACED + ", " + TABLE_SESSION + "." + KEY_FILTERED + " FROM " + TABLE_SESSION + " INNER JOIN " + TABLE_GAME +
                 " ON " + TABLE_SESSION + "." + KEY_GAME + "=" + KEY_GAME_ID + " INNER JOIN " + TABLE_LOCATION +
                 " ON " + TABLE_SESSION + "." + KEY_LOCATION + "=" + KEY_LOCATION_ID + " INNER JOIN " + TABLE_GAME_FORMAT +
                 " ON " + TABLE_SESSION + "." + KEY_GAME_FORMAT + "=" + KEY_GAME_FORMAT_ID + " INNER JOIN " + TABLE_BASE_FORMAT +
-                " ON " + TABLE_GAME_FORMAT + "." + KEY_BASE_FORMAT + "=" + TABLE_BASE_FORMAT + "." + KEY_BASE_FORMAT_ID + " LEFT JOIN " + TABLE_NOTE +
-                " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_NOTE + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_TOURNAMENT +
+                " ON " + TABLE_GAME_FORMAT + "." + KEY_BASE_FORMAT + "=" + TABLE_BASE_FORMAT + "." + KEY_BASE_FORMAT_ID + " LEFT JOIN " + TABLE_TOURNAMENT +
                 " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_TOURNAMENT + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_CASH +
                 " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_CASH + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_BLINDS +
                 " ON " + TABLE_CASH + "." + KEY_BLINDS + "=" + TABLE_BLINDS + "." + KEY_BLIND_ID +
@@ -1083,27 +1174,77 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return querySessions(query);
     }
 
-    public ArrayList<Session> getNotes() {
+    public Session getSession(int id) {
         String query = "SELECT " + TABLE_SESSION + "." + KEY_SESSION_ID + ", " + KEY_START + ", " + KEY_END + ", " +
                 KEY_BUY_IN + ", " + KEY_CASH_OUT + ", " + KEY_GAME_FORMAT_ID + ", " + TABLE_GAME_FORMAT + "." + KEY_GAME_FORMAT + ", " +
                 KEY_BASE_FORMAT_ID + ", " + TABLE_BASE_FORMAT + "." + KEY_BASE_FORMAT + ", " + KEY_STATE + ", " + KEY_GAME_ID + ", " + TABLE_GAME + "." + KEY_GAME + ", " +
                 KEY_LOCATION_ID + ", " + TABLE_LOCATION + "." + KEY_LOCATION + ", " + TABLE_BLINDS + "." + KEY_BLIND_ID + ", " +
                 KEY_SMALL_BLIND + ", " + KEY_BIG_BLIND + ", " + KEY_STRADDLE + ", " + KEY_BRING_IN + ", " + KEY_ANTE + ", " + KEY_PER_POINT + ", " +
-                KEY_ENTRANTS + ", " + KEY_PLACED + ", " + KEY_NOTE + ", " + TABLE_SESSION + "." + KEY_FILTERED + " FROM " + TABLE_SESSION + " INNER JOIN " + TABLE_GAME +
+                KEY_ENTRANTS + ", " + KEY_PLACED + ", " + TABLE_SESSION + "." + KEY_FILTERED + " FROM " + TABLE_SESSION + " INNER JOIN " + TABLE_GAME +
                 " ON " + TABLE_SESSION + "." + KEY_GAME + "=" + KEY_GAME_ID + " INNER JOIN " + TABLE_LOCATION +
                 " ON " + TABLE_SESSION + "." + KEY_LOCATION + "=" + KEY_LOCATION_ID + " INNER JOIN " + TABLE_GAME_FORMAT +
                 " ON " + TABLE_SESSION + "." + KEY_GAME_FORMAT + "=" + KEY_GAME_FORMAT_ID + " INNER JOIN " + TABLE_BASE_FORMAT +
-                " ON " + TABLE_GAME_FORMAT + "." + KEY_BASE_FORMAT + "=" + TABLE_BASE_FORMAT + "." + KEY_BASE_FORMAT_ID + " LEFT JOIN " + TABLE_NOTE +
-                " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_NOTE + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_TOURNAMENT +
+                " ON " + TABLE_GAME_FORMAT + "." + KEY_BASE_FORMAT + "=" + TABLE_BASE_FORMAT + "." + KEY_BASE_FORMAT_ID + " LEFT JOIN " + TABLE_TOURNAMENT +
                 " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_TOURNAMENT + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_CASH +
                 " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_CASH + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_BLINDS +
                 " ON " + TABLE_CASH + "." + KEY_BLINDS + "=" + TABLE_BLINDS + "." + KEY_BLIND_ID +
-                " WHERE " + TABLE_SESSION + "." + KEY_FILTERED + "=0" +
-                " AND " + TABLE_SESSION + "." + KEY_SESSION_ID + " IN (SELECT " + TABLE_NOTE + "." + KEY_SESSION_ID + " FROM " + TABLE_NOTE +
-                " WHERE " + KEY_NOTE + " !='')" +
-                " ORDER BY " + KEY_START + " DESC;";
+                " WHERE " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + id + ";";
 
-        return querySessions(query);
+        return querySessions(query).get(0);
+    }
+
+    public ArrayList<Note> getAllNotes() {
+        String query = "SELECT * FROM " + TABLE_NOTE + " ORDER BY " + KEY_SESSION_ID + " ASC;";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<Note> notes = new ArrayList<>();
+
+        db.beginTransaction();
+        Cursor c = db.rawQuery(query, null);
+
+        //loop through rows and add to session if any results returned
+        if (c.moveToFirst()) {
+            do {
+                Note n = new Note();
+                n.setId(c.getInt(c.getColumnIndex(KEY_NOTE_ID)));
+                n.setSessionId(c.getInt(c.getColumnIndex(KEY_SESSION_ID)));
+                n.setNote(c.getString(c.getColumnIndex(KEY_NOTE)));
+                notes.add(n);
+            } while (c.moveToNext());
+        }
+        c.close();
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+
+        return notes;
+    }
+
+    public ArrayList<Note> getSessionNotes(int sid) {
+        String query = "SELECT * FROM " + TABLE_NOTE + " WHERE " + KEY_SESSION_ID + "=" + sid + ";";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<Note> notes = new ArrayList<>();
+
+        db.beginTransaction();
+        Cursor c = db.rawQuery(query, null);
+
+        //loop through rows and add to session if any results returned
+        if (c.moveToFirst()) {
+            do {
+                Note n = new Note();
+                n.setId(c.getInt(c.getColumnIndex(KEY_NOTE_ID)));
+                n.setSessionId(c.getInt(c.getColumnIndex(KEY_SESSION_ID)));
+                n.setNote(c.getString(c.getColumnIndex(KEY_NOTE)));
+                notes.add(n);
+            } while (c.moveToNext());
+        }
+        c.close();
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+
+        return notes;
     }
 
     public void addSession(Session s) {
@@ -1141,11 +1282,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 for (int i = 0; i < breaks.size(); i++) {
                     db.execSQL("INSERT INTO " + TABLE_BREAK + " (" + KEY_SESSION_ID + ", " + KEY_START + ", " + KEY_END + ") VALUES (" + sessionId + ", " +
                             breaks.get(i).getStart() + ", " + breaks.get(i).getEnd() + ");");
-                }
-
-                if (!s.getNote().equals("")) {
-                    db.execSQL("INSERT INTO " + TABLE_NOTE + " (" + KEY_SESSION_ID + ", " + KEY_NOTE + ") VALUES (" + sessionId + ", " +
-                            DatabaseUtils.sqlEscapeString(s.getNote().replaceAll("\r", "").replaceAll("\n", "")) + ");");
                 }
             }
             c.close();
@@ -1198,13 +1334,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
             }
 
-            //run delete query for this id on notes table so we can just run an insert and not have to check for duplicates
-            db.execSQL("DELETE FROM " + TABLE_NOTE + " WHERE " + KEY_SESSION_ID + "=" + s.getId() + ";");
-            if (s.getNote() != null) {
-                db.execSQL("INSERT INTO " + TABLE_NOTE + " (" + KEY_SESSION_ID + ", " + KEY_NOTE + ") VALUES (" + s.getId() + ", " +
-                        DatabaseUtils.sqlEscapeString(s.getNote().replaceAll("\r", "").replaceAll("\n", "")) + ");");
-            }
-
             db.setTransactionSuccessful();
         } catch (SQLException e) {
 
@@ -1242,14 +1371,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String setBreakEndQuery = "UPDATE " + TABLE_BREAK + " SET " + KEY_END + "=" + time +
                         " WHERE " + KEY_BREAK_ID + "=" + s.getBreaks().get(s.getBreaks().size() - 1).getId() + ";";
                 db.execSQL(setBreakEndQuery);
-                FlurryAgent.logEvent("Action_Resume");
             } else {
                 ContentValues breakValues = new ContentValues();
                 breakValues.put(KEY_SESSION_ID, s.getId());
                 breakValues.put(KEY_START, time);
 
                 db.insert(TABLE_BREAK, null, breakValues);
-                FlurryAgent.logEvent("Action_Pause");
             }
 
             db.setTransactionSuccessful();
@@ -1442,11 +1569,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         breaksStatement.executeInsert();
                     }
 
-                    if (!s.getNote().equals("")) {
-                        SQLiteStatement noteStatement = db.compileStatement(noteQuery);
-                        noteStatement.bindLong(1, sessionId);
-                        noteStatement.bindString(2, s.getNote().replaceAll("\r", "").replaceAll("\n", ""));
-                        noteStatement.executeInsert();
+                    if (s.getNotes().size() > 0) {
+                        for (Note n : s.getNotes()) {
+                            SQLiteStatement noteStatement = db.compileStatement(noteQuery);
+                            noteStatement.bindLong(1, sessionId);
+                            noteStatement.bindString(2, n.getNote());
+                            noteStatement.executeInsert();
+                        }
                     }
                 }
             }
@@ -1461,176 +1590,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return success;
     }
-    /*
-    public Session verifySession(Session s) {
-
-        s.setLocation(createLocation(s.getLocation()));
-        s.setGame(createGame(s.getGame()));
-        s.setGameFormat(createGameFormat(s.getGameFormat()));
-
-        if (!s.getBlinds().toString().equals(""))
-            s.setBlinds(createBlinds(s.getBlinds()));
-
-        return s;
-    }
-
-    private boolean applyFilterState(int id) {
-        boolean filtered = false;
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        String query = "SELECT " + TABLE_SESSION + "." + KEY_SESSION_ID + " FROM " + TABLE_SESSION + " INNER JOIN " + TABLE_GAME +
-                " ON " + TABLE_SESSION + "." + KEY_GAME + "=" + KEY_GAME_ID + " INNER JOIN " + TABLE_LOCATION +
-                " ON " + TABLE_SESSION + "." + KEY_LOCATION + "=" + KEY_LOCATION_ID + " INNER JOIN " + TABLE_GAME_FORMAT +
-                " ON " + TABLE_SESSION + "." + KEY_GAME_FORMAT + "=" + KEY_GAME_FORMAT_ID + " LEFT JOIN " + TABLE_CASH +
-                " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_CASH + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_BLINDS +
-                " ON " + TABLE_CASH + "." + KEY_BLINDS + "=" + TABLE_BLINDS + "." + KEY_BLIND_ID +
-                " WHERE (" + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + Long.toString(id) + ") AND (" + TABLE_LOCATION + "." + KEY_FILTERED + "=1 OR " + TABLE_GAME + "." + KEY_FILTERED + " OR " +
-                TABLE_GAME_FORMAT + "." + KEY_FILTERED + "=1 OR " + TABLE_BLINDS + "." + KEY_FILTERED + "=1);";
-
-        Cursor c = db.rawQuery(query, null);
-
-        if (c.moveToFirst()) {
-            filtered = true;
-            try {
-                db.beginTransaction();
-                db.execSQL("UPDATE " + TABLE_SESSION + " SET " + KEY_FILTERED + "=1 WHERE " + KEY_SESSION_ID + "=" + id + ";");
-                db.setTransactionSuccessful();
-            } catch  (SQLException e) {
-                //oops
-            } finally {
-                db.endTransaction();
-            }
-        }
-
-        c.close();
-
-        return filtered;
-    }
-
-    private void filterImport(long sessionId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        String query = "SELECT " + TABLE_SESSION + "." + KEY_SESSION_ID + " FROM " + TABLE_SESSION + " INNER JOIN " + TABLE_GAME +
-                " ON " + TABLE_SESSION + "." + KEY_GAME + "=" + KEY_GAME_ID + " INNER JOIN " + TABLE_LOCATION +
-                " ON " + TABLE_SESSION + "." + KEY_LOCATION + "=" + KEY_LOCATION_ID + " INNER JOIN " + TABLE_GAME_FORMAT +
-                " ON " + TABLE_SESSION + "." + KEY_GAME_FORMAT + "=" + KEY_GAME_FORMAT_ID + " LEFT JOIN " + TABLE_CASH +
-                " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_CASH + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_BLINDS +
-                " ON " + TABLE_CASH + "." + KEY_BLINDS + "=" + TABLE_BLINDS + "." + KEY_BLIND_ID +
-                " WHERE (" + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + Long.toString(sessionId) + ") AND (" + TABLE_LOCATION + "." + KEY_FILTERED + "=1 OR " + TABLE_GAME + "." + KEY_FILTERED + " OR " +
-                TABLE_GAME_FORMAT + "." + KEY_FILTERED + "=1 OR " + TABLE_BLINDS + "." + KEY_FILTERED + "=1);";
-
-        Cursor c = db.rawQuery(query, null);
-
-        if (c.moveToFirst()) {
-            try {
-                db.execSQL("UPDATE " + TABLE_SESSION + " SET " + KEY_FILTERED + "=1 WHERE " + KEY_SESSION_ID + "=" + Long.toString(sessionId) + ";");
-            } catch  (SQLException e) {
-                //oops
-            } finally {
-
-            }
-        }
-        c.close();
-    }
-
-    private void isFiltered(long id) {
-        int filtered = 0;
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.beginTransaction();
-
-        String query = "SELECT " + TABLE_LOCATION + "." + KEY_FILTERED + " AS locationFilter, " + TABLE_GAME + "." + KEY_FILTERED + " AS gameFilter, " +
-                TABLE_GAME_FORMAT + "." + KEY_FILTERED + " AS gameFormatFilter, " + TABLE_BLINDS + "." + KEY_FILTERED + " AS blindsFilter FROM " +
-                TABLE_SESSION + " INNER JOIN " + TABLE_GAME +
-                " ON " + TABLE_SESSION + "." + KEY_GAME + "=" + KEY_GAME_ID + " INNER JOIN " + TABLE_LOCATION +
-                " ON " + TABLE_SESSION + "." + KEY_LOCATION + "=" + KEY_LOCATION_ID + " INNER JOIN " + TABLE_GAME_FORMAT +
-                " ON " + TABLE_SESSION + "." + KEY_GAME_FORMAT + "=" + KEY_GAME_FORMAT_ID + " LEFT JOIN " + TABLE_CASH +
-                " ON " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + TABLE_CASH + "." + KEY_SESSION_ID + " LEFT JOIN " + TABLE_BLINDS +
-                " ON " + TABLE_CASH + "." + KEY_BLINDS + "=" + TABLE_BLINDS + "." + KEY_BLIND_ID +
-                " WHERE " + TABLE_SESSION + "." + KEY_SESSION_ID + "=" + Long.toString(id) + ";";
-
-        Cursor c = db.rawQuery(query, null);
-
-        if (c.moveToFirst()) {
-            if (c.getInt(c.getColumnIndex("locationFilter")) == 1 || c.getInt(c.getColumnIndex("gameFilter")) == 1 ||
-                    c.getInt(c.getColumnIndex("gameFormatFilter")) == 1 || c.getInt(c.getColumnIndex("blindsFilter")) == 1 )
-                filtered = 1;
-        }
-
-        db.execSQL("UPDATE " + TABLE_SESSION + " SET " + KEY_FILTERED + "=" + filtered + " WHERE " + KEY_SESSION_ID + "=" + id + ";");
-
-        c.close();
-        db.setTransactionSuccessful();
-        db.endTransaction();
-    }
-
-    public boolean importSession(Session s) {
-        long sessionId;
-        boolean success = true;
-
-        String sessionQuery = "INSERT INTO " + TABLE_SESSION + " (" + KEY_START + ", " + KEY_END + ", " + KEY_BUY_IN + ", " + KEY_CASH_OUT +
-                ", " + KEY_GAME + ", " + KEY_GAME_FORMAT + ", " + KEY_LOCATION + ", " + KEY_STATE + ", " + KEY_FILTERED +
-                ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
-
-        String cashQuery = "INSERT INTO " + TABLE_CASH + " (" + KEY_SESSION_ID + ", " + KEY_BLINDS + ") VALUES (?, ?);";
-
-        String tourneyQuery = "INSERT INTO " + TABLE_TOURNAMENT + " (" + KEY_SESSION_ID + ", " + KEY_ENTRANTS + ", " + KEY_PLACED + ") VALUES (?, ?, ?);";
-
-        String breaksQuery = "INSERT INTO " + TABLE_BREAK + " (" + KEY_SESSION_ID + ", " + KEY_START + ", " + KEY_END + ") VALUES (?, ?, ?);";
-
-        String noteQuery = "INSERT INTO " + TABLE_NOTE + " (" + KEY_SESSION_ID + ", " + KEY_NOTE + ") VALUES (?, ?);";
-
-        db.beginTransaction();
-        try {
-            SQLiteStatement sessionStatement = db.compileStatement(sessionQuery);
-            sessionStatement.bindLong(1, s.getStart());
-            sessionStatement.bindLong(2, s.getEnd());
-            sessionStatement.bindDouble(3, s.getBuyIn());
-            sessionStatement.bindDouble(4, s.getCashOut());
-            sessionStatement.bindString(5, Integer.toString(s.getGame().getId()));
-            sessionStatement.bindString(6, Integer.toString(s.getGameFormat().getId()));
-            sessionStatement.bindString(7, Integer.toString(s.getLocation().getId()));
-            sessionStatement.bindString(8, Integer.toString(0));
-            sessionStatement.bindString(9, Integer.toString(0));
-            sessionId = sessionStatement.executeInsert();
-
-            if (sessionId > 0) {
-                if (s.getGameFormat().getBaseFormatId() == 1) {
-                    SQLiteStatement cashStatement = db.compileStatement(cashQuery);
-                    cashStatement.bindLong(1, sessionId);
-                    cashStatement.bindLong(2, s.getBlinds().getId());
-                    cashStatement.executeInsert();
-                } else {
-                    SQLiteStatement tourneyStatement = db.compileStatement(tourneyQuery);
-                    tourneyStatement.bindLong(1, sessionId);
-                    tourneyStatement.bindLong(2, s.getEntrants());
-                    tourneyStatement.bindLong(3, s.getPlaced());
-                    tourneyStatement.executeInsert();
-                }
-
-                ArrayList<Break> breaks = s.getBreaks();
-                for (int i = 0; i < breaks.size(); i++) {
-                    SQLiteStatement breaksStatement = db.compileStatement(breaksQuery);
-                    breaksStatement.bindLong(1, sessionId);
-                    breaksStatement.bindLong(2, breaks.get(i).getStart());
-                    breaksStatement.bindLong(3, breaks.get(i).getEnd());
-                    breaksStatement.executeInsert();
-                }
-
-                if (!s.getNote().equals("")) {
-                    SQLiteStatement noteStatement = db.compileStatement(noteQuery);
-                    noteStatement.bindLong(1, sessionId);
-                    noteStatement.bindString(2, s.getNote());
-                    noteStatement.executeInsert();
-                }
-                db.setTransactionSuccessful();
-                //isFiltered(sessionId);
-            }
-        } catch (SQLException e) {
-            success = false;
-        } finally {
-            db.endTransaction();
-        }
-        return success;
-    }
-    */
 }

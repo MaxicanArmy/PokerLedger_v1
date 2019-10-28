@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
 /**
  * Created by Catface Meowmers on 7/28/15.
  */
-public class FragmentEditFinishedSession extends DialogFragment implements AdapterView.OnItemClickListener {
+public class FragmentOptionsFinishedSession extends DialogFragment implements AdapterView.OnItemClickListener {
     ActivityHistory activity;
     private Session active;
     private ArrayList<String> options = new ArrayList<>();
@@ -73,7 +72,6 @@ public class FragmentEditFinishedSession extends DialogFragment implements Adapt
             adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int buttonId) {
                     new DeleteFinished().execute();
-                    FlurryAgent.logEvent("Action_Delete_Finished");
                 }
             });
             adb.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -88,15 +86,15 @@ public class FragmentEditFinishedSession extends DialogFragment implements Adapt
     public class DeleteFinished extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper db = DatabaseHelper.getInstance(FragmentEditFinishedSession.this.activity);
-            db.deleteSession(FragmentEditFinishedSession.this.active.getId());
+            DatabaseHelper db = DatabaseHelper.getInstance(FragmentOptionsFinishedSession.this.activity);
+            db.deleteSession(FragmentOptionsFinishedSession.this.active.getId());
 
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
-            FragmentEditFinishedSession.this.activity.notifyListChange();
+            FragmentOptionsFinishedSession.this.activity.notifyListChange();
         }
     }
 }

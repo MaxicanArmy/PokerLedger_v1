@@ -7,7 +7,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.PLCommon;
@@ -28,7 +27,6 @@ public class ActivityFinishedSession extends ActivitySession  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finished_session);
-        FlurryAgent.logEvent("Activity_Finished_Session");
 
         String json = getIntent().getStringExtra("SESSION_JSON");
         if (json != null) {
@@ -209,19 +207,11 @@ public class ActivityFinishedSession extends ActivitySession  {
             return;
         }
 
-        String note = ((EditText) findViewById(R.id.note)).getText().toString();
-
-        if (!note.equals("")) {
-            this.activeSession.setNote(note);
-        }
-
         this.activeSession.setState(0);
 
         if (this.activeSession.getId() == 0) {
-            FlurryAgent.logEvent("Session_Create_Finished");
             new AddSession().execute(this.activeSession);
         } else {
-            FlurryAgent.logEvent("Session_Finish_Active");
             new EditSession().execute(this.activeSession);
         }
         setResult(RESULT_OK);

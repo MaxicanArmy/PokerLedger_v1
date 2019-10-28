@@ -7,14 +7,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
-import com.google.gson.Gson;
 import com.pokerledger.app.helper.PLCommon;
 import com.pokerledger.app.model.Blinds;
 import com.pokerledger.app.model.Game;
 import com.pokerledger.app.model.GameFormat;
 import com.pokerledger.app.model.Location;
-import com.pokerledger.app.model.Session;
 
 import java.util.Calendar;
 
@@ -27,7 +24,6 @@ public class ActivityActiveSession extends ActivitySession {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_session);
-        FlurryAgent.logEvent("Activity_Active_Session");
 
         Calendar calender = Calendar.getInstance();
         activeSession.setStart(calender.getTimeInMillis());
@@ -118,13 +114,6 @@ public class ActivityActiveSession extends ActivitySession {
             this.activeSession.setStart(start);
         }
 
-        String note = ((EditText) findViewById(R.id.note)).getText().toString();
-
-        if (!note.equals("")) {
-            this.activeSession.setNote(note);
-        }
-
-
         Spinner gameSpinner = (Spinner) findViewById(R.id.game);
 
         if (gameSpinner.getSelectedItem() != null) {
@@ -144,7 +133,6 @@ public class ActivityActiveSession extends ActivitySession {
         }
 
         this.activeSession.setState(1);
-        FlurryAgent.logEvent("Session_Create_Active");
         new AddSession().execute(this.activeSession);
         setResult(RESULT_OK);
         finish();

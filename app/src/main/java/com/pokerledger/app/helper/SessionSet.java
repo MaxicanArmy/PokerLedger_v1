@@ -1,18 +1,16 @@
 package com.pokerledger.app.helper;
 
-import com.flurry.android.FlurryAgent;
 import com.jjoe64.graphview.series.DataPoint;
 import com.pokerledger.app.model.Break;
 import com.pokerledger.app.model.Session;
 
 import java.lang.reflect.Method;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by Catface Meowmers on 7/25/15.
@@ -24,7 +22,7 @@ public class SessionSet {
     ArrayList<DataPoint> dataPoints = new ArrayList<>();
     HashMap<String, SessionSet> children = new HashMap<>();
 
-    HashMap<Integer, Double> profitByDayOfWeek = new HashMap<>();
+    TreeMap<Integer, Double> profitByDayOfWeek = new TreeMap<>();
 
     public SessionSet() {
         profitByDayOfWeek.put(1,0.0);
@@ -231,7 +229,7 @@ public class SessionSet {
                     children.put(key, new SessionSet(s));
                 }
             } catch (Exception e) {
-                FlurryAgent.logEvent("Error_InvokeReflection");
+
             }
         }
 
@@ -276,7 +274,15 @@ public class SessionSet {
             csv += tempBreaks + "\",\"" + Integer.toString(current.getEntrants()) + "\",\"" +
                     Integer.toString(current.getPlaced()) + "\",\"";
             csv += (current.getState() == 0) ? "Finished" : "Active";
-            csv += "\",\"" + current.getNote().replaceAll("\r", "").replaceAll("\n", "") + "\",\"";
+
+            csv += "\",\"";
+            for (int i = 0; i < current.getNotes().size(); i++) {
+                csv += current.getNotes().get(i).getNote().replaceAll("\r\n", "@linereturn_rn@").replaceAll("\r", "@linereturn_r@").replaceAll("\n", "@linereturn_n@");
+                if (i != current.getNotes().size() - 1) {
+                    csv += "@note_div@";
+                }
+            }
+            csv += "\",\"";
             csv += (current.getFiltered() == 0) ? "No" : "Yes";
             csv += "\"\r\n";
         }

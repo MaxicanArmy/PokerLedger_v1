@@ -72,7 +72,7 @@
                         style="@style/buttonRowItem"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
-                        android:onClick="showCreateLocationDialog" />
+                        android:onClick="showLocationDialog" />
 
                     <Spinner
                         android:id="@+id/location"
@@ -104,7 +104,7 @@
                         style="@style/buttonRowItem"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
-                        android:onClick="showCreateGameDialog" />
+                        android:onClick="showGameDialog" />
 
                     <Spinner
                         android:id="@+id/game"
@@ -136,7 +136,7 @@
                         style="@style/buttonRowItem"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
-                        android:onClick="showCreateGameFormatDialog" />
+                        android:onClick="showGameFormatDialog" />
 
                     <Spinner
                         android:id="@+id/game_format"
@@ -168,7 +168,7 @@
                         style="@style/buttonRowItem"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
-                        android:onClick="showCreateBlindsDialog" />
+                        android:onClick="showBlindsDialog" />
 
                     <Spinner
                         android:id="@+id/blinds"
@@ -231,29 +231,6 @@
                         android:onClick="showTimePickerDialog"
                         android:textSize="16sp" />
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/notes_wrapper"
-                style="@style/WrapperTinyHeader">
-
-                <TextView
-                    android:id="@+id/notes_tiny_header"
-                    android:text="@string/notes_header"
-                    style="@style/TinyHeader" />
-
-                <EditText
-                    android:id="@+id/note"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minLines="1"
-                    android:maxLines="5"
-                    android:scrollbars="vertical"
-                    android:inputType="textMultiLine|textCapSentences"
-                    android:hint="@string/notes_hint"
-                    android:maxLength="300"
-                    android:textColor="#000"
-                    android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

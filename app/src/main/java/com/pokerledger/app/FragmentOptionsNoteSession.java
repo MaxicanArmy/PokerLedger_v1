@@ -1,8 +1,9 @@
 package com.pokerledger.app;
 
 import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -14,27 +15,32 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 import com.pokerledger.app.helper.DatabaseHelper;
-import com.pokerledger.app.model.Session;
+import com.pokerledger.app.model.Note;
 
 import java.util.ArrayList;
 
-/**
- * Created by Max on 10/14/2016.
- */
-
-public class FragmentEditNoteSession extends DialogFragment implements AdapterView.OnItemClickListener  {
-    ActivityNotes activity;
-    private Session active;
+public class FragmentOptionsNoteSession extends DialogFragment implements AdapterView.OnItemClickListener  {
+    NoteCompleteListener listener;
+    private Note activeNote;
     private ArrayList<String> options = new ArrayList<>();
     private ListView list;
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            listener = (NoteCompleteListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement NoteCompleteListener");
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_session, null, false);
-        list = (ListView) view.findViewById(R.id.list);
+        list = view.findViewById(R.id.list);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return view;
     }
@@ -43,12 +49,12 @@ public class FragmentEditNoteSession extends DialogFragment implements AdapterVi
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (getArguments().getString("SESSION_JSON") != null) {
+        if (getArguments().getString("NOTE_JSON") != null) {
             Gson gson = new Gson();
-            this.active = gson.fromJson(getArguments().getString("SESSION_JSON"), Session.class);
+            this.activeNote = gson.fromJson(getArguments().getString("NOTE_JSON"), Note.class);
 
-            options.add("Edit Session");
-            options.add("Delete Session");
+            options.add("Edit Note");
+            options.add("Delete Note");
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, options);
@@ -58,22 +64,26 @@ public class FragmentEditNoteSession extends DialogFragment implements AdapterVi
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        this.activity = (ActivityNotes) getActivity();
         dismiss();
 
         if (position == 0) {
-            Intent intent = new Intent(this.activity, ActivityEditSession.class);
-            intent.putExtra("SESSION_JSON", getArguments().getString("SESSION_JSON"));
-            this.activity.startActivityForResult(intent, 2);
+            FragmentManager manager = getFragmentManager();
+            Gson gson = new Gson();
+
+            Bundle b = new Bundle();
+            b.putString("NOTE_JSON", gson.toJson(activeNote));
+
+            FragmentNote dialog = new FragmentNote();
+            dialog.setArguments(b);
+            dialog.show(manager, "Notes Fragment");
         }
         else if (position == 1) {
             AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
             adb.setTitle("Confirmation");
-            adb.setMessage("Are you sure you want to delete this session?");
+            adb.setMessage("Are you sure you want to delete this note?");
             adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int buttonId) {
-                    new FragmentEditNoteSession.DeleteFinished().execute();
-                    FlurryAgent.logEvent("Action_Delete_Finished");
+                    new FragmentOptionsNoteSession.DeleteNote().execute();
                 }
             });
             adb.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -85,18 +95,18 @@ public class FragmentEditNoteSession extends DialogFragment implements AdapterVi
         }
     }
 
-    public class DeleteFinished extends AsyncTask<Void, Void, Void> {
+    public class DeleteNote extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            DatabaseHelper db = DatabaseHelper.getInstance(FragmentEditNoteSession.this.activity);
-            db.deleteSession(FragmentEditNoteSession.this.active.getId());
+            DatabaseHelper db = DatabaseHelper.getInstance(FragmentOptionsNoteSession.this.getActivity());
+            db.deleteNote(activeNote);
 
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
-            FragmentEditNoteSession.this.activity.notifyListChange();
+            listener.onEditNoteComplete(activeNote);
         }
     }
 }

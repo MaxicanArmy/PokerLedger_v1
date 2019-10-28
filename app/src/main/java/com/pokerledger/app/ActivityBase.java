@@ -11,10 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
 
-import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 import com.pokerledger.app.helper.DatabaseHelper;
 import com.pokerledger.app.model.Blinds;
@@ -28,16 +26,77 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * Created by Catface Meowmers on 7/26/15.
  */
-public class ActivityBase extends AppCompatActivity {
+public class ActivityBase extends AppCompatActivity implements GameCompleteListener<Game>, LocationCompleteListener<Location>, GameFormatCompleteListener<GameFormat>, BlindsCompleteListener<Blinds> {
     Session activeSession = new Session();
+
+    ArrayList<Location> locations = new ArrayList<>();
+    Spinner locationSpinner;
+    ArrayAdapter locationAdapter;
+
+    ArrayList<Game> games = new ArrayList<>();
+    Spinner gameSpinner;
+    ArrayAdapter gameAdapter;
+
+    ArrayList<GameFormat> gameFormats = new ArrayList<>();
+    Spinner gameFormatSpinner;
+    ArrayAdapter gameFormatAdapter;
+
+    ArrayList<Blinds> blinds = new ArrayList<>();
+    Spinner blindsSpinner;
+    ArrayAdapter blindsAdapter;
+
+    public void onEditGameComplete(Game g) {
+        activeSession.setGame(g);
+        new LoadGames().execute();
+    }
+
+    public void onEditLocationComplete(Location l) {
+        activeSession.setLocation(l);
+        new LoadLocations().execute();
+    }
+
+    public void onEditGameFormatComplete(GameFormat gf) {
+        activeSession.setGameFormat(gf);
+        new LoadGameFormats().execute();
+    }
+
+    public void onEditBlindsComplete(Blinds b) {
+        activeSession.setBlinds(b);
+        new LoadBlinds().execute();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        locationSpinner = findViewById(R.id.location);
+        if (locationSpinner != null) { //locationSpinner view will not be on several views
+            locationAdapter = new ArrayAdapter(ActivityBase.this, R.layout.spinner_item_view, locations);
+            locationSpinner.setAdapter(locationAdapter);
+        }
+
+        gameSpinner = findViewById(R.id.game);
+        if (gameSpinner != null) { //gameSpinner view will not be on several views
+            gameAdapter = new ArrayAdapter(ActivityBase.this, R.layout.spinner_item_view, games);
+            gameSpinner.setAdapter(gameAdapter);
+        }
+
+        gameFormatSpinner = findViewById(R.id.game_format);
+        if (gameFormatSpinner != null) { //gameFormatSpinner view will not be on several views
+            gameFormatAdapter = new ArrayAdapter(ActivityBase.this, R.layout.spinner_item_view, gameFormats);
+            gameFormatSpinner.setAdapter(gameFormatAdapter);
+        }
+
+        blindsSpinner = findViewById(R.id.blinds);
+        if (blindsSpinner != null) { //blinds view will not be on several views
+            blindsAdapter = new ArrayAdapter(ActivityBase.this, R.layout.spinner_item_view, blinds);
+            blindsSpinner.setAdapter(blindsAdapter);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,63 +165,28 @@ public class ActivityBase extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void notifyCreateLocation(String value) {
-        //this method is necessary because i cant get fragments to call async tasks
-        new CreateLocation().execute(new Location(0, value, 0));
-    }
-
-    protected void notifyCreateGame(String value) {
-        //this method is necessary because i cant get fragments to call async tasks
-        new CreateGame().execute(new Game(0, value, 0));
-    }
-
-    protected void notifyCreateGameFormat(String gameFormat, int bfId, String baseFormat) {
-        //this method is necessary because i cant get fragments to call async tasks
-        new CreateGameFormat().execute(new GameFormat(0, gameFormat, bfId, baseFormat));
-    }
-
-    protected void notifyCreateBlinds(double sb, double bb, double straddle, double bringIn, double ante, double perPoint) {
-        //this method is necessary because i cant get fragments to call async tasks
-        new CreateBlinds().execute(new Blinds(sb, bb, straddle, bringIn, ante, perPoint, 0));
-    }
-
-    public void showCreateLocationDialog(View v) {
+    public void showLocationDialog(View v) {
         FragmentManager manager = getFragmentManager();
-        FragmentCreateLocation fcl = new FragmentCreateLocation();
-        fcl.show(manager, "CreateLocation");
+        FragmentLocation fl = new FragmentLocation();
+        fl.show(manager, "CreateLocation");
     }
 
-    public void showCreateGameDialog(View v) {
+    public void showGameDialog(View v) {
         FragmentManager manager = getFragmentManager();
-        FragmentCreateGame fcg = new FragmentCreateGame();
-        fcg.show(manager, "CreateGame");
+        FragmentGame fg = new FragmentGame();
+        fg.show(manager, "Edit Game");
     }
 
-    public void showCreateGameFormatDialog(View v) {
+    public void showGameFormatDialog(View v) {
         FragmentManager manager = getFragmentManager();
-        FragmentCreateGameFormat fcgf = new FragmentCreateGameFormat();
-        fcgf.show(manager, "CreateGameFormat");
+        FragmentGameFormat fgf = new FragmentGameFormat();
+        fgf.show(manager, "Edit Game Format");
     }
 
-    public void showCreateBlindsDialog(View v) {
+    public void showBlindsDialog(View v) {
         FragmentManager manager = getFragmentManager();
-        FragmentCreateBlinds fcb = new FragmentCreateBlinds();
-        fcb.show(manager, "CreateBlinds");
-    }
-
-    public class CreateLocation extends AsyncTask<Location, Void, Location> {
-        @Override
-        protected Location doInBackground(Location... loc) {
-            DatabaseHelper db;
-            db = DatabaseHelper.getInstance(getApplicationContext());
-            return db.createLocation(loc[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Location result) {
-            activeSession.setLocation(result);
-            new LoadLocations().execute();
-        }
+        FragmentBlinds fb = new FragmentBlinds();
+        fb.show(manager, "CreateBlinds");
     }
 
     public class LoadLocations extends AsyncTask<Void, Void, ArrayList<Location>> {
@@ -175,10 +199,9 @@ public class ActivityBase extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<Location> result) {
-            Spinner locationSpinner = (Spinner) findViewById(R.id.location);
-            ArrayAdapter locationAdapter = new ArrayAdapter(ActivityBase.this, R.layout.spinner_item_view, result);
-            locationAdapter.setDropDownViewResource(R.layout.spinner_item_view);
-            locationSpinner.setAdapter(locationAdapter);
+            locations.clear();
+            locations.addAll(result);
+            locationAdapter.notifyDataSetChanged();
 
             int target;
             if (ActivityBase.this.activeSession.getLocation() != null && ActivityBase.this.activeSession.getLocation().getId() > 0) {
@@ -193,7 +216,7 @@ public class ActivityBase extends AppCompatActivity {
     }
 
     public void setLocation(int target) {
-        Spinner locationSpinner = (Spinner) findViewById(R.id.location);
+        Spinner locationSpinner = findViewById(R.id.location);
 
         if (target > 0) {
             int count = 0;
@@ -209,21 +232,6 @@ public class ActivityBase extends AppCompatActivity {
         }
     }
 
-    public class CreateGame extends AsyncTask<Game, Void, Game> {
-        @Override
-        protected Game doInBackground(Game... loc) {
-            DatabaseHelper db;
-            db = DatabaseHelper.getInstance(getApplicationContext());
-            return db.createGame(loc[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Game result) {
-            activeSession.setGame(result);
-            new LoadGames().execute();
-        }
-    }
-
     public class LoadGames extends AsyncTask<Void, Void, ArrayList<Game>> {
         @Override
         protected ArrayList<Game> doInBackground(Void... params) {
@@ -234,10 +242,9 @@ public class ActivityBase extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<Game> result) {
-            Spinner gameSpinner = (Spinner) findViewById(R.id.game);
-            ArrayAdapter gameAdapter = new ArrayAdapter(ActivityBase.this, R.layout.spinner_item_view, result);
-            gameAdapter.setDropDownViewResource(R.layout.spinner_item_view);
-            gameSpinner.setAdapter(gameAdapter);
+            games.clear();
+            games.addAll(result);
+            gameAdapter.notifyDataSetChanged();
 
             int target;
             if (ActivityBase.this.activeSession.getGame() != null && ActivityBase.this.activeSession.getGame().getId() > 0) {
@@ -252,7 +259,7 @@ public class ActivityBase extends AppCompatActivity {
     }
 
     public void setGame(int target) {
-        Spinner gameSpinner = (Spinner) findViewById(R.id.game);
+        Spinner gameSpinner = findViewById(R.id.game);
 
         if (target > 0) {
             int count = 0;
@@ -268,21 +275,6 @@ public class ActivityBase extends AppCompatActivity {
         }
     }
 
-    public class CreateGameFormat extends AsyncTask<GameFormat, Void, GameFormat> {
-        @Override
-        protected GameFormat doInBackground(GameFormat... g) {
-            DatabaseHelper db;
-            db = DatabaseHelper.getInstance(getApplicationContext());
-            return db.createGameFormat(g[0]);
-        }
-
-        @Override
-        protected void onPostExecute(GameFormat result) {
-            activeSession.setGameFormat(result);
-            new LoadGameFormats().execute();
-        }
-    }
-
     public class LoadGameFormats extends AsyncTask<Void, Void, ArrayList<GameFormat>> {
         @Override
         protected ArrayList<GameFormat> doInBackground(Void... params) {
@@ -293,10 +285,9 @@ public class ActivityBase extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<GameFormat> result) {
-            Spinner gameFormatSpinner = (Spinner) findViewById(R.id.game_format);
-            ArrayAdapter gameFormatAdapter = new ArrayAdapter(ActivityBase.this, R.layout.spinner_item_view, result);
-            gameFormatAdapter.setDropDownViewResource(R.layout.spinner_item_view);
-            gameFormatSpinner.setAdapter(gameFormatAdapter);
+            gameFormats.clear();
+            gameFormats.addAll(result);
+            gameFormatAdapter.notifyDataSetChanged();
 
             int target;
             if (ActivityBase.this.activeSession.getGameFormat() != null && ActivityBase.this.activeSession.getGameFormat().getId() > 0) {
@@ -311,7 +302,7 @@ public class ActivityBase extends AppCompatActivity {
     }
 
     public void setGameFormat(int target) {
-        Spinner gameFormatSpinner = (Spinner) findViewById(R.id.game_format);
+        Spinner gameFormatSpinner = findViewById(R.id.game_format);
 
         if (target > 0) {
             int count = 0;
@@ -327,21 +318,6 @@ public class ActivityBase extends AppCompatActivity {
         }
     }
 
-    public class CreateBlinds extends AsyncTask<Blinds, Void, Blinds> {
-        @Override
-        protected Blinds doInBackground(Blinds... set) {
-            DatabaseHelper db;
-            db = DatabaseHelper.getInstance(getApplicationContext());
-            return db.createBlinds(set[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Blinds result) {
-            activeSession.setBlinds(result);
-            new LoadBlinds().execute();
-        }
-    }
-
     public class LoadBlinds extends AsyncTask<Void, Void, ArrayList<Blinds>> {
         @Override
         protected ArrayList<Blinds> doInBackground(Void... params) {
@@ -352,10 +328,9 @@ public class ActivityBase extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<Blinds> result) {
-            Spinner blindsSpinner = (Spinner) findViewById(R.id.blinds);
-            ArrayAdapter blindsAdapter = new ArrayAdapter(ActivityBase.this, R.layout.spinner_item_view, result);
-            blindsAdapter.setDropDownViewResource(R.layout.spinner_item_view);
-            blindsSpinner.setAdapter(blindsAdapter);
+            blinds.clear();
+            blinds.addAll(result);
+            blindsAdapter.notifyDataSetChanged();
 
             int target;
             if (ActivityBase.this.activeSession.getBlinds() != null && ActivityBase.this.activeSession.getBlinds().getId() > 0) {
@@ -370,7 +345,7 @@ public class ActivityBase extends AppCompatActivity {
     }
 
     public void setBlinds(int target) {
-        Spinner blindsSpinner = (Spinner) findViewById(R.id.blinds);
+        Spinner blindsSpinner = findViewById(R.id.blinds);
 
         if (target > 0) {
             int count = 0;
@@ -404,7 +379,7 @@ public class ActivityBase extends AppCompatActivity {
             if (outChannel != null)
                 outChannel.close();
         } catch (IOException e) {
-            FlurryAgent.logEvent("Error_BackupDatabase");
+
         }
     }
 }

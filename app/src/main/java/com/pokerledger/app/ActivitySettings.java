@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.app.FragmentManager;
@@ -22,8 +21,6 @@ import android.widget.Toast;
 import android.support.v4.content.ContextCompat;
 import android.Manifest;
 
-
-import com.flurry.android.FlurryAgent;
 import com.github.angads25.filepicker.controller.DialogSelectionListener;
 import com.github.angads25.filepicker.model.DialogConfigs;
 import com.github.angads25.filepicker.model.DialogProperties;
@@ -38,6 +35,7 @@ import com.pokerledger.app.model.Break;
 import com.pokerledger.app.model.Game;
 import com.pokerledger.app.model.GameFormat;
 import com.pokerledger.app.model.Location;
+import com.pokerledger.app.model.Note;
 import com.pokerledger.app.model.Session;
 
 import java.io.File;
@@ -47,7 +45,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,7 +72,6 @@ public class ActivitySettings extends ActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        FlurryAgent.logEvent("Activity_Settings");
 
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -81,7 +80,7 @@ public class ActivitySettings extends ActivityBase {
             TextView versionText = (TextView) this.findViewById(R.id.version_tiny_header);
             versionText.setText("Pokerledger v" + version + " (build " + Integer.toString(pInfo.versionCode) + ")");
         } catch (PackageManager.NameNotFoundException e) {
-            //this should probably be a flurry call
+
         }
 
         SharedPreferences prefs = getSharedPreferences(getString(R.string.preferences_file_key), MODE_PRIVATE);
@@ -91,7 +90,7 @@ public class ActivitySettings extends ActivityBase {
             ((Button) findViewById(R.id.backup_loc_select)).setText(backupLoc);
         }
 
-        final Spinner locationSpinner = (Spinner) this.findViewById(R.id.location);
+        final Spinner locationSpinner = this.findViewById(R.id.location);
         locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -112,7 +111,7 @@ public class ActivitySettings extends ActivityBase {
 
         });
 
-        final Spinner gameSpinner = (Spinner) this.findViewById(R.id.game);
+        final Spinner gameSpinner = this.findViewById(R.id.game);
         gameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -133,7 +132,7 @@ public class ActivitySettings extends ActivityBase {
 
         });
 
-        final Spinner gameFormatSpinner = (Spinner) this.findViewById(R.id.game_format);
+        final Spinner gameFormatSpinner = this.findViewById(R.id.game_format);
         gameFormatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -154,7 +153,7 @@ public class ActivitySettings extends ActivityBase {
 
         });
 
-        final Spinner blindsSpinner = (Spinner) this.findViewById(R.id.blinds);
+        final Spinner blindsSpinner = this.findViewById(R.id.blinds);
         blindsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -174,6 +173,49 @@ public class ActivitySettings extends ActivityBase {
             }
 
         });
+
+        if (!checkExternalStoragePermission())
+            ActivityCompat.requestPermissions(ActivitySettings.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL:
+                if (grantResults.length > 0) {
+                    boolean externalStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+
+                    if (externalStorageAccepted)
+                        Log.d("PERMISSION", "GRANTED");
+                    else
+                        Log.d("PERMISSION", "DENIED");
+                }
+                break;
+        }
+    }
+
+    private boolean checkExternalStoragePermission() {
+        return ContextCompat.checkSelfPermission(ActivitySettings.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        /*
+        if (ContextCompat.checkSelfPermission(ActivitySettings.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(ActivitySettings.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                Log.e("Exception", "shouldShowRequestPermissionRationale");
+            } else {
+                Log.e("Exception", "ActivityCompat.requestPermissions");
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(ActivitySettings.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+         */
     }
 
     @Override
@@ -188,26 +230,6 @@ public class ActivitySettings extends ActivityBase {
         new LoadBlinds().execute();
     }
 
-    protected void notifyEditLocation(Location l) {
-        //this method is necessary because i cant get fragments to call async tasks
-        new EditLocation().execute(l);
-    }
-
-    protected void notifyEditGame(Game g) {
-        //this method is necessary because i cant get fragments to call async tasks
-        new EditGame().execute(g);
-    }
-
-    protected void notifyEditGameFormat(GameFormat gf) {
-        //this method is necessary because i cant get fragments to call async tasks
-        new EditGameFormat().execute(gf);
-    }
-
-    protected void notifyEditBlinds(Blinds b) {
-        //this method is necessary because i cant get fragments to call async tasks
-        new EditBlinds().execute(b);
-    }
-
     public void showEditLocationDialog(View v) {
         Spinner locationSpinner = (Spinner) findViewById(R.id.location);
 
@@ -217,7 +239,7 @@ public class ActivitySettings extends ActivityBase {
         b.putString("TARGET_LOCATION", gson.toJson(locationSpinner.getAdapter().getItem(locationSpinner.getSelectedItemPosition())));
 
         FragmentManager manager = getFragmentManager();
-        FragmentEditLocation fcl = new FragmentEditLocation();
+        FragmentLocation fcl = new FragmentLocation();
         fcl.setArguments(b);
         fcl.show(manager, "EditLocation");
     }
@@ -231,7 +253,7 @@ public class ActivitySettings extends ActivityBase {
         b.putString("TARGET_GAME", gson.toJson(gameSpinner.getAdapter().getItem(gameSpinner.getSelectedItemPosition())));
 
         FragmentManager manager = getFragmentManager();
-        FragmentEditGame fcg = new FragmentEditGame();
+        FragmentGame fcg = new FragmentGame();
         fcg.setArguments(b);
         fcg.show(manager, "EditGame");
     }
@@ -245,7 +267,7 @@ public class ActivitySettings extends ActivityBase {
         b.putString("TARGET_GAME_FORMAT", gson.toJson(gameFormatSpinner.getAdapter().getItem(gameFormatSpinner.getSelectedItemPosition())));
 
         FragmentManager manager = getFragmentManager();
-        FragmentEditGameFormat fcgf = new FragmentEditGameFormat();
+        FragmentGameFormat fcgf = new FragmentGameFormat();
         fcgf.setArguments(b);
         fcgf.show(manager, "EditGameFormat");
     }
@@ -259,7 +281,7 @@ public class ActivitySettings extends ActivityBase {
         b.putString("TARGET_BLINDS", gson.toJson(blindsSpinner.getAdapter().getItem(blindsSpinner.getSelectedItemPosition())));
 
         FragmentManager manager = getFragmentManager();
-        FragmentEditBlinds fcb = new FragmentEditBlinds();
+        FragmentBlinds fcb = new FragmentBlinds();
         fcb.setArguments(b);
         fcb.show(manager, "EditBlinds");
     }
@@ -589,27 +611,34 @@ public class ActivitySettings extends ActivityBase {
     }
 
     public void exportCSV(View v) {
-        new ExportCSV().execute();
+        if (!checkExternalStoragePermission())
+            ActivityCompat.requestPermissions(ActivitySettings.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL);
+        else
+            new ExportCSV().execute();
     }
 
     public void callImportCSV(View v) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Do you want to overwrite the data currently in the app, or do you want to merge with the import?")
-                .setCancelable(false)
-                .setPositiveButton("Overwrite", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        ActivitySettings.this.method = OVERWRITE_BACKUP;
-                        selectCSVFile();
-                    }
-                })
-                .setNegativeButton("Merge", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        ActivitySettings.this.method = MERGE_BACKUP;
-                        selectCSVFile();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
+        if (!checkExternalStoragePermission())
+            ActivityCompat.requestPermissions(ActivitySettings.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL);
+        else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Do you want to overwrite the data currently in the app, or do you want to merge with the import?")
+                    .setCancelable(false)
+                    .setPositiveButton("Overwrite", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            ActivitySettings.this.method = OVERWRITE_BACKUP;
+                            selectCSVFile();
+                        }
+                    })
+                    .setNegativeButton("Merge", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            ActivitySettings.this.method = MERGE_BACKUP;
+                            selectCSVFile();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 
     public void selectBackupLoc(View v) {
@@ -713,6 +742,9 @@ public class ActivitySettings extends ActivityBase {
         @Override
         protected Void doInBackground(Void... v) {
             Session importS;
+            String notesText;
+            List<String> notesList;
+            ArrayList<Note> notes = new ArrayList<>();
             int progressCounter = 0;
 
             //parse the CSV in to an ArrayList<Session>
@@ -777,7 +809,16 @@ public class ActivitySettings extends ActivityBase {
                     if (!rowValues[11].replace("\"","").equals("Finished"))
                         state = 1;
                     importS.setState(state);
-                    importS.setNote(rowValues[12].replace("\"",""));
+                    notesText = rowValues[12].replace("\"","");
+                    notesText = notesText.replaceAll("@linereturn_rn@", "\n").replaceAll("@linereturn_r@", "\n").replaceAll("@linereturn_n@", "\n");
+                    notesList = Arrays.asList(notesText.split("@note_div@"));
+                    notes.clear();
+                    for (String current : notesList) {
+                        if (!current.equals("")) {
+                            notes.add(new Note(0, 0, current));
+                        }
+                    }
+                    importS.setNotes(notes);
 
                     int filtered = 0;
                     if (!rowValues[11].replace("\"","").equals("No"))

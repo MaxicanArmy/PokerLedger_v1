@@ -13,6 +13,7 @@ public class Session {
     private int id = 0, entrants = 0, placed = 0, state = 0;
     private double buyIn = 0, cashOut = 0;
     private String note = "";
+    private ArrayList<Note> notes = new ArrayList<>();
     private Long start = 0L, end = 0L;
     private Location location = new Location();
     private Game game = new Game();
@@ -98,6 +99,11 @@ public class Session {
         this.note = n;
     }
 
+    public void setNotes(ArrayList<Note> n) {
+        this.notes.clear();
+        this.notes.addAll(n);
+    }
+
     public void setBreaks(ArrayList<Break> b) {
         this.breaks = b;
     }
@@ -159,6 +165,10 @@ public class Session {
         return this.note;
     }
 
+    public ArrayList<Note> getNotes() {
+        return this.notes;
+    }
+
     public ArrayList<Break> getBreaks() {
         return this.breaks;
     }
@@ -168,6 +178,30 @@ public class Session {
     }
 
     //other
+    public void addNote (Note n) {
+        this.notes.add(n);
+    }
+
+    public void editNote (Note n) {
+        Note current;
+        for (int i = 0; i < this.notes.size(); i++) {
+            current = this.notes.get(i);
+            if (current.getId() == n.getId()) {
+                this.notes.set(i, n);
+            }
+        }
+    }
+
+    public void deleteNote (Note n) {
+        Note current;
+        for (int i = 0; i < this.notes.size(); i++) {
+            current = this.notes.get(i);
+            if (current.getId() == n.getId()) {
+                this.notes.remove(i);
+            }
+        }
+    }
+
     public boolean onBreak() {
         boolean flag = false;
         if (this.breaks.size() > 0) {

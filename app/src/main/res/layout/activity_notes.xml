@@ -5,8 +5,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/notes_wrapper"
-        style="@style/Wrapper"
-        android:visibility="gone">
+        style="@style/Wrapper">
 
         <ListView
             android:id="@+id/notes_list"

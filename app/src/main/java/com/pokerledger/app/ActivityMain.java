@@ -14,11 +14,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
 import com.pokerledger.app.helper.SessionSet;
+import com.pokerledger.app.model.Note;
 import com.pokerledger.app.model.Session;
 
 import java.util.ArrayList;
@@ -29,22 +29,27 @@ import java.util.TreeMap;
 /**
  * Created by Catface Meowmers on 7/26/15.
  */
-public class ActivityMain extends ActivityBase {
+public class ActivityMain extends ActivityBase  implements NoteCompleteListener<Note> {
+    ArrayList<Session> activeSessions = new ArrayList<>();
     TextView profit;
     TextView timePlayed;
     TextView hourlyWage;
     LinearLayout activeSessionsWrapper;
-    ListView list;
-    SessionListAdapter adapter;
+    ListView activeSessionList;
+    ListAdapterSession activeSessionListAdapter;
     //private static final int ACTIVE_RESULT = 1;
     private static final int FINISHED_RESULT = 2;
+
+    public void onEditNoteComplete(Note n) {
+        new LoadActiveSessions().execute();
+    }
 
 
     final Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
-            adapter.notifyDataSetChanged();
+            activeSessionListAdapter.notifyDataSetChanged();
             timerHandler.postDelayed(this, 1000); // run every second
         }
     };
@@ -53,21 +58,21 @@ public class ActivityMain extends ActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FlurryAgent.logEvent("Activity_Main");
 
-        activeSessionsWrapper = (LinearLayout) findViewById(R.id.active_sessions_wrapper);
-        list = (ListView)findViewById(R.id.active_sessions);
+        activeSessionsWrapper = findViewById(R.id.active_sessions_wrapper);
+        activeSessionList = findViewById(R.id.active_sessions);
+        activeSessionListAdapter = new ListAdapterSession(ActivityMain.this, activeSessions);
+        activeSessionList.setAdapter(activeSessionListAdapter);
 
         new LoadActiveSessions().execute();
 
-        this.profit = (TextView) findViewById(R.id.profit);
-        this.timePlayed = (TextView) findViewById(R.id.time_played);
-        this.hourlyWage = (TextView) findViewById(R.id.hourly_wage);
+        this.profit = findViewById(R.id.profit);
+        this.timePlayed = findViewById(R.id.time_played);
+        this.hourlyWage = findViewById(R.id.hourly_wage);
         new LoadStatistics().execute();
         //new LoadBreakdown().execute();
 
-
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        activeSessionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 FragmentManager manager = getFragmentManager();
@@ -76,7 +81,7 @@ public class ActivityMain extends ActivityBase {
                 Bundle b = new Bundle();
                 b.putString("SESSION_JSON", gson.toJson(parent.getAdapter().getItem(position)));
 
-                FragmentEditActiveSession dialog = new FragmentEditActiveSession();
+                FragmentOptionsActiveSession dialog = new FragmentOptionsActiveSession();
                 dialog.setArguments(b);
                 dialog.show(manager, "EditSession");
             }
@@ -139,31 +144,32 @@ public class ActivityMain extends ActivityBase {
         new LoadActiveSessions().execute();
     }
 
-    public class LoadActiveSessions extends AsyncTask<Void, Void, Void> {
-        ArrayList<Session> sessions = new ArrayList<>();
+    public class LoadActiveSessions extends AsyncTask<Void, Void, ArrayList<Session>> {
 
         public LoadActiveSessions() {}
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected ArrayList<Session> doInBackground(Void... params) {
+            ArrayList<Session> sessions;
             DatabaseHelper dbHelper = DatabaseHelper.getInstance(getApplicationContext());
             sessions = dbHelper.getSessions("1", "DESC", null);
 
-            return null;
+            return sessions;
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            adapter = new SessionListAdapter(ActivityMain.this, sessions);
-            list.setAdapter(adapter);
+        protected void onPostExecute(ArrayList<Session> result) {
 
-            if (sessions.size() > 0) {
+            if (result.size() > 0) {
                 activeSessionsWrapper.setVisibility(View.VISIBLE);
                 timerHandler.postDelayed(timerRunnable, 500);
             } else {
                 activeSessionsWrapper.setVisibility(View.GONE);
                 timerHandler.removeCallbacks(timerRunnable);
             }
+            activeSessions.clear();
+            activeSessions.addAll(result);
+            activeSessionListAdapter.notifyDataSetChanged();
 
             welcome();
         }
@@ -199,7 +205,7 @@ public class ActivityMain extends ActivityBase {
                             Session.class.getDeclaredMethod("getGameName"),
                             Session.class.getDeclaredMethod("getBaseFormat"))));
                 } catch (Exception e) {
-                    FlurryAgent.logEvent("Error_GetDeclaredMethod");
+
                 }
 
                 if (stats.getChildren().size() > 0) {
@@ -352,7 +358,7 @@ public class ActivityMain extends ActivityBase {
     }
 
     public void welcome() {
-        LinearLayout ovw = (LinearLayout) ActivityMain.this.findViewById(R.id.overview_wrapper);
+        LinearLayout ovw = ActivityMain.this.findViewById(R.id.overview_wrapper);
         if (activeSessionsWrapper.getVisibility() == View.GONE && ovw.getVisibility() == View.GONE) {
             findViewById(R.id.welcome_wrapper).setVisibility(LinearLayout.VISIBLE);
         } else {

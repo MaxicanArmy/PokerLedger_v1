@@ -88,7 +88,7 @@
                         style="@style/buttonRowItem"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
-                        android:onClick="showCreateLocationDialog" />
+                        android:onClick="showLocationDialog" />
 
                     <Spinner
                         android:id="@+id/location"
@@ -120,7 +120,7 @@
                         style="@style/buttonRowItem"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
-                        android:onClick="showCreateGameDialog" />
+                        android:onClick="showGameDialog" />
 
                     <Spinner
                         android:id="@+id/game"
@@ -152,7 +152,7 @@
                         style="@style/buttonRowItem"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
-                        android:onClick="showCreateGameFormatDialog" />
+                        android:onClick="showGameFormatDialog" />
 
                     <Spinner
                         android:id="@+id/game_format"
@@ -184,7 +184,7 @@
                         style="@style/buttonRowItem"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
-                        android:onClick="showCreateBlindsDialog" />
+                        android:onClick="showBlindsDialog" />
 
                     <Spinner
                         android:id="@+id/blinds"
@@ -334,17 +334,18 @@
                     android:text="@string/notes_header"
                     style="@style/TinyHeader" />
 
-                <EditText
-                    android:id="@+id/note"
+                <com.pokerledger.app.helper.ListViewSessionNotes
+                    android:id="@+id/notes_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </com.pokerledger.app.helper.ListViewSessionNotes>
+
+                <Button
+                    android:id="@+id/add_note"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minLines="1"
-                    android:maxLines="5"
-                    android:scrollbars="vertical"
-                    android:inputType="textMultiLine|textCapSentences"
-                    android:hint="@string/notes_hint"
-                    android:maxLength="300"
-                    android:textColor="#000"
+                    android:hint="@string/add_note_hint"
+                    android:onClick="showEditNoteDialog"
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>

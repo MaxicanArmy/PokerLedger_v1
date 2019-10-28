@@ -34,7 +34,7 @@
                         android:id="@+id/new_location"
                         android:drawableStart="@drawable/ic_add_black_18dp"
                         android:drawableLeft="@drawable/ic_add_black_18dp"
-                        android:onClick="showCreateLocationDialog"
+                        android:onClick="showLocationDialog"
                         style="@style/buttonRowItem" />
 
                     <Button
@@ -93,7 +93,7 @@
                         android:id="@+id/new_game"
                         android:drawableStart="@drawable/ic_add_black_18dp"
                         android:drawableLeft="@drawable/ic_add_black_18dp"
-                        android:onClick="showCreateGameDialog"
+                        android:onClick="showGameDialog"
                         style="@style/buttonRowItem" />
 
                     <Button
@@ -154,7 +154,7 @@
                         android:id="@+id/new_game_format"
                         android:drawableStart="@drawable/ic_add_black_18dp"
                         android:drawableLeft="@drawable/ic_add_black_18dp"
-                        android:onClick="showCreateGameFormatDialog"
+                        android:onClick="showGameFormatDialog"
                         style="@style/buttonRowItem" />
 
                     <Button
@@ -214,7 +214,7 @@
                         android:id="@+id/new_blinds"
                         android:drawableStart="@drawable/ic_add_black_18dp"
                         android:drawableLeft="@drawable/ic_add_black_18dp"
-                        android:onClick="showCreateBlindsDialog"
+                        android:onClick="showBlindsDialog"
                         style="@style/buttonRowItem" />
 
                     <Button

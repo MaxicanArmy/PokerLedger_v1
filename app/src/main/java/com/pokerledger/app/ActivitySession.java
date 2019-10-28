@@ -5,7 +5,6 @@ import android.app.FragmentManager;
 import android.app.TimePickerDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -14,19 +13,16 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 
 import com.pokerledger.app.helper.DatabaseHelper;
+import com.pokerledger.app.helper.ListViewSessionNotes;
 import com.pokerledger.app.helper.PLCommon;
 import com.pokerledger.app.model.GameFormat;
+import com.pokerledger.app.model.Note;
 import com.pokerledger.app.model.Session;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,8 +30,14 @@ import java.util.regex.Pattern;
 /**
  * Created by Catface Meowmers on 7/26/15.
  */
-public class ActivitySession extends ActivityBase {
+public class ActivitySession extends ActivityBase implements NoteCompleteListener<Note> {
     View activeView;
+    ListViewSessionNotes notesList;
+    ListAdapterNotes adapter;
+
+    public void onEditNoteComplete(Note n) {
+        new LoadNotes().execute();
+    }
 
     @Override
     protected void onStart() {
@@ -67,6 +69,28 @@ public class ActivitySession extends ActivityBase {
             }
 
         });
+
+        notesList = findViewById(R.id.notes_list);
+        if (notesList != null) { //notesList can be null when we are looking at the active session view that does not have the options for notes.
+            adapter = new ListAdapterNotes(ActivitySession.this, activeSession.getNotes());
+            notesList.setAdapter(adapter);
+
+            notesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    FragmentManager manager = getFragmentManager();
+                    Gson gson = new Gson();
+
+                    Bundle b = new Bundle();
+                    b.putString("NOTE_JSON", gson.toJson(parent.getAdapter().getItem(position)));
+
+                    FragmentOptionsNoteSession dialog = new FragmentOptionsNoteSession();
+
+                    dialog.setArguments(b);
+                    dialog.show(manager, "Notes Options Fragment");
+                }
+            });
+        }
 
         //load locations, games, gameformats and blinds from their database tables in to the spinners
         //these async tasks also call set functions to select the correct item in spinners for the activeSession
@@ -122,6 +146,19 @@ public class ActivitySession extends ActivityBase {
             }
         }
     };
+
+    public void showEditNoteDialog(View v) {
+        FragmentManager manager = getFragmentManager();
+        Gson gson = new Gson();
+        Note newNote = new Note(activeSession.getId());
+
+        Bundle b = new Bundle();
+        b.putString("NOTE_JSON", gson.toJson(newNote));
+        FragmentNote dialog = new FragmentNote();
+
+        dialog.setArguments(b);
+        dialog.show(manager, "Notes Fragment");
+    }
 
     public void showTimePickerDialog(View v) {
         activeView = v;
@@ -229,6 +266,27 @@ public class ActivitySession extends ActivityBase {
         @Override
         protected void onPostExecute(Void v) {
             ActivitySession.this.autoBackup();
+        }
+    }
+
+    public class LoadNotes extends AsyncTask<Void, Void, ArrayList<Note>> {
+
+        public LoadNotes() {}
+
+        @Override
+        protected ArrayList<Note> doInBackground(Void... params) {
+            ArrayList<Note> notes;
+
+            DatabaseHelper dbHelper = DatabaseHelper.getInstance(getApplicationContext());
+            notes = dbHelper.getSessionNotes(activeSession.getId());
+
+            return notes;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Note> result) {
+            activeSession.setNotes(result);
+            adapter.notifyDataSetChanged();
         }
     }
 }

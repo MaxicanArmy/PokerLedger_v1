@@ -113,8 +113,10 @@
     <string name="end_time_hint">End Time</string>
     <string name="view_breaks_hint">View Breaks</string>
     <string name="add_break_hint">Add Break</string>
-    <string name="notes_hint">Notes (300 char. max)</string>
+    <string name="add_note_hint">Add Note</string>
+    <string name="notes_hint">Notes</string>
     <string name="save_hint">Save</string>
+    <string name="finish_hint">Finish</string>
     <string name="backup_hint">Backup</string>
     <string name="backup_loc_hint">Backup folder location</string>
     <string name="export_hint">Export CSV</string>
@@ -136,6 +138,8 @@
     <string name="create_game_hint">Game Name</string>
     <string name="create_game_format_hint">Game Format Name</string>
     <string name="create_button_hint">Create</string>
+
+    <string name="enter_note_hint">Enter Note</string>
 
     <string name="cancel_hint">Cancel</string>
 

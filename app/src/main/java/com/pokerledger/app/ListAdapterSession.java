@@ -12,11 +12,11 @@ import com.pokerledger.app.model.Session;
 
 import java.util.ArrayList;
 
-public class SessionListAdapter extends ArrayAdapter<Session>{
+public class ListAdapterSession extends ArrayAdapter<Session>{
     private final Activity context;
 
 
-    public SessionListAdapter(Activity context, ArrayList<Session> active) {
+    public ListAdapterSession(Activity context, ArrayList<Session> active) {
         super(context, R.layout.list_session, active);
         this.context = context;
     }

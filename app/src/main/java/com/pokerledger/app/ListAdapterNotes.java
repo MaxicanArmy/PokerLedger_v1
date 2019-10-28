@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.pokerledger.app.helper.PLCommon;
+import com.pokerledger.app.model.Note;
 import com.pokerledger.app.model.Session;
 
 import java.util.ArrayList;
@@ -17,14 +18,14 @@ import java.util.ArrayList;
  * Created by Max on 10/9/2016.
  */
 
-public class NotesListAdapter extends ArrayAdapter<Session> {
+public class ListAdapterNotes extends ArrayAdapter<Note> {
     private final Activity context;
-    private final ArrayList<Session> active;
+    private final ArrayList<Note> notes;
 
-    public NotesListAdapter(Activity context, ArrayList<Session> active) {
+    public ListAdapterNotes(Activity context, ArrayList<Note> active) {
         super(context, R.layout.list_notes, active);
         this.context = context;
-        this.active = active;
+        this.notes = active;
     }
 
     @Override
@@ -34,7 +35,7 @@ public class NotesListAdapter extends ArrayAdapter<Session> {
 
         TextView txtNote = (TextView) rowView.findViewById(R.id.note);
 
-        Session current = active.get(position);
+        Note current = notes.get(position);
 
         try {
             txtNote.setText(current.getNote());

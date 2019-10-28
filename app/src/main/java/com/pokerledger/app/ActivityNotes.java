@@ -8,10 +8,9 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.flurry.android.FlurryAgent;
 import com.google.gson.Gson;
 import com.pokerledger.app.helper.DatabaseHelper;
-import com.pokerledger.app.model.Session;
+import com.pokerledger.app.model.Note;
 
 import java.util.ArrayList;
 
@@ -19,21 +18,27 @@ import java.util.ArrayList;
  * Created by Max on 10/9/2016.
  */
 
-public class ActivityNotes extends ActivityBase {
+public class ActivityNotes extends ActivityBase implements NoteCompleteListener<Note> {
     ListView list;
-    NotesListAdapter adapter;
+    ListAdapterNotes adapter;
     LinearLayout notesWrapper;
+    ArrayList<Note> notes = new ArrayList<>();
+
+    public void onEditNoteComplete(Note n) {
+        new LoadNotes().execute();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
-        FlurryAgent.logEvent("Activity_Notes");
 
-        list = (ListView)findViewById(R.id.notes_list);
+        list = findViewById(R.id.notes_list);
+        adapter = new ListAdapterNotes(ActivityNotes.this, notes);
+        list.setAdapter(adapter);
 
         notesWrapper = (LinearLayout) findViewById(R.id.notes_wrapper);
-        new ActivityNotes.LoadActiveSessions().execute();
+        new LoadNotes().execute();
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -42,9 +47,9 @@ public class ActivityNotes extends ActivityBase {
                 Gson gson = new Gson();
 
                 Bundle b = new Bundle();
-                b.putString("SESSION_JSON", gson.toJson(parent.getAdapter().getItem(position)));
+                b.putString("NOTE_JSON", gson.toJson(parent.getAdapter().getItem(position)));
 
-                FragmentEditNoteSession dialog = new FragmentEditNoteSession();
+                FragmentOptionsNote dialog = new FragmentOptionsNote();
 
                 dialog.setArguments(b);
                 dialog.show(manager, "EditSession");
@@ -57,34 +62,25 @@ public class ActivityNotes extends ActivityBase {
         super.onPause();
     }
 
-    protected void notifyListChange() {
-        //this method is necessary because i cant get fragments to call async tasks
-        new ActivityNotes.LoadActiveSessions().execute();
-    }
+    public class LoadNotes extends AsyncTask<Void, Void, ArrayList<Note>> {
 
-    public class LoadActiveSessions extends AsyncTask<Void, Void, Void> {
-        ArrayList<Session> sessions = new ArrayList<>();
-
-        public LoadActiveSessions() {}
+        public LoadNotes() {}
 
         @Override
-        protected Void doInBackground(Void... params) {
-            DatabaseHelper dbHelper = DatabaseHelper.getInstance(getApplicationContext());
-            sessions = dbHelper.getNotes();
+        protected ArrayList<Note> doInBackground(Void... params) {
+            ArrayList<Note> notes;
 
-            return null;
+            DatabaseHelper dbHelper = DatabaseHelper.getInstance(getApplicationContext());
+            notes = dbHelper.getAllNotes();
+
+            return notes;
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            adapter = new NotesListAdapter(ActivityNotes.this, sessions);
-            list.setAdapter(adapter);
-
-            if (sessions.size() > 0) {
-                notesWrapper.setVisibility(View.VISIBLE);
-            } else {
-                notesWrapper.setVisibility(View.GONE);
-            }
+        protected void onPostExecute(ArrayList<Note> result) {
+            ActivityNotes.this.notes.clear();
+            ActivityNotes.this.notes.addAll(result);
+            adapter.notifyDataSetChanged();
         }
     }
 }
