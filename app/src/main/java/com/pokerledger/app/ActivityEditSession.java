@@ -23,8 +23,8 @@ public class ActivityEditSession extends ActivitySession  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finished_session);
+        super.onCreate(savedInstanceState);
 
         String json = getIntent().getStringExtra("SESSION_JSON");
         if (json != null) {

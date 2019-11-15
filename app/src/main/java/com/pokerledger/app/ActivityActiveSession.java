@@ -22,8 +22,8 @@ public class ActivityActiveSession extends ActivitySession {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_session);
+        super.onCreate(savedInstanceState);
 
         Calendar calender = Calendar.getInstance();
         activeSession.setStart(calender.getTimeInMillis());

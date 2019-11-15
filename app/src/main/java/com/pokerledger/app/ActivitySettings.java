@@ -70,8 +70,8 @@ public class ActivitySettings extends ActivityBase {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        super.onCreate(savedInstanceState);
 
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);

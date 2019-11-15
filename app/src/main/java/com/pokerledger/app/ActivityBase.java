@@ -7,9 +7,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -71,8 +73,9 @@ public class ActivityBase extends AppCompatActivity implements GameCompleteListe
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.e("LIFECYCLE", "Activity Base onCreate");
         locationSpinner = findViewById(R.id.location);
         if (locationSpinner != null) { //locationSpinner view will not be on several views
             locationAdapter = new ArrayAdapter(ActivityBase.this, R.layout.spinner_item_view, locations);
@@ -96,6 +99,12 @@ public class ActivityBase extends AppCompatActivity implements GameCompleteListe
             blindsAdapter = new ArrayAdapter(ActivityBase.this, R.layout.spinner_item_view, blinds);
             blindsSpinner.setAdapter(blindsAdapter);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e("LIFECYCLE", "Activity Base onStart");
     }
 
     @Override

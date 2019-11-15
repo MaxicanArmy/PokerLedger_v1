@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion "28.0.3"
 
     defaultConfig {
         applicationId "com.pokerledger.app"
         minSdkVersion 15
-        targetSdkVersion 27
-        versionCode 24
-        versionName "1.6.5"
+        targetSdkVersion 28
+        versionCode 26
+        versionName "1.6.6"
     }
     buildTypes {
         release {
@@ -21,7 +21,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation group: 'com.android.support', name: 'appcompat-v7', version: '27.1.1'
+    implementation group: 'com.android.support', name: 'appcompat-v7', version: '28.0.0'
     implementation 'com.jjoe64:graphview:4.2.2'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
     implementation 'com.github.angads25:filepicker:1.1.0'

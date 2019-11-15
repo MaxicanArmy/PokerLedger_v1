@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,7 +30,7 @@ import java.util.TreeMap;
 /**
  * Created by Catface Meowmers on 7/26/15.
  */
-public class ActivityMain extends ActivityBase  implements NoteCompleteListener<Note> {
+public class ActivityMain extends ActivityBase implements NoteCompleteListener<Note> {
     ArrayList<Session> activeSessions = new ArrayList<>();
     TextView profit;
     TextView timePlayed;
@@ -57,6 +58,7 @@ public class ActivityMain extends ActivityBase  implements NoteCompleteListener<
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("LIFECYCLE", "Activity Main onCreate");
         setContentView(R.layout.activity_main);
 
         activeSessionsWrapper = findViewById(R.id.active_sessions_wrapper);
@@ -124,8 +126,33 @@ public class ActivityMain extends ActivityBase  implements NoteCompleteListener<
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e("LIFECYCLE", "Activity Main onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("LIFECYCLE", "Activity Main onResume");
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
+        Log.e("LIFECYCLE", "Activity Main onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e("LIFECYCLE", "Activity Main onStop");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.e("LIFECYCLE", "Activity Main onRestart");
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -50,6 +51,7 @@ public class ActivityHistory extends ActivityBase {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("LIFECYCLE", "Activity History onCreate");
         setContentView(R.layout.activity_history);
 
         if (savedInstanceState != null) {
@@ -82,6 +84,36 @@ public class ActivityHistory extends ActivityBase {
                 dialog.show(manager, "EditHistory");
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e("LIFECYCLE", "Activity History onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("LIFECYCLE", "Activity History onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e("LIFECYCLE", "Activity History onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e("LIFECYCLE", "Activity History onStop");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.e("LIFECYCLE", "Activity History onRestart");
     }
 
     @Override
