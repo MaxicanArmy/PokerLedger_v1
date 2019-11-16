@@ -2,7 +2,7 @@ package com.pokerledger.app;
 
 import android.app.FragmentManager;
 import android.content.Context;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;

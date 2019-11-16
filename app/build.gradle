@@ -21,8 +21,8 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation group: 'com.android.support', name: 'appcompat-v7', version: '28.0.0'
-    implementation 'com.jjoe64:graphview:4.2.2'
+    implementation group: 'androidx.appcompat', name: 'appcompat', version: '1.1.0'
+    implementation project(path: ':GraphView')
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
     implementation 'com.github.angads25:filepicker:1.1.0'
 }
